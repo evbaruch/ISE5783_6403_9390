@@ -18,7 +18,7 @@ public class Vector extends Point {
      * @param y the y coordinate of the vector
      * @param z the z coordinate of the vector
      */
-    Vector(double x,double y,double z) {
+    public Vector(double x,double y,double z) {
         super(x,y,z);
     }
 
@@ -67,7 +67,7 @@ public class Vector extends Point {
      * Calculates the length of this vector squared.
      * @return the length of this vector squared
      */
-    public double lengthSquered(){
+    public double lengthSquared(){
     return this.distanceSquared(new Point(Double3.ZERO));
     }
 
@@ -76,7 +76,7 @@ public class Vector extends Point {
      * @return the length of this vector
      */
     public double length(){
-        return Math.sqrt(lengthSquered());
+        return Math.sqrt(lengthSquared());
     }
 
     /**
