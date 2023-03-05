@@ -6,7 +6,7 @@ import java.util.Objects;
 import static primitives.Util.isZero;
 
 public class Point {
-    Double3  xyz;
+    final Double3 xyz;
 
     /**
      * Constructs a new Point object with the specified coordinates.
