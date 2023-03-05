@@ -22,9 +22,10 @@ public class Plane implements Geometry{
         normal = null;
     }
 
-    public void getNormal(){
-
+    public Vector getNormal() {
+        return this.normal;
     }
+
 
     @Override
     public Vector getNormal(Point p) {

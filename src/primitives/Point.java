@@ -3,6 +3,8 @@ package primitives;
 import java.nio.channels.Pipe;
 import java.util.Objects;
 
+import static primitives.Util.isZero;
+
 public class Point {
     Double3 xyz;
 
@@ -38,8 +40,11 @@ public class Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return Objects.equals(xyz, point.xyz);
+        return isZero(this.xyz.d1 - point.xyz.d1)
+                && isZero(this.xyz.d2 - point.xyz.d2)
+                && isZero(this.xyz.d3 - point.xyz.d3);
     }
+
 
     /**
      * Returns a string representation of this Point object.

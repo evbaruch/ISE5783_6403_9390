@@ -3,7 +3,6 @@ package geometries;
 import static primitives.Util.isZero;
 
 import java.util.List;
-
 import primitives.Point;
 import primitives.Vector;
 
@@ -14,8 +13,8 @@ public class Polygon implements Geometry {
    /** List of polygon's vertices */
    protected final List<Point> vertices;
    /** Associated plane in which the polygon lays */
-   protected final Plane       plane;
-   private final int           size;
+   protected final Plane plane;
+   private final int size;
 
    /** Polygon constructor based on vertices list. The list must be ordered by edge
     * path. The polygon must be convex.
