@@ -78,6 +78,9 @@ public class Point {
      */
     public Vector subtract(Point p)
     {
+        if (this.equals(p)){
+            throw new IllegalArgumentException("ERROR: The same value cannot be subtracted");
+        }
         return new Vector(this.xyz.subtract(p.xyz));
     }
 

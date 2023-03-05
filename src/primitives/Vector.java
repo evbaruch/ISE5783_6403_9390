@@ -1,4 +1,7 @@
 package primitives;
+
+import java.util.IllegalFormatCodePointException;
+
 /**
  * This class represents a vector in a three-dimensional space.
  * It extends the {@link Point} class, which means it has x, y, and z coordinates.
@@ -20,6 +23,10 @@ public class Vector extends Point {
      */
     public Vector(double x,double y,double z) {
         super(x,y,z);
+
+        if (super.equals(new Vector(Double3.ZERO))) {
+            throw new IllegalArgumentException("ERROR: vector cannot be zero");
+        }
     }
 
     /**
@@ -40,7 +47,12 @@ public class Vector extends Point {
      */
     @Override
     public Vector add(Vector p) {
-        return new Vector(this.xyz.add(p.xyz));
+
+        Vector v =  new Vector(this.xyz.add(p.xyz));
+        if (v.equals(new Vector(Double3.ZERO))){
+            throw new IllegalArgumentException("ERROR: Addition of vectors cannot give a zero vector");
+        }
+        return v;
     }
 
     /**
