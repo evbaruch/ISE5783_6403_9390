@@ -45,7 +45,7 @@ public final class Main {
          out.println("ERROR: Vector + itself throws wrong exception");
       }
       if (!v1.add(v2).equals(new Vector(-1, -2, -3)))
-         out.println("ERROR: Point - Point does not work correctly");
+         out.println("ERROR: Point + Point does not work correctly");
       if (!v1.subtract(v2).equals(new Vector(3, 6, 9)))
          out.println("ERROR: Point - Point does not work correctly");
 
