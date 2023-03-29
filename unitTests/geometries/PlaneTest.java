@@ -10,7 +10,4 @@ class PlaneTest {
     void testGetNormal() {
     }
 
-    @Test
-    void testTestGetNormal() {
-    }
 }
