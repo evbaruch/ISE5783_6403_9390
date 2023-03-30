@@ -5,10 +5,10 @@ import primitives.Vector;
 
 public class Sphere extends RadialGeometry {
     private Point center;
-    //private double radius;
 
     public Vector getNormal(Point p) {
-
-        return null;
+        Vector v = center.subtract(p);
+        v.normalize();
+        return v;
     }
 }

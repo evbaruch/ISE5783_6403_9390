@@ -26,4 +26,12 @@ public class Ray {
                 ", dir=" + dir +
                 '}';
     }
+
+    public Point getP0() {
+        return p0;
+    }
+
+    public Vector getDir() {
+        return dir;
+    }
 }
