@@ -8,7 +8,14 @@ import primitives.Vector;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Unit test for geometries.Cylinder claas
+ * @author evyatar
+ */
 class CylinderTest {
+    /**
+     * Test method for {@link geometries.Cylinder#getNormal(Point)}
+     */
     @Test
     void testGetNormal() {
         // Create a new sphere with center (1,1,1) and radius 2.

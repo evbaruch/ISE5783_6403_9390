@@ -5,8 +5,15 @@ import primitives.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for geometries.Plane claas
+ * @author evyatar
+ */
 class PlaneTest {
 
+    /**
+     * Test method for {@link geometries.Plane#getNormal(Point)}
+     */
     @Test
     public void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============

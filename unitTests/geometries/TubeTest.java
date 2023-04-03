@@ -7,9 +7,15 @@ import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test for geometries.Tube claas
+ * @author evyatar
+ */
 class TubeTest {
 
-
+    /**
+     * Test method for {@link geometries.Tube#getNormal(Point)}
+     */
     @Test
     void testGetNormal() {
         // Create a new sphere with center (1,1,1) and radius 2.
