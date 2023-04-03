@@ -6,6 +6,7 @@ import primitives.Ray;
 import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CylinderTest {
     @Test
@@ -15,15 +16,15 @@ class CylinderTest {
 
         // Define some test points.
         Point test1 = new Point(1,2,3);
-        Point test2 = new Point(1,2,5);
+        Point test2 = new Point(-1,-2,-3);
         Point test3 = new Point(1,2,4);
 
         // ============ Equivalence Partitions Tests ==============
         assertEquals(new Vector(0,1,0),cylinder.getNormal(test1),"GetNormal() test 1");
-        assertThrows(IllegalArgumentException.class,() -> cylinder.getNormal(test2),"GetNormal() test 2");
+        assertEquals(new Vector(0,0,-1),cylinder.getNormal(test2),"GetNormal() test 2");
 
         // =============== Boundary Values Tests ==================
-        assertThrows(IllegalArgumentException.class,() -> cylinder.getNormal(test3),"GetNormal() test 3");
+        assertEquals(new Vector(0,0,1),cylinder.getNormal(test3),"GetNormal() test 3");
 
     }
 }

@@ -21,11 +21,19 @@ public class Cylinder extends Tube {
         // our vector on the line
         double d = v.dotProduct(axisRay.getDir());
 
-        if (d < height)
+        if (d < height && d > -height)
         {
             return super.getNormal(p);
-        }else{
-           return null;
         }
+
+        if (d >= height){
+           return super.axisRay.getDir().normalize();
+        }
+
+        if (d <= -height){
+            return super.axisRay.getDir().scale(-1).normalize();
+        }
+
+        return null;//impossible case
     }
 }
