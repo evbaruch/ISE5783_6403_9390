@@ -16,12 +16,16 @@ class TriangleTest {
         Point b = new Point(1, 0, 0);
         Point c = new Point(0, 1, 0);
         Triangle triangleEP = new Triangle(a, b, c);
+
         // ensure there are no exceptions
         assertDoesNotThrow(() -> triangleEP.getNormal(new Point(0, 0, 0)), "");
+
         // generate the test result
         Vector result = triangleEP.getNormal(new Point(0, 0, 0));
+
         // ensure |result| = 1
         assertEquals(1, result.length(), 0.00000001, "Triangle's normal is not a unit vector");
+
         // ensure the result matches the expected normal pointing along z-axis
         assertEquals(new Vector(0, 0, 1), result, "Triangle's normal is incorrect");
 
