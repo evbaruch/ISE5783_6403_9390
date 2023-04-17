@@ -7,8 +7,15 @@ import primitives.Vector;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Unit test for geometries.Sphere claas
+ * @author evyatar
+ */
 class SphereTest {
 
+    /**
+     * Test method for {@link geometries.Sphere#getNormal(Point)}
+     */
     @Test
     void testGetNormal() {
         // Create a new sphere with center (1,1,1) and radius 2.
