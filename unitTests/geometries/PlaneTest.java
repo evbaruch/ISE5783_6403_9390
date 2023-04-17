@@ -23,10 +23,6 @@ class PlaneTest {
         Point q3 = new Point(1, 1, 3);
         Plane plane = new Plane(q1, q2, q3);
 
-
-        // ensure there are no exceptions
-        assertDoesNotThrow(() -> plane.getNormal(new Point(0, 0, 0)), "");
-
         // generate the test result
         Vector result = plane.getNormal();
 
@@ -40,12 +36,8 @@ class PlaneTest {
         // TC02: Plane with normal pointing along x-axis
 
 
-
-        // ensure there are no exceptions
-        assertDoesNotThrow(() -> plane.getNormal(new Point(0, 0, 0)), "");
-
         // generate the test result
-        result = plane.getNormal(new Point(0, 0, 0));
+        result = plane.getNormal();
 
         // ensure |result| = 1
         assertEquals(1, result.length(), 0.00000001, "Plane's normal is not a unit vector");

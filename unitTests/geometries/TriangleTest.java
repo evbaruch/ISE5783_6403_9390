@@ -24,9 +24,6 @@ class TriangleTest {
         Point c = new Point(0, 1, 0);
         Triangle triangleEP = new Triangle(a, b, c);
 
-        // ensure there are no exceptions
-        assertDoesNotThrow(() -> triangleEP.getNormal(new Point(0, 0, 0)), "");
-
         // generate the test result
         Vector result = triangleEP.getNormal(new Point(0, 0, 0));
 
@@ -43,9 +40,6 @@ class TriangleTest {
         b = new Point(0, 1, 0);
         c = new Point(0, 0, 1);
         Triangle triangleBV = new Triangle(a, b, c);
-
-        // Ensure there are no exceptions
-        assertDoesNotThrow(() -> triangleBV.getNormal(new Point(0, 0, 0)), "Unexpected exception in TC02");
 
         // Generate the test result
         result = triangleBV.getNormal(new Point(0, 0, 0));
