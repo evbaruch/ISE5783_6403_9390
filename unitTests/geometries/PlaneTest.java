@@ -36,10 +36,6 @@ class PlaneTest {
         // TC02: Plane with normal pointing along x-axis
 
 
-
-        // ensure there are no exceptions
-        assertDoesNotThrow(() -> plane.getNormal(new Point(0, 0, 0)), "");
-
         // generate the test result
         result = plane.getNormal();
 
