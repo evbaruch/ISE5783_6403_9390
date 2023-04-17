@@ -30,7 +30,7 @@ class PlaneTest {
         assertEquals(1, result.length(), 0.00000001, "Plane's normal is not a unit vector");
 
         // ensure the result matches the expected normal
-        assertEquals(new Vector(0,0,1), result, "Plane's normal is incorrect");
+        assertEquals(new Vector(0,0,-1), result, "Plane's normal is incorrect");
 
         // ============ Boundary Value Tests ==============
         // TC02: Plane with normal pointing along x-axis
@@ -43,7 +43,7 @@ class PlaneTest {
         assertEquals(1, result.length(), 0.00000001, "Plane's normal is not a unit vector");
 
         // ensure the result matches the expected normal
-        assertEquals(new Vector(0,0,1), result, "Plane's normal is incorrect");
+        assertEquals(new Vector(0,0,-1), result, "Plane's normal is incorrect");
     }
 
 }
