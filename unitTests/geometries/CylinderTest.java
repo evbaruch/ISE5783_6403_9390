@@ -54,7 +54,7 @@ class CylinderTest {
         assertEquals(new Vector(0, 1, 0), cyl.getNormal(new Point(0, 1, 0.5)), "Bad normal to upper base of cylinder");
 
         // =============== Boundary Values Tests ==================
-        // TC11: Point at the center of 1st base
+        //  TC11: Point at the center of 1st base
         assertEquals(new Vector(0, 1, 0), cyl.getNormal(new Point(0, 0, 1)), "Bad normal to center of lower base");
 
         // TC12: Point at the center of 2nd base
