@@ -34,6 +34,10 @@ class CylinderTest {
         assertEquals(new Vector(0,0,1),cylinder.getNormal(test3),"GetNormal() test 3");
 
     }
+
+    @Test
+    void findIntsersections() {
+    }
 }
 class CylinderTests {
 

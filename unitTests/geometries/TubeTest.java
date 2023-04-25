@@ -41,4 +41,8 @@ class TubeTest {
         // with a point at the center of the sphere.
         assertThrows(IllegalArgumentException.class, () -> tube.getNormal(centerPoint), "GetNormal() test for center point");
     }
+
+    @Test
+    void findIntsersections() {
+    }
 }

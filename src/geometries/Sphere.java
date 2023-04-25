@@ -1,7 +1,10 @@
 package geometries;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 public class Sphere extends RadialGeometry {
     private Point center;
@@ -14,5 +17,10 @@ public class Sphere extends RadialGeometry {
     public Vector getNormal(Point p) {
         Vector v = p.subtract(center);//There may be an exception here that the vector is zero
         return v.normalize();
+    }
+
+    @Override
+    public List<Point> findIntsersections(Ray ray) {
+        return null;
     }
 }

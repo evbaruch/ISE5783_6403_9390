@@ -4,6 +4,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 import static primitives.Util.alignZero;
 
 /**
@@ -61,5 +63,10 @@ public class Cylinder extends Tube {
 //        // We can compute the normal vector by subtracting the projection of the vector v onto the axis ray from v itself.
 //        return v.subtract(super.axisRay.getDir().scale(d)).normalize();
         return null;//impossible case
+    }
+
+    @Override
+    public List<Point> findIntsersections(Ray ray) {
+        return null;
     }
 }

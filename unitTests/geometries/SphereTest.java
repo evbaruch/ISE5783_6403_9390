@@ -42,4 +42,7 @@ class SphereTest {
         assertThrows(IllegalArgumentException.class, () -> sphere.getNormal(centerPoint), "GetNormal() test for center point");
     }
 
+    @Test
+    void findIntsersections() {
+    }
 }
