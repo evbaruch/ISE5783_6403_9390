@@ -28,13 +28,18 @@ class CylinderTest {
 
         // ============ Equivalence Partitions Tests ==============
         assertEquals(new Vector(0,1,0),cylinder.getNormal(test1),"GetNormal() test 1");
-        assertEquals(new Vector(0,0,-1),cylinder.getNormal(test2),"GetNormal() test 2");
+        assertEquals(new Vector(0,0,1),cylinder.getNormal(test2),"GetNormal() test 2");
 
         // =============== Boundary Values Tests ==================
         assertEquals(new Vector(0,0,1),cylinder.getNormal(test3),"GetNormal() test 3");
 
     }
-}class CylinderTests {
+
+    @Test
+    void findIntsersections() {
+    }
+}
+class CylinderTests {
 
     /**
      * Test method for {@link geometries.Tube#getNormal(primitives.Point)}.

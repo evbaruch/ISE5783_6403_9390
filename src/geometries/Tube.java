@@ -4,6 +4,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 public class Tube extends RadialGeometry {
     protected Ray axisRay;
 
@@ -24,8 +26,14 @@ public class Tube extends RadialGeometry {
         // and add to it the projection from previous
         Point o = axisRay.getP0().add(axisRay.getDir().scale(d));
         //We will return the vector from point O from place to point I gave normalized
-        return p.subtract(o).normalize();
+
+        Vector u = p.subtract(o);
+        return u.normalize();
     }
 
 
+    @Override
+    public List<Point> findIntsersections(Ray ray) {
+        return null;
+    }
 }

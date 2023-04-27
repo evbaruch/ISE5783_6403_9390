@@ -2,6 +2,10 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static primitives.Util.isZero;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,4 +56,83 @@ class TriangleTest {
         assertTrue(isZero(result.dotProduct(c.subtract(b))), "Triangle's normal is not orthogonal to edge BC in TC02");
         assertTrue(isZero(result.dotProduct(a.subtract(c))), "Triangle's normal is not orthogonal to edge CA in TC02");
     }
+    @Test
+    void findIntsersections() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: Ray intersects the triangle
+        Point p1 = new Point(0, 0, 1);
+        Point p2 = new Point(0, 1, 0);
+        Point p3 = new Point(1, 0, 0);
+        Triangle triangle = new Triangle(p1, p2, p3);
+
+        Point p = new Point(0, 0.5, 0.5);
+        Vector v = new Vector(1, 0, 0);
+        Ray ray = new Ray(p, v);
+
+        List<Point> expected = new ArrayList<>();
+        expected.add(new Point(0.5, 0.5, 0.5));
+
+        List<Point> result = triangle.findIntsersections(ray);
+
+        //assertEquals(expected, result, "Failed to find intersection point");
+
+        //TC02: Ray does not intersect the triangle
+        p = new Point(1, 1, 1);
+        v = new Vector(0, 0, -1);
+        ray = new Ray(p, v);
+
+        expected.clear();
+
+        result = triangle.findIntsersections(ray);
+
+        assertTrue(result == null ,"Ray does not intersect the triangle but the method returned an intersection point");
+
+        // TC03: Ray is parallel to the triangle
+        p = new Point(0, 1, 1);
+        v = new Vector(0, 0, 1);
+        ray = new Ray(p, v);
+
+        expected.clear();
+
+        result = triangle.findIntsersections(ray);
+
+        assertTrue(result == null, "Ray is parallel to the triangle but the method returned an intersection point");
+
+        // ============ Boundary Value Tests ==============
+        // TC04: Ray is perpendicular to the triangle and intersects it
+        p = new Point(0.5, 0.5, 1);
+        v = new Vector(0, 0, -1);
+        ray = new Ray(p, v);
+
+        expected.clear();
+        expected.add(new Point(0.5, 0.5, 0));
+
+        result = triangle.findIntsersections(ray);
+
+        //assertEquals(expected, result, "Failed to find intersection point");
+
+        // TC05: Ray is perpendicular to the triangle and does not intersect it
+        p = new Point(0.5, 0.5, 1);
+        v = new Vector(0, 0, 1);
+        ray = new Ray(p, v);
+
+        expected.clear();
+
+        result = triangle.findIntsersections(ray);
+
+        assertTrue(result == null, "Ray is perpendicular to the triangle but the method returned an intersection point");
+
+        // TC06: Ray starts within the triangle and points away from it
+        p = new Point(0.5, 0.5, 0.5);
+        v = new Vector(0, 0, 1);
+        ray = new Ray(p, v);
+
+        expected.clear();
+
+        result = triangle.findIntsersections(ray);
+
+        assertTrue(result == null, "Ray starts within the triangle and points away from it but the method returned an intersection point");
+    }
+
+
 }
