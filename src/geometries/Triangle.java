@@ -4,6 +4,7 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Triangle extends Polygon {
@@ -38,21 +39,26 @@ public class Triangle extends Polygon {
      */
     @Override
     public List<Point> findIntsersections(Ray ray) {
-
         List<Point> intersections = plane.findIntsersections(ray);
         if (intersections == null) {
             return null;
         }
-        Point p = intersections.get(0);
-        Vector v1 = vertices.get(0).subtract(p);
-        Vector v2 = vertices.get(1).subtract(p);
-        Vector v3 = vertices.get(2).subtract(p);
-        double d1 = v1.dotProduct(v2);
-        double d2 = v2.dotProduct(v3);
-        double d3 = v3.dotProduct(v1);
-        if (d1 > 0 && d2 > 0 && d3 > 0 || d1 < 0 && d2 < 0 && d3 < 0) {
-            return intersections;
+        List<Point> triangleIntersections = new ArrayList<Point>();
+        for (Point p : intersections) {
+            Vector v1 = vertices.get(0).subtract(p);
+            Vector v2 = vertices.get(1).subtract(p);
+            Vector v3 = vertices.get(2).subtract(p);
+            double areaABC = plane.getNormal().dotProduct(v1.crossProduct(v2));
+            double alpha = plane.getNormal().dotProduct(v2.crossProduct(v3)) / areaABC;
+            double beta = plane.getNormal().dotProduct(v3.crossProduct(v1)) / areaABC;
+            double gamma = 1 - alpha - beta;
+            if (alpha >= 0 && beta >= 0 && gamma >= 0) {
+                triangleIntersections.add(p);
+            }
         }
-        return null;
+        if (triangleIntersections.isEmpty()) {
+            return null;
+        }
+        return triangleIntersections;
     }
 }
