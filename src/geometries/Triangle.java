@@ -17,9 +17,9 @@ public class Triangle extends Polygon {
      * @return
      */
     @Override
-    public List<Point> findIntsersections(Ray ray) {
+    public List<Point> findIntersections(Ray ray) {
         // Find intersections with the plane containing the triangle
-        List<Point> intersections = plane.findIntsersections(ray);
+        List<Point> intersections = plane.findIntersections(ray);
 
         // If there are no intersections with the plane, return null
         if (intersections == null) {

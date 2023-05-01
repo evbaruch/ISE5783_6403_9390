@@ -20,7 +20,7 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    public List<Point> findIntsersections(Ray ray) {
+    public List<Point> findIntersections(Ray ray) {
         Vector u = center.subtract(ray.getP0());
         double tm = u.dotProduct(ray.getDir());
         double dSquared = u.lengthSquared() - tm * tm;

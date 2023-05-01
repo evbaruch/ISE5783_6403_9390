@@ -89,7 +89,7 @@ class PlaneTest {
         List<Point> expected = new ArrayList<>();
         expected.add(new Point(0, 0, 1));
 
-        List<Point> result = plane.findIntsersections(ray);
+        List<Point> result = plane.findIntersections(ray);
 
         assertEquals(expected, result, "Failed to find intersection point");
 
@@ -100,7 +100,7 @@ class PlaneTest {
 
         expected.clear();
 
-        result = plane.findIntsersections(ray);
+        result = plane.findIntersections(ray);
 
         assertTrue(result == null, "Ray is parallel to the plane but the method returned an intersection point");
 
@@ -115,7 +115,7 @@ class PlaneTest {
         ray = new Ray(P, v);
 
         expected.clear();
-        result = plane.findIntsersections(ray);
+        result = plane.findIntersections(ray);
 
         assertNull(result, "Failed to find intersection point");
 
@@ -131,7 +131,7 @@ class PlaneTest {
         expected.clear();
         expected.add(new Point(1, 1, 1));
 
-        result = plane.findIntsersections(ray);
+        result = plane.findIntersections(ray);
 
         assertTrue(result == null, "Ray is perpendicular to the plane but the method returned an intersection point");
 
@@ -142,7 +142,7 @@ class PlaneTest {
         ray = new Ray(P, v);
 
         expected.clear();
-        result = plane.findIntsersections(ray);
+        result = plane.findIntersections(ray);
 
         assertTrue(result == null, "Ray starts after the plane but the method returned an intersection point");
     }

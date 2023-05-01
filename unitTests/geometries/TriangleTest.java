@@ -72,7 +72,7 @@ class TriangleTest {
         List<Point> expected = new ArrayList<>();
         expected.add(new Point(0, 1, 0));
 
-        List<Point> result = triangle.findIntsersections(ray);
+        List<Point> result = triangle.findIntersections(ray);
 
         assertEquals(expected, result, "Failed to find intersection point");
 
@@ -83,7 +83,7 @@ class TriangleTest {
 
         expected.clear();
 
-        result = triangle.findIntsersections(ray);
+        result = triangle.findIntersections(ray);
 
         assertNull(result, "Ray does not intersect the triangle but the method returned an intersection point");
 
@@ -94,7 +94,7 @@ class TriangleTest {
 
         expected.clear();
 
-        result = triangle.findIntsersections(ray);
+        result = triangle.findIntersections(ray);
 
         assertNull(result, "Ray is parallel to the triangle but the method returned an intersection point");
 
@@ -106,7 +106,7 @@ class TriangleTest {
 
         expected.clear();
 
-        result = triangle.findIntsersections(ray);
+        result = triangle.findIntersections(ray);
 
         assertNull(result, "Failed to find intersection point");
 
@@ -117,7 +117,7 @@ class TriangleTest {
 
         expected.clear();
 
-        result = triangle.findIntsersections(ray);
+        result = triangle.findIntersections(ray);
 
         assertNull(result, "Ray is perpendicular to the triangle but the method returned an intersection point");
 
@@ -128,7 +128,7 @@ class TriangleTest {
 
         expected.clear();
 
-        result = triangle.findIntsersections(ray);
+        result = triangle.findIntersections(ray);
 
         assertNull(result, "Ray starts within the triangle and points away from it but the method returned an intersection point");
     }
