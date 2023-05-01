@@ -110,16 +110,14 @@ class PlaneTest {
         n = new Vector(1, 0, 0);
         plane = new Plane(A, n);
 
-        P = new Point(2, 1, 1);
-        v = new Vector(-1, 0, 0);
+        P = new Point(1, 2, 1);
+        v = new Vector(0, 0, 1);
         ray = new Ray(P, v);
 
         expected.clear();
-        expected.add(new Point(1, 1, 1));
-
         result = plane.findIntsersections(ray);
 
-        assertEquals(expected, result, "Failed to find intersection point");
+        assertNull(result, "Failed to find intersection point");
 
         // TC04: Ray is perpendicular to the plane and intersecting it
         A = new Point(0, 0, 1);
@@ -137,13 +135,8 @@ class PlaneTest {
 
         assertTrue(result == null, "Ray is perpendicular to the plane but the method returned an intersection point");
 
-        //assertEquals(expected, result, "Failed to find intersection point");
 
         // TC05: Ray starts after the plane and does not intersect
-        A = new Point(0, 0, 1);
-        n = new Vector(0, 0, 1);
-        plane = new Plane(A, n);
-
         P = new Point(0, 0, 2);
         v = new Vector(0, 0, 1);
         ray = new Ray(P, v);

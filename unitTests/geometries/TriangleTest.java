@@ -59,25 +59,25 @@ class TriangleTest {
     @Test
     void findIntsersections() {
         // ============ Equivalence Partitions Tests ==============
-        // TC01: Ray intersects the triangle
+        // TC01:  Testing for ray-triangle intersection where the ray intersects the triangle.
         Point p1 = new Point(-2, 0, 0);
         Point p2 = new Point(0, 2, 0);
         Point p3 = new Point(2, 0, 0);
         Triangle triangle = new Triangle(p1, p2, p3);
 
         Point p = new Point(0, 0, 1);
-        Vector v = new Vector(0, 0, -1);
+        Vector v = new Vector(0, 1, -1);
         Ray ray = new Ray(p, v);
 
         List<Point> expected = new ArrayList<>();
-        expected.add(new Point(0, 0, 0.5));
+        expected.add(new Point(0, 1, 0));
 
         List<Point> result = triangle.findIntsersections(ray);
 
         assertEquals(expected, result, "Failed to find intersection point");
 
-        // TC02: Ray does not intersect the triangle
-        p = new Point(1, 1, 1);
+        // TC02: Testing for ray-triangle intersection where the intersection point is not within the triangle, but on one of its sides.
+        p = new Point(1, 2, 1);
         v = new Vector(0, 0, -1);
         ray = new Ray(p, v);
 
@@ -87,9 +87,9 @@ class TriangleTest {
 
         assertNull(result, "Ray does not intersect the triangle but the method returned an intersection point");
 
-        // TC03: Ray is parallel to the triangle
-        p = new Point(0, 1, 1);
-        v = new Vector(0, 0, 1);
+        // TC03:  Testing for ray-triangle intersection where the intersection point is between the lines of the triangle's sides but outside of it.
+        p = new Point(4, -1, 1);
+        v = new Vector(0, 0, -1);
         ray = new Ray(p, v);
 
         expected.clear();
@@ -99,22 +99,20 @@ class TriangleTest {
         assertNull(result, "Ray is parallel to the triangle but the method returned an intersection point");
 
         // ============ Boundary Value Tests ==============
-        // TC04: Ray is perpendicular to the triangle and intersects it
-        p = new Point(0, 1, 0);
-        v = new Vector(1, 0, 0);
+        // TC04: Testing for ray-triangle intersection where the intersection point is on the junction of two sides of the triangle.
+        p = new Point(2, 0, 1);
+        v = new Vector(0, 0, -1);
         ray = new Ray(p, v);
 
         expected.clear();
-        expected.add(new Point(1, 1, 0));
 
         result = triangle.findIntsersections(ray);
 
-        assertEquals(expected, result, "Failed to find intersection point");
-        assertFalse(result.contains(p), "The beginning of the ray must not be included in intersection points");
+        assertNull(result, "Failed to find intersection point");
 
-        // TC05: Ray is perpendicular to the triangle and does not intersect it
-        p = new Point(0, 1, 1);
-        v = new Vector(0, 0, 1);
+        // TC05: Testing for ray-triangle intersection where the intersection point is on one of the sides of the triangle.
+        p = new Point(1, 0, 1);
+        v = new Vector(0, 0, -1);
         ray = new Ray(p, v);
 
         expected.clear();
@@ -123,8 +121,8 @@ class TriangleTest {
 
         assertNull(result, "Ray is perpendicular to the triangle but the method returned an intersection point");
 
-        // TC06: Ray starts within the triangle and points away from it
-        p = new Point(0, 0.5, 0);
+        // TC06: Testing for ray-triangle intersection where the intersection point is on the extension of one of the triangle's sides, outside of it.
+        p = new Point(3, -1, 1);
         v = new Vector(0, 0, -1);
         ray = new Ray(p, v);
 
@@ -134,13 +132,5 @@ class TriangleTest {
 
         assertNull(result, "Ray starts within the triangle and points away from it but the method returned an intersection point");
     }
-
-
-
-
-
-
-
-
 
 }
