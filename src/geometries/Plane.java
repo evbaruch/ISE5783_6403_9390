@@ -43,21 +43,25 @@ public class Plane implements Geometry{
     public List<Point> findIntsersections(Ray ray) {
         List<Point> result = null;
 
+        // Get the triangle's normal,
         Vector n = getNormal();
+        // ray's direction vector,
         Vector v = ray.getDir();
+        // and ray's starting point.
         Point p0 = ray.getP0();
-
+        // Check if the ray is not parallel to the plane.
         double nv = n.dotProduct(v);
-//        if (isZero(nv)){
-            double t =n.dotProduct(q0.subtract(p0)) / nv;
-
+        if (!isZero(nv)){
+            // Calculate the intersection point between the ray and the plane.
+            double t = alignZero( n.dotProduct(q0.subtract(p0)) / nv);
+            // Check if the intersection point is in front of the starting point of the ray.
             if (t > 0 && Double.isFinite(t)) {
-                // Create a new Point object with the calculated coordinates and return it.
+                // Calculate the intersection point coordinates and return it.
                  Point intersect = p0.add(v.scale(t));
                 result = List.of(intersect);
             }
-        //}
-
+        }
+        // Return the intersection point or null if no intersection exists.
         return result;
     }
 }
