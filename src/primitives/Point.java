@@ -107,4 +107,8 @@ public class Point {
     public double distance(Point p){
         return Math.sqrt(distanceSquared(p));
     }
+
+    public Point getX() {
+        return new Point(this.xyz);
+    }
 }
