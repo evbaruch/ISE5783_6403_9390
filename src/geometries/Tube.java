@@ -24,7 +24,7 @@ public class Tube extends RadialGeometry {
         double d = v.dotProduct(axisRay.getDir());
         //We will build a point according to the direction of the vector
         // and add to it the projection from previous
-        Point o = axisRay.getP0().add(axisRay.getDir().scale(d));
+        Point o = axisRay.getPoint(d);
         //We will return the vector from point O from place to point I gave normalized
 
         Vector u = p.subtract(o);

@@ -49,31 +49,6 @@ class PlaneTest {
         assertEquals(new Vector(0,0,-1), result, "Plane's normal is incorrect");
     }
 
-//    @Test
-//    void findIntsersections() {
-//
-//        Point A = new Point(1,1,1);
-//        Vector n = new Vector(1,2,3);
-//        Plane plane = new Plane(A,n);
-//
-//        Point P = new Point(3,2,1);
-//        Vector v = new Vector(-3,-2,-1);
-//        Ray ray = new Ray(P,v);
-//
-//        List<Point> result = new ArrayList<>();
-//
-//        result.add(new Point(1.8,1.2,0.6));
-//        assertEquals(result, plane.findIntsersections(ray) ,"intersection does not operate properly" );
-//
-//
-//        P = new Point(1.8,1.2,0.6);
-//        v = new Vector(2,-4,2);
-//        ray = new Ray(P,v);
-//        result.clear();
-//        result.add(new Point(1.8,1.2,0.6));
-//        result.add(new Point(1.8,1.2,0.6));
-//        assertEquals(result, plane.findIntsersections(ray) ,"intersection does not operate properly" );
-//    }
     @Test
     void findIntsersections() {
         // ============ Equivalence Partitions Tests ==============

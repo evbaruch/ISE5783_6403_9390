@@ -56,9 +56,8 @@ public class Plane implements Geometry{
             double t = alignZero( n.dotProduct(q0.subtract(p0)) / nv);
             // Check if the intersection point is in front of the starting point of the ray.
             if (t > 0 && Double.isFinite(t)) {
-                // Calculate the intersection point coordinates and return it.
-                 Point intersect = p0.add(v.scale(t));
-                result = List.of(intersect);
+                // Calculate the intersection point coordinates and return it
+                result = List.of(ray.getPoint(t));
             }
         }
         // Return the intersection point or null if no intersection exists.
