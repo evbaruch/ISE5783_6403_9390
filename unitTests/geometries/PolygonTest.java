@@ -1,16 +1,16 @@
 package geometries;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static primitives.Util.isZero;
 
 import org.junit.jupiter.api.Test;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /** Testing Polygons
  * @author Dan */
@@ -113,5 +113,77 @@ public class PolygonTest {
 
    @Test
    void findIntsersections() {
+
+      Point[] pts =
+              { new Point(0, 0, 3),new Point(-3, 3, 3) , new Point(0, 3, 0),new Point(3, 0, 0)  };
+      Polygon pol = new Polygon(pts);
+
+      Point p = new Point(-1, 0, 0);
+      Vector v = new Vector(1, 1, 2);
+      Ray ray = new Ray(p, v);
+
+      List<Point> expected = new ArrayList<>();
+      expected.add(new Point(0, 1, 2));
+
+      List<Point> result = pol.findIntersections(ray);
+
+      assertEquals(expected, result, "Failed to find intersection point");
+
+      p = new Point(-1, 0, 0);
+      v = new Vector(1, 1, 8);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
+      p = new Point(-1, -1, 0);
+      v = new Vector(1, 1, 8);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
+      p = new Point(-1, 0, 0);
+      v = new Vector(2, -1, 0);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
+      p = new Point(-1, 0, 0);
+      v = new Vector(3, 3, 0);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
+      p = new Point(-1, 0, 0);
+      //v = new Vector(1, 1, 3);
+      v = new Vector(1, 4, 0);
+      ray = new Ray(p, v);
+
+      expected = new ArrayList<>();
+      expected.clear();
+
+      result = pol.findIntersections(ray);
+
+      assertNull(result, "Failed to find intersection point");
+
    }
 }
