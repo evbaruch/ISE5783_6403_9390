@@ -16,9 +16,6 @@ class RayIntegrationTest {
     private static final int NX = 3;
     private static final int NY = 3;
 
-    Camera camera = new Camera(new Point(1,1,1),new Vector(1,0,0),new Vector(0,0,1))
-                    .setVPSize(3,3)
-                    .setVPDistance(10);
 
     /**
      Returns the number of intersection points between rays cast from a camera and a geometry object.
@@ -46,44 +43,129 @@ class RayIntegrationTest {
         // Return the total number of intersection points found.
         return intersects.size();
     }
+
     @Test
     void testSphere() {
-        Sphere sphere = new Sphere(new Point(20,1,1),2);
 
+        Camera camera = new Camera(new Point(0,0,0),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
+
+        Sphere sphere = new Sphere(new Point(0,0,-3),1);
+
+        // ray intersect the sphere in 5 points
+        assertEquals(2, rays(camera,sphere),"Failed to find all intersection point with the sphere");
+
+        camera = new Camera(new Point(0,0,0.5),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
+        sphere = new Sphere(new Point(0,0,-2.5),2.5);
+
+        // camara ray start in the sphere and intersect
+        assertEquals(18, rays(camera,sphere),"Failed to find all intersection point with the sphere");
+
+        camera = new Camera(new Point(0,0,0.5),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
+        sphere = new Sphere(new Point(0,0,-2),2);
+
+        // ray start after the sphere - does not intersect
         assertEquals(10, rays(camera,sphere),"Failed to find all intersection point with the sphere");
 
-        sphere = new Sphere(new Point(1,1,1),2);
+        camera = new Camera(new Point(0,0,0),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
+        sphere = new Sphere(new Point(0,0,-2),4);
 
+        // ray start after the sphere - does not intersect
         assertEquals(9, rays(camera,sphere),"Failed to find all intersection point with the sphere");
 
-        sphere = new Sphere(new Point(-1,1,1),2);
+        camera = new Camera(new Point(0,0,0),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
+        sphere = new Sphere(new Point(0,0,1),0.5);
 
+        // ray start after the sphere - does not intersect
         assertEquals(0, rays(camera,sphere),"Failed to find all intersection point with the sphere");
 
 
     }
 
+    /**
+     * Tests the `rays` method with different input values of a `Triangle` object.
+     *
+     * - TC01: Ray intersects the triangle.
+     * - TC02: Ray does not intersect the triangle.
+     *
+     * @see Geometries#findIntersections(Ray)
+     */
     @Test
     void testTriangle() {
-        Triangle triangle = new Triangle(new Point(20,5,5),new Point(20,0,0),new Point(20,5,0));
 
-        assertEquals(1, rays(camera,triangle),"Failed to find all intersection point with the triangle");
+        // TC01: Ray intersects the triangle
+        Camera camera = new Camera(new Point(0,0,0),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
 
-        triangle = new Triangle(new Point(-1,5,5),new Point(-1,0,0),new Point(-1,5,0));
+        Triangle triangle = new Triangle(new Point(0,-1,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
+        int expected = 1;
 
-        assertEquals(0, rays(camera,triangle),"Failed to find all intersection point with the triangle");
+        assertEquals(expected, rays(camera,triangle),"Failed to find all intersection point with the triangle");
+
+        // TC02: Ray does not intersect the triangle
+        triangle = new Triangle(new Point(0,20,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
+        expected = 2;
+        assertEquals(expected, rays(camera,triangle),"Failed to find all intersection point with the triangle");
 
 
     }
 
+    /**
+     * Tests the intersection between a camera ray and a plane.
+     * The method checks different cases of intersection, including when the ray intersects the plane,
+     * when the ray is parallel to the plane, and when the ray does not intersect the plane.
+     */
     @Test
     void testPlane() {
-        Plane plane = new Plane(new Point(20,0,0), new Vector(1,0,0));
 
-        assertEquals(9, rays(camera,plane),"Failed to find all intersection point with the plane");
 
-        plane = new Plane(new Point(-1,0,0), new Vector(1,0,0));
+        // TC01:
+        Camera camera = new Camera(new Point(0,0,0),new Vector(0,0,-1),new Vector(0,-1,0))
+                       .setVPSize(3,3)
+                        .setVPDistance(1);
+        Point A = new Point(0, 0, -1);
+        Vector n = new Vector(0, 0, 2);
+        Plane plane = new Plane(A, n);
 
-        assertEquals(0, rays(camera,plane),"Failed to find all intersection point with the plane");
+        int expected = 9;
+
+        assertEquals(expected, rays(camera,plane),"Failed to find all intersection point with the plane");
+
+        // TC02:
+        camera = new Camera(new Point(0,0,0),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
+
+
+        A = new Point(0, 0, -1);
+        n = new Vector(0, 2, 4);
+        plane = new Plane(A, n);
+        expected = 9;
+
+        assertEquals(expected, rays(camera,plane),"Failed to find all intersection point with the plane");
+
+        // TC03:
+        camera = new Camera(new Point(0,0,0),new Vector(0,0,-1),new Vector(0,-1,0))
+                .setVPSize(3,3)
+                .setVPDistance(1);
+
+        A = new Point(0, 0, -1);
+        n = new Vector(0, 2, 2);
+        plane = new Plane(A, n);
+        expected = 6;
+
+        assertEquals(expected, rays(camera,plane),"Failed to find all intersection point with the plane");
+
+
     }
 }

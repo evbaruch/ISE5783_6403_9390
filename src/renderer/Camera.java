@@ -19,7 +19,7 @@ public class Camera {
         this.Vto = vto.normalize();
         this.Vup = vup.normalize();
 
-        this.Vright = this.Vto.crossProduct(this.Vup).normalize(); // need to check if the order of the crossProduct is right
+        this.Vright = this.Vup.crossProduct(this.Vto).normalize(); // need to check if the order of the crossProduct is right
 
         this.location = initialPoint;
 
