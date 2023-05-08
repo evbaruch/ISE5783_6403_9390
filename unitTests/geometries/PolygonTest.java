@@ -115,7 +115,7 @@ public class PolygonTest {
    void findIntsersections() {
 
       Point[] pts =
-              { new Point(0, 0, 3),new Point(-3, 3, 3) , new Point(0, 3, 0),new Point(3, 0, 0)  };
+              {  new Point(0, 0, 3),new Point(-3, 3, 3) , new Point(0, 3, 0),new Point(3, 0, 0)  };
       Polygon pol = new Polygon(pts);
 
       Point p = new Point(-1, 0, 0);
