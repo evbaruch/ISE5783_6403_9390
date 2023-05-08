@@ -174,8 +174,7 @@ public class PolygonTest {
       assertNull(result, "Failed to find intersection point");
 
       p = new Point(-1, 0, 0);
-      //v = new Vector(1, 1, 3);
-      v = new Vector(1, 4, 0);
+      v = new Vector(1, 0, 3);
       ray = new Ray(p, v);
 
       expected = new ArrayList<>();
