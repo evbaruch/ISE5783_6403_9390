@@ -107,8 +107,8 @@ class RayIntegrationTest {
                 .setVPSize(3,3)
                 .setVPDistance(1);
 
-        Triangle triangle = new Triangle(new Point(0,-1,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
-        int expected = 1;
+        Triangle triangle = new Triangle(new Point(0,-1,-2),new Point(1,-1,-3),new Point(-1,-1,-2));
+        int expected = 0;
 
         assertEquals(expected, rays(camera,triangle),"Failed to find all intersection point with the triangle");
 
