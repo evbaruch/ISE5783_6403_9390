@@ -3,6 +3,8 @@ package renderer;
 import org.junit.jupiter.api.Test;
 
 class RayIntegrationTest {
+
+
     @Test
     void testSphere() {
 

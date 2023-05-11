@@ -71,6 +71,8 @@ public class Camera {
         }
 
 
+
+
         //Calculation of the vector from the point to the screen according to i j
         Vector Vij =  Pij.subtract(location);
 
