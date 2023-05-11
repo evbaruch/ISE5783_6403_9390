@@ -8,6 +8,8 @@ import static primitives.Util.isZero;
 public class Point {
     Double3  xyz;
 
+    public final static Point ZERO = new Point(0,0,0);
+
     /**
      * Constructs a new Point object with the specified coordinates.
      *

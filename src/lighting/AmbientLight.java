@@ -6,9 +6,9 @@ public class AmbientLight {
 
     Color intensity;
 
-    public static AmbientLight NONE  = new AmbientLight(Color.BLACK,Double3.ZERO);
+    public static final AmbientLight NONE  = new AmbientLight(Color.BLACK,Double3.ZERO);
 
-    AmbientLight(Color color, Double3 double3 ){
+    public AmbientLight(Color color, Double3 double3){
         this.intensity = color.reduce(double3);
     }
 
