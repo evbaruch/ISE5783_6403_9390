@@ -15,6 +15,10 @@ import scene.Scene;
 public abstract class RayTracerBase {
     protected Scene scene;
 
+    public RayTracerBase(Scene scene) {
+        this.scene = scene;
+    }
+
     /**
      * Abstract method for tracing a ray and returning the resulting color.
      *

@@ -22,7 +22,7 @@ public class RayTracerBasic extends RayTracerBase {
      @param scene The scene to be rendered.
      */
     public RayTracerBasic(Scene scene) {
-        super();
+        super(scene);
     }
 
     /**
