@@ -2,10 +2,23 @@ package renderer;
 
 import org.junit.jupiter.api.Test;
 
-public class ImageWriterTest {
-    @Test
-    void aaa() {
+import static org.junit.jupiter.api.Assertions.*;
 
+class ImageWriterTest {
+
+    @Test
+    void getNy() {
     }
 
+    @Test
+    void getNx() {
+    }
+
+    @Test
+    void writeToImage() {
+    }
+
+    @Test
+    void writePixel() {
+    }
 }
