@@ -3,11 +3,12 @@ package geometries;
 import primitives.Point;
 import primitives.Ray;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Geometries implements Intersectable {
+public class Geometries extends Intersectable {
     List<Intersectable> intersectables;
 
     public Geometries() {
@@ -24,11 +25,11 @@ public class Geometries implements Intersectable {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
 
-        List<Point> result = null;
+        List<GeoPoint> result = null;
         for (Intersectable shape : intersectables) {
-            List<Point> shapePoints = shape.findIntersections(ray);
+            List<GeoPoint> shapePoints = shape.findGeoIntersections(ray);
             if (shapePoints != null) {
                 if (result == null) {
                     result = new LinkedList<>();
@@ -38,4 +39,14 @@ public class Geometries implements Intersectable {
         }
         return result;
     }
+
+    /**
+     * @param ray
+     * @return
+     */
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersectionsHelper(ray);
+    }
+
 }

@@ -20,12 +20,12 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        List<Point> result;
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        List<GeoPoint> result;
         //A special case that Ray starts in the center
         if(ray.getP0().equals(center)) {
-            result = List.of(
-                    ray.getPoint(radius)
+            result = List.of(new GeoPoint(this,
+                    ray.getPoint(radius))
             );
             return result;
         }
@@ -51,17 +51,25 @@ public class Sphere extends RadialGeometry {
 
         if (t1 <= 0) {
             // One intersection point is behind the ray, the other is in front
-            result = List.of(ray.getPoint(t2));
+            result = List.of(new GeoPoint(this,ray.getPoint(t2)));
         } else {
             // Both intersection points are in front of the ray
-            result = List.of(
-                    ray.getPoint(t1),
-                    ray.getPoint(t2)
-            );
+            result = List.of(new GeoPoint(this ,ray.getPoint(t1)),new GeoPoint(this ,ray.getPoint(t2)));
         }
 
         return result;
     }
+
+    /**
+     * @param ray
+     * @return
+     */
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersectionsHelper(ray);
+    }
+
+
 
 
 }

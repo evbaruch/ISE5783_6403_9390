@@ -167,17 +167,28 @@ public class Camera {
      */
     public void renderImage() throws MissingResourceException, UnsupportedOperationException {
         if (Vto == null || Vup == null || Vright == null || imageWriter == null || location == null || rayTracer == null) {
-            throw new MissingResourceException("One or more necessary fields are null.","Camara","");
-
+            throw new MissingResourceException("One or more necessary fields are null.", "Camera", "");
         }
+        try {
 
-        for (int i = 0; i<imageWriter.getNx() ; i++){
-            for (int j =0;j<imageWriter.getNy() ;j++){
-                Ray ray = constructRay(imageWriter.getNx(),imageWriter.getNy(),i,j);
-                imageWriter.writePixel(i,j,castRay(ray));
+            int nx = imageWriter.getNx();
+            int ny = imageWriter.getNy();
+            if (nx <= 0 || ny <= 0) {
+                throw new IllegalArgumentException("Invalid image dimensions");
             }
+
+            for (int i = 0; i < nx; i++) {
+                for (int j = 0; j < ny; j++) {
+                    Ray ray = constructRay(nx, ny, i, j);
+                    imageWriter.writePixel(i, j, castRay(ray));
+                }
+            }
+
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Failed to render image", e);
         }
     }
+
 
     /**
 

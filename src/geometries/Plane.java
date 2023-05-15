@@ -10,7 +10,7 @@ import java.util.List;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
-public class Plane implements Geometry{
+public class Plane extends Geometry{
 
     private final Point q0;
 
@@ -39,8 +39,17 @@ public class Plane implements Geometry{
     }
 
 
+    /**
+     * @param ray
+     * @return
+     */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersectionsHelper(ray);
+    }
+
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         List<Point> result = null;
 
         // Get the triangle's normal,
@@ -60,7 +69,12 @@ public class Plane implements Geometry{
                 result = List.of(ray.getPoint(t));
             }
         }
+
+        if(result == null) {
+            return null;
+        }
         // Return the intersection point or null if no intersection exists.
-        return result;
+        return List.of(new GeoPoint(this,result.get(0))) ;
     }
+
 }

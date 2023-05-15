@@ -36,4 +36,22 @@ public class Tube extends RadialGeometry {
     public List<Point> findIntersections(Ray ray) {
         return null;
     }
+
+    /**
+     * @param ray
+     * @return
+     */
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        return null;
+    }
+
+    /**
+     * @param ray
+     * @return
+     */
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        return null;
+    }
 }

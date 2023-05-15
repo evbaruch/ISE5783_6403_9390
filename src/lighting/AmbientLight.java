@@ -13,12 +13,12 @@ public class AmbientLight {
         this.intensity = color.scale(double3);
     }
 
-    AmbientLight(Color color, double d ){
+    public AmbientLight(Color color, double d ){
 
         this.intensity = color.scale(d);
     }
 
-    Color getIntensity(){
+    public Color getIntensity(){
         return this.intensity;
     }
 }

@@ -17,7 +17,7 @@ public class Triangle extends Polygon {
      * @return
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // Find intersections with the plane containing the triangle
         List<Point> intersections = plane.findIntersections(ray);
 
@@ -49,6 +49,17 @@ public class Triangle extends Polygon {
             return null;
         }
 
-        return triangleIntersections;
+        return List.of(new GeoPoint(this,triangleIntersections.get(0))) ;
     }
+
+
+    /**
+     * @param ray
+     * @return
+     */
+    @Override
+    public List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersectionsHelper(ray);
+    }
+
 }
