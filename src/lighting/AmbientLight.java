@@ -3,7 +3,7 @@ import primitives.Color;
 import primitives.Double3;
 
 public class AmbientLight {
-
+    //A New Beginning
     Color intensity;
 
     public static final AmbientLight NONE  = new AmbientLight(Color.BLACK,Double3.ZERO);
