@@ -4,10 +4,14 @@ import geometries.Geometries;
 import lighting.AmbientLight;
 import primitives.Color;
 
+import java.util.List;
+
 public class Scene {
     public String name;
     public Color background = Color.BLACK;
     public AmbientLight ambientLight = AmbientLight.NONE;
+
+    LightSource<List> lights;
 
     public Geometries geometries = new Geometries();
 

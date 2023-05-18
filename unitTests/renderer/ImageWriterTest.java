@@ -17,9 +17,9 @@ class ImageWriterTest {
 
     @Test
     void writeToImage() {
-        ImageWriter imageWriter = new ImageWriter("first",500,400);
-        int linsx = 20;
-        int linsy = 20;
+        ImageWriter imageWriter = new ImageWriter("first",800,500);
+        int linsx = imageWriter.getNx()/16;
+        int linsy = imageWriter.getNy()/10;
         for (int i = 0; i<imageWriter.getNx() ; i++){
             for (int j =0;j<imageWriter.getNy() ;j++){
             if(i % linsx   == 0 || j %linsy == 0){
