@@ -2,13 +2,14 @@ package renderer;
 
 import static java.awt.Color.*;
 
+import parser.Json;
+import parser.Xml;
 import org.junit.jupiter.api.Test;
 
 import geometries.Sphere;
 import geometries.Triangle;
 import lighting.AmbientLight;
 import primitives.*;
-import renderer.*;
 import scene.Scene;
 
 /** Test rendering a basic image
@@ -49,7 +50,7 @@ public class RenderTests {
    @Test
    public void basicRenderMultiColorTest() {
       Scene scene = new Scene("Test scene")//
-         .setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.2))); //
+              .setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.2))); //
 
       scene.geometries.add( // center
                            new Sphere(new Point(0, 0, -100), 50),
@@ -78,17 +79,89 @@ public class RenderTests {
    @Test
    public void basicRenderXml() {
       Scene  scene  = new Scene("XML Test scene");
+      ImageWriter imageWriter;
       // enter XML file name and parse from XML file into scene object
       // using the code you added in appropriate packages
       // ...
       // NB: unit tests is not the correct place to put XML parsing code
+      String xmlFileName = "files/basicRenderTestTwoColors.xml";
+      try {
+         scene = Xml.parseSceneFromXml(xmlFileName,scene);
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      String xmlImageWriterDefinition = "files/ImageWriterdefinitionA.xml";
+      try {
+       imageWriter = Xml.parseImageWriterFromXml(xmlImageWriterDefinition);
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
 
       Camera camera = new Camera(Point.ZERO, new Vector(0, 0, -1), new Vector(0, 1, 0))     //
-         .setVPDistance(100)                                                                //
-         .setVPSize(500, 500).setImageWriter(new ImageWriter("xml render test", 1000, 1000))
-         .setRayTracer(new RayTracerBasic(scene));
+              .setVPDistance(100)                                                                //
+              .setVPSize(500, 500).setImageWriter(imageWriter)
+              .setRayTracer(new RayTracerBasic(scene));
       camera.renderImage();
       camera.printGrid(100, new Color(YELLOW));
       camera.writeToImage();
+
+
+
+      xmlFileName = "files/basicRenderMultiColors.xml";
+      try {
+         scene = Xml.parseSceneFromXml(xmlFileName,scene);
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      xmlImageWriterDefinition = "files/ImageWriterdefinitionColor.xml";
+      try {
+         imageWriter = Xml.parseImageWriterFromXml(xmlImageWriterDefinition);
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      camera = new Camera(Point.ZERO, new Vector(0, 0, -1), new Vector(0, 1, 0))     //
+              .setVPDistance(100)                                                                //
+              .setVPSize(500, 500).setImageWriter(imageWriter)
+              .setRayTracer(new RayTracerBasic(scene));
+      camera.renderImage();
+      camera.printGrid(100, new Color(YELLOW));
+      camera.writeToImage();
+
+
+      String jsonFileName = "files/basicRenderMultiColors.json";
+      try {
+         scene = Json.parseSceneFromJson(jsonFileName,scene);
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      camera = new Camera(Point.ZERO, new Vector(0, 0, -1), new Vector(0, 1, 0))     //
+              .setVPDistance(100)                                                                //
+              .setVPSize(500, 500).setImageWriter(new ImageWriter("json color render test", 1000, 1000))
+              .setRayTracer(new RayTracerBasic(scene));
+      camera.renderImage();
+      camera.printGrid(100, new Color(YELLOW));
+      camera.writeToImage();
+
+
+      jsonFileName = "files/basicRenderTestTwoColors.json";
+      try {
+         scene = Json.parseSceneFromJson(jsonFileName,scene);
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      camera = new Camera(Point.ZERO, new Vector(0, 0, -1), new Vector(0, 1, 0))     //
+              .setVPDistance(100)                                                                //
+              .setVPSize(500, 500).setImageWriter(new ImageWriter("json render test", 1000, 1000))
+              .setRayTracer(new RayTracerBasic(scene));
+      camera.renderImage();
+      camera.printGrid(100, new Color(YELLOW));
+      camera.writeToImage();
+
    }
 }
