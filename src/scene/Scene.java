@@ -5,6 +5,7 @@ import lighting.AmbientLight;
 import lighting.LightSource;
 import primitives.Color;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,9 +43,7 @@ public class Scene {
     }
 
     public Scene setLights(LightSource... lights) {
-        for(LightSource light: lights){
-            this.lights.add(light);
-        }
+        Collections.addAll(this.lights,lights);
         return this;
     }
 }
