@@ -67,7 +67,7 @@ public class PointLight extends Light implements LightSource{
      * @return This PointLight object.
      */
     public PointLight setKc(double kc) {
-        this.Kc = kc;
+        this.Kc = kc;//
         return this;
     }
 
