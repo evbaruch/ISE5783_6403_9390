@@ -11,6 +11,7 @@ import primitives.Vector;
 public class PointLight extends Light implements LightSource{
 
     private Point position;
+
     private double Kc = 1, Kl = 0, Kq = 0;
 
     /**
@@ -55,7 +56,7 @@ public class PointLight extends Light implements LightSource{
      */
     @Override
     public Vector getL(Point p) {
-        return position.subtract(p).normalize(); // Calculate the direction vector from the point to the light source
+        return p.subtract(position).normalize(); // Calculate the direction vector from the point to the light source
     }
 
 

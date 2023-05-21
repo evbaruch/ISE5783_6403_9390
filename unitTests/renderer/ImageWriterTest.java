@@ -22,7 +22,7 @@ class ImageWriterTest {
         int linsy = imageWriter.getNy()/10;
         for (int i = 0; i<imageWriter.getNx() ; i++){
             for (int j =0;j<imageWriter.getNy() ;j++){
-            if(i % linsx   == 0 || j %linsy == 0){
+            if(i % linsx == 0 || j %linsy == 0){
                 imageWriter.writePixel(i,j, Color.BLACK);
                 }
             else {

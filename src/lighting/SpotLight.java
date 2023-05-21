@@ -14,6 +14,8 @@ public class SpotLight extends PointLight{
 
     private Vector direction;
 
+    private double BeamWidth;
+
     /**
      * Constructs a SpotLight object with the specified intensity, position, and direction.
      *
@@ -24,7 +26,9 @@ public class SpotLight extends PointLight{
     public SpotLight(Color intensity, Point position, Vector direction) {
         super(intensity, position);
         this.direction = direction;
+        this.BeamWidth = 1;
     }
+
 
     /**
      * Sets the narrowness of the spotlight beam.
@@ -34,19 +38,13 @@ public class SpotLight extends PointLight{
      */
     public SpotLight setNarrowBeam(int n) {
         // Calculate the angle of the spotlight beam based on the provided level of narrowness
-        double beamWidth = Math.toRadians(n);
-
-        // Calculate the direction vector of the spotlight beam
-        Vector beamDirection = direction.normalize();
-
-        // Update the direction vector by narrowing the beam
-        beamDirection = beamDirection.scale(1 / Math.tan(beamWidth / 2));
-
-        // Set the updated direction vector
-        this.direction = beamDirection;
-
+        this.BeamWidth = n;
         return this;
     }
 
+    @Override
+    public Color getIntensity(Point p) {
+        return super.getIntensity(p).scale(Math.pow(Math.max(0,this.direction.normalize().dotProduct(super.getL(p))),this.BeamWidth));
+    }
 
 }
