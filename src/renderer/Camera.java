@@ -165,7 +165,7 @@ public class Camera {
      * @throws MissingResourceException if any of the necessary fields are null.
      * @throws UnsupportedOperationException if the implementation is not supported.
      */
-    public void renderImage() throws MissingResourceException, UnsupportedOperationException {
+    public Camera renderImage() throws MissingResourceException, UnsupportedOperationException {
         if (Vto == null || Vup == null || Vright == null || imageWriter == null || location == null || rayTracer == null || distance <= 0.0|| height <= 0.0|| width <= 0.0) {
             throw new MissingResourceException("One or more necessary fields are null.", "Camera", "");
         }
@@ -187,6 +187,7 @@ public class Camera {
         } catch (Exception e) {
             throw new UnsupportedOperationException("Failed to render image", e);
         }
+        return this;
     }
 
 
