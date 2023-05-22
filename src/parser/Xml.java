@@ -4,17 +4,17 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import geometries.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import geometries.Geometries;
-import geometries.Sphere;
-import geometries.Triangle;
 import primitives.Color;
 import primitives.Double3;
 import primitives.Point;
@@ -26,7 +26,7 @@ import static java.nio.file.Files.exists;
 
 
 public class Xml {
-        public static Scene parseSceneFromXml(String filename,Scene scene) throws Exception {
+        public static Scene parseSceneFromXml(String filename, Scene scene) throws Exception {
                 try {
 
                         Path path = Paths.get(filename);
@@ -49,11 +49,10 @@ public class Xml {
                         // parse background color
                         if (backgroundColor != null && !backgroundColor.isEmpty()) {
 
-                                Point pBackgroundColor =  parsePointFromElement(backgroundColor);
+                                Point pBackgroundColor = parsePointFromElement(backgroundColor);
                                 scene.setBackground(new Color(pBackgroundColor.getX(), pBackgroundColor.getY(), pBackgroundColor.getZ()));
 
                         }
-
 
 
                         // parse ambient light
@@ -61,7 +60,7 @@ public class Xml {
                         String ambientLight = ambientLightElement.getAttribute("color");
 
                         if (ambientLight != null) {
-                               Point pAmbientLight =  parsePointFromElement(ambientLight);
+                                Point pAmbientLight = parsePointFromElement(ambientLight);
 
                                 try {
                                         double emission = Double.parseDouble(ambientLightElement.getAttribute("emission"));
@@ -74,8 +73,7 @@ public class Xml {
                                                                 pAmbientLight.getY(),
                                                                 pAmbientLight.getZ()),
                                                         emission));
-                                }
-                                catch (Exception e) {
+                                } catch (Exception e) {
 
                                         scene.setAmbientLight(
                                                 new AmbientLight(
@@ -87,7 +85,6 @@ public class Xml {
                                 }
 
                         }
-
 
 
                         // parse geometries
@@ -115,28 +112,60 @@ public class Xml {
 
                                                                 geometries.add(new Sphere(centerPoint, radius)
                                                                         .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
-                                                        }
-                                                        catch (Exception e) {
+                                                        } catch (Exception e) {
                                                                 geometries.add(new Sphere(centerPoint, radius));
                                                         }
                                                 }
                                                 case "triangle" -> {
                                                         // parse triangle parameters and add it to geometries
-                                                        Point pointA = parsePointFromElement( shapeElement.getAttribute("p0"));
-                                                        Point pointB = parsePointFromElement( shapeElement.getAttribute("p1"));
-                                                        Point pointC = parsePointFromElement( shapeElement.getAttribute("p2"));
+                                                        Point pointA = parsePointFromElement(shapeElement.getAttribute("p0"));
+                                                        Point pointB = parsePointFromElement(shapeElement.getAttribute("p1"));
+                                                        Point pointC = parsePointFromElement(shapeElement.getAttribute("p2"));
 
-                                                        try{
+                                                        try {
                                                                 Point emission = parsePointFromElement(shapeElement.getAttribute("emission"));
 
                                                                 geometries.add(new Triangle(pointA, pointB, pointC)
-                                                                        .setEmission(new Color(emission.getX(),emission.getY(),emission.getZ())));
-                                                        }
-                                                        catch (Exception e){
+                                                                        .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                                                        } catch (Exception e) {
                                                                 geometries.add(new Triangle(pointA, pointB, pointC));
                                                         }
                                                 }
-                                                // add more shape types here
+                                                case "plane" -> {
+                                                        // Parse plane parameters and add it to geometries
+                                                        Point pointA = parsePointFromElement(shapeElement.getAttribute("p0"));
+                                                        Point pointB = parsePointFromElement(shapeElement.getAttribute("p1"));
+                                                        Point pointC = parsePointFromElement(shapeElement.getAttribute("p2"));
+
+                                                        try {
+                                                                Point emission = parsePointFromElement(shapeElement.getAttribute("emission"));
+                                                                geometries.add(new Plane(pointA, pointB, pointC)
+                                                                        .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                                                        } catch (Exception e) {
+                                                                geometries.add(new Plane(pointA, pointB, pointC));
+                                                        }
+                                                }
+                                                case "polygon" -> {
+                                                        // Parse polygon parameters and add it to geometries
+                                                        NodeList vertices = shapeElement.getElementsByTagName("vertex");
+                                                        List<Point> polygonVertices = new ArrayList<>();
+
+                                                        for (int q = 0; q < vertices.getLength(); q++) {
+                                                                Element vertexElement = (Element) vertices.item(q);
+                                                                Point vertex = parsePointFromElement(vertexElement.getAttribute("p"+q));
+                                                                polygonVertices.add(vertex);
+                                                        }
+
+                                                        Point[] points = polygonVertices.toArray(new Point[0]);
+
+                                                        try {
+                                                                Point emission = parsePointFromElement(shapeElement.getAttribute("emission"));
+                                                                geometries.add(new Polygon(points)
+                                                                        .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                                                        } catch (Exception e) {
+                                                                geometries.add(new Polygon(points));
+                                                        }
+                                                }
                                         }
                                 }
 
@@ -171,16 +200,15 @@ public class Xml {
 
                         int nX = Integer.parseInt(sceneElement.getAttribute("nX"));
                         int nY = Integer.parseInt(sceneElement.getAttribute("nY"));
-                        String imageName =  sceneElement.getAttribute("imageName");
-                        return new ImageWriter(imageName , nX, nY);
-                }
-                catch (Exception e){
+                        String imageName = sceneElement.getAttribute("imageName");
+                        return new ImageWriter(imageName, nX, nY);
+                } catch (Exception e) {
                         return null;
                 }
 
         }
 
-                        private static Point parsePointFromElement(String pointElement) {
+        private static Point parsePointFromElement(String pointElement) {
 
                 String[] colorValues = pointElement.split(" ");
                 int r = Integer.parseInt(colorValues[0]);

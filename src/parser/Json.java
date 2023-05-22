@@ -4,18 +4,15 @@ import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gson.Gson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import geometries.Geometries;
-import geometries.Sphere;
-import geometries.Triangle;
-import primitives.Color;
-import primitives.Double3;
-import primitives.Point;
+import geometries.*;
+import primitives.*;
 import scene.Scene;
 import lighting.AmbientLight;
 
@@ -39,6 +36,10 @@ class JsonAmbientLight {
 class GeometryData {
     SphereData[] sphere;
     TriangleData[] triangle;
+    PlaneData[] plane;
+    PolygonData[] polygon;
+    TubeData[] tube;
+    CylinderData[] cylinder;
 }
 
 class SphereData {
@@ -53,6 +54,34 @@ class TriangleData {
     String p2;
     String emission;
 }
+
+class PlaneData {
+    String p0;
+    String p1;
+    String p2;
+    String emission;
+}
+
+class PolygonData {
+    List<String> vertices;
+    String emission;
+}
+
+class TubeData {
+    RayData axisRay;
+    String radius;
+    String emission;
+}
+
+class CylinderData extends TubeData{
+    String height;
+}
+
+class RayData {
+    String p0;
+    String dir;
+}
+
 public class Json {
 
     public static Scene parseSceneFromJson(String filename, Scene scene) throws Exception {
@@ -104,42 +133,139 @@ public class Json {
             Geometries geometries = new Geometries();
 
             // Parsing sphere
-            for (SphereData sphereData : geometryData.sphere) {
-                Point center = parsePointFromString(sphereData.center);
-                double radius = Double.parseDouble(sphereData.radius);
+            if(geometryData.sphere != null) {
+                for (SphereData sphereData : geometryData.sphere) {
+                    Point center = parsePointFromString(sphereData.center);
+                    double radius = Double.parseDouble(sphereData.radius);
 
 
-                try {
-                    Point emission = parsePointFromString(sphereData.emission);
+                    try {
+                        Point emission = parsePointFromString(sphereData.emission);
 
-                    geometries.add(new Sphere(center, radius)
-                            .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
-                } catch (Exception a) {
+                        geometries.add(new Sphere(center, radius)
+                                .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                    } catch (Exception a) {
 
-                    geometries.add(new Sphere(center, radius));
+                        geometries.add(new Sphere(center, radius));
+                    }
+
+
                 }
-
-
             }
 
             // Parsing triangles
-            for (TriangleData triangleData : geometryData.triangle) {
-                Point p0 = parsePointFromString(triangleData.p0);
-                Point p1 = parsePointFromString(triangleData.p1);
-                Point p2 = parsePointFromString(triangleData.p2);
+            if(geometryData.triangle != null) {
+                for (TriangleData triangleData : geometryData.triangle) {
+                    Point p0 = parsePointFromString(triangleData.p0);
+                    Point p1 = parsePointFromString(triangleData.p1);
+                    Point p2 = parsePointFromString(triangleData.p2);
 
 
-                try {
-                    Point emission = parsePointFromString(triangleData.emission);
+                    try {
+                        Point emission = parsePointFromString(triangleData.emission);
 
-                    geometries.add(new Triangle(p0, p1, p2)
-                            .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
-                } catch (Exception a) {
+                        geometries.add(new Triangle(p0, p1, p2)
+                                .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                    } catch (Exception a) {
 
-                    geometries.add(new Triangle(p0, p1, p2));
+                        geometries.add(new Triangle(p0, p1, p2));
+                    }
+
                 }
-
             }
+
+            // Parsing planes
+            if(geometryData.plane != null) {
+                for (PlaneData planeData : geometryData.plane) {
+                    Point p0 = parsePointFromString(planeData.p0);
+                    Point p1 = parsePointFromString(planeData.p1);
+                    Point p2 = parsePointFromString(planeData.p2);
+
+
+                    try {
+                        Point emission = parsePointFromString(planeData.emission);
+
+                        geometries.add(new Plane(p0, p1, p2)
+                                .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                    } catch (Exception a) {
+
+                        geometries.add(new Plane(p0, p1, p2));
+                    }
+
+                }
+            }
+
+            if(geometryData.polygon != null) {
+                // Parsing polygon
+                for (PolygonData polygonData : geometryData.polygon) {
+                    List<Point> vertices = new LinkedList<>();
+                    for (String vertice : polygonData.vertices) {
+                        vertices.add(parsePointFromString(vertice));
+                    }
+                    Point[] points = vertices.toArray(new Point[0]);
+
+
+                    try {
+                        Point emission = parsePointFromString(polygonData.emission);
+
+                        geometries.add(new Polygon(points)
+                                .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                    } catch (Exception a) {
+
+                        geometries.add(new Polygon(points));
+                    }
+
+                }
+            }
+
+
+            // Parsing tube
+            if(geometryData.tube != null) {
+                for (TubeData tubeData : geometryData.tube) {
+
+                    Point dir = parsePointFromString(tubeData.axisRay.dir);
+                    Point p0 = parsePointFromString(tubeData.axisRay.p0);
+                    double radius = Double.parseDouble(tubeData.radius);
+                    Ray ray = new Ray(p0, new Vector(dir.getX(), dir.getY(), dir.getZ()));
+
+
+                    try {
+                        Point emission = parsePointFromString(tubeData.emission);
+
+                        geometries.add(new Tube(ray, radius)
+                                .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                    } catch (Exception a) {
+
+                        geometries.add(new Tube(ray, radius));
+                    }
+
+                }
+            }
+
+            // Parsing cylinder
+            if(geometryData.cylinder != null) {
+                for (CylinderData cylinderData : geometryData.cylinder) {
+
+                    Point dir = parsePointFromString(cylinderData.axisRay.dir);
+                    Point p0 = parsePointFromString(cylinderData.axisRay.p0);
+                    double radius = Double.parseDouble(cylinderData.radius);
+                    Ray ray = new Ray(p0, new Vector(dir.getX(), dir.getY(), dir.getZ()));
+                    double height = Double.parseDouble(cylinderData.height);
+
+                    try {
+                        Point emission = parsePointFromString(cylinderData.emission);
+
+                        geometries.add(new Cylinder(ray, radius, height)
+                                .setEmission(new Color(emission.getX(), emission.getY(), emission.getZ())));
+                    } catch (Exception a) {
+
+                        geometries.add(new Tube(ray, radius));
+                    }
+
+                }
+            }
+
+
 
             scene.setGeometries(geometries);
 
