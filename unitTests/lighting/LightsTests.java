@@ -225,7 +225,7 @@ public class LightsTests {
 
    @Test
    public void sphereMultiLight() {
-      scene1.geometries.add(sphere);
+      scene1.geometries.add(sphere) ;
       scene1.setLights(
               new SpotLight(new Color(400,800,200), new Point(0, 0, 10), new Vector(1,1,-2))
                       .setNarrowBeam(10).setKl(0.001).setKq(0.00004),
