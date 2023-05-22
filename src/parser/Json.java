@@ -3,84 +3,17 @@ package parser;
 import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gson.Gson;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import geometries.*;
 import primitives.*;
 import scene.Scene;
 import lighting.AmbientLight;
 
 import static java.nio.file.Files.exists;
-
-class JsonScene {
-    SceneData scene;
-}
-
-class SceneData {
-    String background;
-    JsonAmbientLight ambientLight;
-    GeometryData geometries;
-}
-
-class JsonAmbientLight {
-    String intensity;
-    String emission;
-}
-
-class GeometryData {
-    SphereData[] sphere;
-    TriangleData[] triangle;
-    PlaneData[] plane;
-    PolygonData[] polygon;
-    TubeData[] tube;
-    CylinderData[] cylinder;
-}
-
-class SphereData {
-    String center;
-    String radius;
-    String emission;
-}
-
-class TriangleData {
-    String p0;
-    String p1;
-    String p2;
-    String emission;
-}
-
-class PlaneData {
-    String p0;
-    String p1;
-    String p2;
-    String emission;
-}
-
-class PolygonData {
-    List<String> vertices;
-    String emission;
-}
-
-class TubeData {
-    RayData axisRay;
-    String radius;
-    String emission;
-}
-
-class CylinderData extends TubeData{
-    String height;
-}
-
-class RayData {
-    String p0;
-    String dir;
-}
 
 public class Json {
 
@@ -282,5 +215,69 @@ public class Json {
         int y = Integer.parseInt(values[1]);
         int z = Integer.parseInt(values[2]);
         return new Point(x, y, z);
+    }
+
+    static class CylinderData extends TubeData{
+        String height;
+    }
+
+    static class GeometryData {
+        SphereData[] sphere;
+        TriangleData[] triangle;
+        PlaneData[] plane;
+        PolygonData[] polygon;
+        TubeData[] tube;
+        CylinderData[] cylinder;
+    }
+
+    static class PlaneData {
+        String p0;
+        String p1;
+        String p2;
+        String emission;
+    }
+
+    static class PolygonData {
+        List<String> vertices;
+        String emission;
+    }
+
+    static class RayData {
+        String p0;
+        String dir;
+    }
+
+    static class SceneData {
+        String background;
+        JsonAmbientLight ambientLight;
+        GeometryData geometries;
+    }
+
+    static class SphereData {
+        String center;
+        String radius;
+        String emission;
+    }
+
+    static class TriangleData {
+        String p0;
+        String p1;
+        String p2;
+        String emission;
+    }
+
+    static class TubeData {
+        RayData axisRay;
+        String radius;
+        String emission;
+    }
+
+    static class JsonAmbientLight {
+        String intensity;
+        String emission;
+    }
+
+    static class JsonScene {
+        SceneData scene;
     }
 }
