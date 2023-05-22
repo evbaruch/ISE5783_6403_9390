@@ -173,4 +173,38 @@ public class LightsTests {
          .writeToImage(); //
    }
 
+
+   @Test
+   public void trianglesMulti() {
+      scene2.geometries.add(triangle1, triangle2);
+      scene2.setLights(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
+              .setNarrowBeam(10).setKl(0.001).setKq(0.00004),
+      new PointLight(trianglesLightColor, trianglesLightPosition)
+              .setKl(0.001).setKq(0.0002),
+      new DirectionalLight(trianglesLightColor, trianglesLightDirection));
+
+      ImageWriter imageWriter = new ImageWriter("triangles multi", 500, 500);
+      camera2.setImageWriter(imageWriter) //
+              .setRayTracer(new RayTracerBasic(scene2)) //
+              .renderImage() //
+              .writeToImage(); //
+   }
+
+   @Test
+   public void sphereMulti() {
+      scene1.geometries.add(sphere);
+      scene1.setLights(new SpotLight(trianglesLightColor, trianglesLightPosition, trianglesLightDirection)
+                      .setNarrowBeam(10).setKl(0.001).setKq(0.00004),
+              new PointLight(trianglesLightColor, trianglesLightPosition)
+                      .setKl(0.001).setKq(0.0002),
+              new DirectionalLight(trianglesLightColor, trianglesLightDirection));
+
+      ImageWriter imageWriter = new ImageWriter("sphere multi", 500, 500);
+      camera1.setImageWriter(imageWriter) //
+              .setRayTracer(new RayTracerBasic(scene1)) //
+              .renderImage() //
+              .writeToImage(); //
+   }
+
+
 }
