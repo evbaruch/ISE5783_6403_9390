@@ -1,10 +1,12 @@
 package parser;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SplittableRandom;
 
 import com.google.gson.Gson;
 
@@ -209,12 +211,110 @@ public class Json {
         }
     }
 
+    /**
+     * Inactive
+     * @param scene
+     * @param filename
+     * @throws Exception
+     */
+    public static void createJsonFromScene(Scene scene, String filename) throws Exception {
+        JsonScene jsonScene = new JsonScene();
+
+        // Convert background color to string
+        Color background = scene.background;
+        String stringBackground = String.valueOf(background);
+
+        jsonScene.scene.background = parseStringFromRGB(stringBackground);
+
+        // Convert ambient light intensity to string
+        AmbientLight ambientLight = scene.ambientLight;
+        Color ambientIntensity = ambientLight.getIntensity();
+        String stringAmbientIntensity  = String.valueOf(ambientIntensity);
+        //Point backgroundPoint = parsePointFromString(stringBackground);
+        jsonScene.scene.ambientLight.intensity = parseStringFromRGB(stringAmbientIntensity);
+
+        // Convert ambient light emission to string
+        // jsonScene.scene.ambientLight.emission = String.valueOf(ambientLight.);
+
+        // Convert geometries
+//        Geometries geometries = scene.geometries;
+//
+//        // Convert spheres
+//       // for (Geometry geometry: geometries)
+//        if (geometries != null) {
+//            jsonScene.scene.geometries.sphere = new SphereData[geometries.getSpheres().size()];
+//
+//            for (int i = 0; i < geometries.getSpheres().size(); i++) {
+//                Sphere sphere = geometries.getSpheres().get(i);
+//                SphereData sphereData = new SphereData();
+//
+//                sphereData.center = parseStringFromPoint(sphere.getCenter());
+//                sphereData.radius = String.valueOf(sphere.getRadius());
+//                sphereData.emission = parseStringFromPoint(sphere.getEmission().toPoint());
+//
+//                jsonScene.scene.geometries.sphere[i] = sphereData;
+//            }
+//        }
+//
+//        // Convert triangles
+//        if (geometries != null) {
+//            jsonScene.scene.geometries.triangle = new TriangleData[geometries.getTriangles().size()];
+//
+//            for (int i = 0; i < geometries.getTriangles().size(); i++) {
+//                Triangle triangle = geometries.getTriangles().get(i);
+//                TriangleData triangleData = new TriangleData();
+//
+//                triangleData.p0 = parseStringFromPoint(triangle.getP0());
+//                triangleData.p1 = parseStringFromPoint(triangle.getP1());
+//                triangleData.p2 = parseStringFromPoint(triangle.getP2());
+//                triangleData.emission = parseStringFromPoint(triangle.getEmission().toPoint());
+//
+//                jsonScene.scene.geometries.triangle[i] = triangleData;
+//            }
+//        }
+
+        // Add similar conversion for other geometry types
+
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(jsonScene);
+
+        FileWriter fileWriter = new FileWriter("files/"+filename+".json");
+        fileWriter.write(jsonString);
+        fileWriter.close();
+    }
+
     private static Point parsePointFromString(String pointString) {
         String[] values = pointString.split(" ");
         int x = Integer.parseInt(values[0]);
         int y = Integer.parseInt(values[1]);
         int z = Integer.parseInt(values[2]);
         return new Point(x, y, z);
+    }
+
+    public static String parseStringFromRGB(String rgbString) {
+        // Remove the "rgb:" prefix
+        String numericString = rgbString.replace("rgb:", "");
+
+        // Extract the numeric values using regular expressions
+        String[] values = numericString.split(",|\\(|\\)");
+        StringBuilder resultBuilder = new StringBuilder();
+
+        for (String value : values) {
+            try {
+                double numericValue = Double.parseDouble(value);
+                resultBuilder.append((int) numericValue).append(" ");
+            } catch (NumberFormatException e) {
+                // Ignore non-numeric values
+            }
+        }
+
+        // Remove trailing space and return the result
+        return resultBuilder.toString().trim();
+    }
+
+
+    private static String parseStringFromPoint(Point point) {
+        return point.getX() + " " + point.getY() + " " + point.getZ();
     }
 
     static class CylinderData extends TubeData{
@@ -249,8 +349,8 @@ public class Json {
 
     static class SceneData {
         String background;
-        JsonAmbientLight ambientLight;
-        GeometryData geometries;
+        JsonAmbientLight ambientLight = new JsonAmbientLight();
+        GeometryData geometries = new GeometryData();
     }
 
     static class SphereData {
@@ -267,7 +367,7 @@ public class Json {
     }
 
     static class TubeData {
-        RayData axisRay;
+        RayData axisRay = new RayData();
         String radius;
         String emission;
     }
@@ -278,6 +378,6 @@ public class Json {
     }
 
     static class JsonScene {
-        SceneData scene;
+        SceneData scene = new SceneData();
     }
 }

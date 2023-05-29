@@ -8,11 +8,11 @@
     "geometries": {
       "sphere": [
         {
-        "center": "0 0 -100",
-        "radius": "50",
-        "emission": "255 255 255"
-      }
-        ],
+          "center": "0 0 -100",
+          "radius": "50",
+          "emission": "0 0 0"
+        }
+      ],
       "triangle": [
         {
           "p0": "-100 0 -100",
@@ -32,7 +32,6 @@
           "p2": "100 -100 -100",
           "emission": "0 0 255"
         }
-
       ],
       "plane": [],
       "polygon": [],
