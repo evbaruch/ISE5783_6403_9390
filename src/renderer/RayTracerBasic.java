@@ -35,9 +35,9 @@ public class RayTracerBasic extends RayTracerBase {
      */
     @Override
     public Color traceRay(Ray ray) {
-        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
+        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(ray);
         if(intersections == null){
-            return this.scene.background;
+            return this.scene.getBackground();
         }
         GeoPoint closestPoint = ray.findClosestGeoPoint(intersections);
         return calcColor(closestPoint,ray);
@@ -200,7 +200,7 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     private Color calcColor(GeoPoint intersection, Ray ray) {
-        return scene.ambientLight.getIntensity()
+        return scene.getAmbientLight().getIntensity()
                 .add(calcLocalEffects(intersection, ray));
     }
 
@@ -229,7 +229,7 @@ public class RayTracerBasic extends RayTracerBase {
         Material material = gp.geometry.getMaterial();
 
         // Iterate over each light source in the scene
-        for (LightSource lightSource : scene.lights) {
+        for (LightSource lightSource : scene.getLights()) {
 
             // Get the light direction at the geometric point
             Vector l = lightSource.getL(gp.point);
