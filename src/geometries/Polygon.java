@@ -85,20 +85,20 @@ public class Polygon extends Geometry {
 
 
    @Override
-   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray , double maxDistance) {
       // Step 1: check if the ray intersects the plane of the polygon
-      List<Point> planeIntersection = plane.findIntersections(ray);
+      List<GeoPoint> planeGeoIntersections = plane.findGeoIntersections(ray,maxDistance);
 
-      if (planeIntersection == null) {
+      if (planeGeoIntersections == null) {
          return List.of(); // no intersection
       }
-      Point intersectionPoint = planeIntersection.get(0);
+      GeoPoint intersectionPoint = planeGeoIntersections.get(0);
       LinkedList<Vector> vectors = new LinkedList<>();
 
       Point prePoint = vertices.get(vertices.size() - 1);
       try {
          for (Point point : vertices) {
-            vectors.add(point.subtract(prePoint).crossProduct(prePoint.subtract(intersectionPoint)));
+            vectors.add(point.subtract(prePoint).crossProduct(prePoint.subtract(intersectionPoint.point)));
             prePoint = point;
          }
 
@@ -114,17 +114,7 @@ public class Polygon extends Geometry {
       {
          return null;
       }
-      return List.of(new GeoPoint(this,intersectionPoint)) ;
+      return List.of(new GeoPoint(this,intersectionPoint.point)) ;
    }
-
-   /**
-    * @param ray
-    * @return
-    */
-   @Override
-   public List<GeoPoint> findGeoIntersections(Ray ray) {
-      return findGeoIntersectionsHelper(ray);
-   }
-
 
 }
