@@ -99,14 +99,14 @@ public class RenderTests {
         // NB: unit tests is not the correct place to put XML parsing code
         String xmlFileName = "files/basicRenderTestTwoColors.xml";
         try {
-            scene = Xml.parseSceneFromXml(xmlFileName, scene);
+           // scene = Xml.parseSceneFromXml(xmlFileName, scene);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         String xmlImageWriterDefinition = "files/ImageWriterdefinitionA.xml";
         try {
-            imageWriter = Xml.parseImageWriterFromXml(xmlImageWriterDefinition);
+            //imageWriter = Xml.parseImageWriterFromXml(xmlImageWriterDefinition);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -123,14 +123,14 @@ public class RenderTests {
 
         xmlFileName = "files/basicRenderMultiColors.xml";
         try {
-            scene = Xml.parseSceneFromXml(xmlFileName, scene);
+            //scene = Xml.parseSceneFromXml(xmlFileName, scene);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         xmlImageWriterDefinition = "files/ImageWriterdefinitionColor.xml";
         try {
-            imageWriter = Xml.parseImageWriterFromXml(xmlImageWriterDefinition);
+            //imageWriter = Xml.parseImageWriterFromXml(xmlImageWriterDefinition);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

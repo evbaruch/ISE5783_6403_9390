@@ -33,32 +33,22 @@ public class Json {
 
             // Parsing background color
             String background = jsonScene.scene.background;
-            Point temp = parsePointFromString(background);
-            scene.setBackground(new Color(temp.getX(), temp.getY(), temp.getZ()));
+            Point  backgroundPoint= parsePointFromString(background);
 
             // Parsing ambient light intensity
 
             Point ambientLightIntensity = parsePointFromString(jsonScene.scene.ambientLight.intensity);
-
+            AmbientLight ambientLight;
             try {
                 double ambientLightEmission = Double.parseDouble(jsonScene.scene.ambientLight.emission);
 
-                scene.setAmbientLight(
-                        new AmbientLight(
-                                new Color(
-                                        ambientLightIntensity.getX(),
-                                        ambientLightIntensity.getY(),
-                                        ambientLightIntensity.getZ()),
-                                ambientLightEmission));
+                ambientLight = new AmbientLight(new Color(ambientLightIntensity.getX(),ambientLightIntensity.getY(),ambientLightIntensity.getZ()),ambientLightEmission);
+
             } catch (Exception a) {
 
-                scene.setAmbientLight(
-                        new AmbientLight(
-                                new Color(
-                                        ambientLightIntensity.getX(),
-                                        ambientLightIntensity.getY(),
-                                        ambientLightIntensity.getZ()),
-                                new Double3(1, 1, 1)));
+               Double3 scalar = new Double3(1, 1, 1);
+                ambientLight = new AmbientLight(new Color(ambientLightIntensity.getX(),ambientLightIntensity.getY(),ambientLightIntensity.getZ()),scalar);
+
             }
 
 
@@ -202,86 +192,95 @@ public class Json {
 
 
 
-            scene.setGeometries(geometries);
+            return new Scene.SceneBuilder(scene.getName())
+                    .setBackground(
+                            new Color(
+                                    backgroundPoint.getX()
+                                    ,backgroundPoint.getY()
+                                    ,backgroundPoint.getZ()
+                            )
+                    )
+                    .setAmbientLight(ambientLight)
+                    .setGeometries(geometries)
+                    .build();
 
-            return scene;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    /**
-     * Inactive
-     * @param scene
-     * @param filename
-     * @throws Exception
-     */
-    public static void createJsonFromScene(Scene scene, String filename) throws Exception {
-        JsonScene jsonScene = new JsonScene();
-
-        // Convert background color to string
-        Color background = scene.background;
-        String stringBackground = String.valueOf(background);
-
-        jsonScene.scene.background = parseStringFromRGB(stringBackground);
-
-        // Convert ambient light intensity to string
-        AmbientLight ambientLight = scene.ambientLight;
-        Color ambientIntensity = ambientLight.getIntensity();
-        String stringAmbientIntensity  = String.valueOf(ambientIntensity);
-        //Point backgroundPoint = parsePointFromString(stringBackground);
-        jsonScene.scene.ambientLight.intensity = parseStringFromRGB(stringAmbientIntensity);
-
-        // Convert ambient light emission to string
-        // jsonScene.scene.ambientLight.emission = String.valueOf(ambientLight.);
-
-        // Convert geometries
-//        Geometries geometries = scene.geometries;
+//    /**
+//     * Inactive
+//     * @param scene
+//     * @param filename
+//     * @throws Exception
+//     */
+//    public static void createJsonFromScene(Scene scene, String filename) throws Exception {
+//        JsonScene jsonScene = new JsonScene();
 //
-//        // Convert spheres
-//       // for (Geometry geometry: geometries)
-//        if (geometries != null) {
-//            jsonScene.scene.geometries.sphere = new SphereData[geometries.getSpheres().size()];
+//        // Convert background color to string
+//        Color background = scene.background;
+//        String stringBackground = String.valueOf(background);
 //
-//            for (int i = 0; i < geometries.getSpheres().size(); i++) {
-//                Sphere sphere = geometries.getSpheres().get(i);
-//                SphereData sphereData = new SphereData();
+//        jsonScene.scene.background = parseStringFromRGB(stringBackground);
 //
-//                sphereData.center = parseStringFromPoint(sphere.getCenter());
-//                sphereData.radius = String.valueOf(sphere.getRadius());
-//                sphereData.emission = parseStringFromPoint(sphere.getEmission().toPoint());
+//        // Convert ambient light intensity to string
+//        AmbientLight ambientLight = scene.ambientLight;
+//        Color ambientIntensity = ambientLight.getIntensity();
+//        String stringAmbientIntensity  = String.valueOf(ambientIntensity);
+//        //Point backgroundPoint = parsePointFromString(stringBackground);
+//        jsonScene.scene.ambientLight.intensity = parseStringFromRGB(stringAmbientIntensity);
 //
-//                jsonScene.scene.geometries.sphere[i] = sphereData;
-//            }
-//        }
+//        // Convert ambient light emission to string
+//        // jsonScene.scene.ambientLight.emission = String.valueOf(ambientLight.);
 //
-//        // Convert triangles
-//        if (geometries != null) {
-//            jsonScene.scene.geometries.triangle = new TriangleData[geometries.getTriangles().size()];
+//        // Convert geometries
+////        Geometries geometries = scene.geometries;
+////
+////        // Convert spheres
+////       // for (Geometry geometry: geometries)
+////        if (geometries != null) {
+////            jsonScene.scene.geometries.sphere = new SphereData[geometries.getSpheres().size()];
+////
+////            for (int i = 0; i < geometries.getSpheres().size(); i++) {
+////                Sphere sphere = geometries.getSpheres().get(i);
+////                SphereData sphereData = new SphereData();
+////
+////                sphereData.center = parseStringFromPoint(sphere.getCenter());
+////                sphereData.radius = String.valueOf(sphere.getRadius());
+////                sphereData.emission = parseStringFromPoint(sphere.getEmission().toPoint());
+////
+////                jsonScene.scene.geometries.sphere[i] = sphereData;
+////            }
+////        }
+////
+////        // Convert triangles
+////        if (geometries != null) {
+////            jsonScene.scene.geometries.triangle = new TriangleData[geometries.getTriangles().size()];
+////
+////            for (int i = 0; i < geometries.getTriangles().size(); i++) {
+////                Triangle triangle = geometries.getTriangles().get(i);
+////                TriangleData triangleData = new TriangleData();
+////
+////                triangleData.p0 = parseStringFromPoint(triangle.getP0());
+////                triangleData.p1 = parseStringFromPoint(triangle.getP1());
+////                triangleData.p2 = parseStringFromPoint(triangle.getP2());
+////                triangleData.emission = parseStringFromPoint(triangle.getEmission().toPoint());
+////
+////                jsonScene.scene.geometries.triangle[i] = triangleData;
+////            }
+////        }
 //
-//            for (int i = 0; i < geometries.getTriangles().size(); i++) {
-//                Triangle triangle = geometries.getTriangles().get(i);
-//                TriangleData triangleData = new TriangleData();
+//        // Add similar conversion for other geometry types
 //
-//                triangleData.p0 = parseStringFromPoint(triangle.getP0());
-//                triangleData.p1 = parseStringFromPoint(triangle.getP1());
-//                triangleData.p2 = parseStringFromPoint(triangle.getP2());
-//                triangleData.emission = parseStringFromPoint(triangle.getEmission().toPoint());
+//        Gson gson = new Gson();
+//        String jsonString = gson.toJson(jsonScene);
 //
-//                jsonScene.scene.geometries.triangle[i] = triangleData;
-//            }
-//        }
-
-        // Add similar conversion for other geometry types
-
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(jsonScene);
-
-        FileWriter fileWriter = new FileWriter("files/"+filename+".json");
-        fileWriter.write(jsonString);
-        fileWriter.close();
-    }
+//        FileWriter fileWriter = new FileWriter("files/"+filename+".json");
+//        fileWriter.write(jsonString);
+//        fileWriter.close();
+//    }
 
     private static Point parsePointFromString(String pointString) {
         String[] values = pointString.split(" ");
