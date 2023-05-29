@@ -23,16 +23,15 @@ public class Sphere extends RadialGeometry {
 
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
-        List<GeoPoint> result;
+        List<GeoPoint> result = null;
         //A special case that Ray starts in the center
+        //We will check that our point is at the appropriate distance
         if(ray.getP0().equals(center)) {
-            Point point = ray.getPoint(radius);
-            double distance = ray.getP0().distance(point);
-
-            if(alignZero(maxDistance - distance) >= 0){
-                result = List.of(new GeoPoint(this, point));
+            if (alignZero(maxDistance - radius) > 0){
+                result = List.of(new GeoPoint(this, ray.getPoint(radius)));
                 return result;
             }
+
             return null;
         }
 
@@ -56,18 +55,27 @@ public class Sphere extends RadialGeometry {
 
 
         if (t1 <= 0) {
-            Point point = ray.getPoint(t2);
-            double distance = ray.getP0().distance(point);
-
-            if (alignZero(maxDistance - distance) >= 0){
-                // One intersection point is behind the ray, the other is in front
-                result = List.of(new GeoPoint(this,point));
+            // One intersection point is behind the ray, the other is in front
+            //We will check that our point is at the appropriate distance
+            if (alignZero(maxDistance - t2) > 0){
+                result = List.of(new GeoPoint(this,ray.getPoint(t2)));
             }
-
-            result = null;
         } else {
             // Both intersection points are in front of the ray
-            result = List.of(new GeoPoint(this ,ray.getPoint(t1)),new GeoPoint(this ,ray.getPoint(t2)));
+            //We will check that our point is at the appropriate distance
+            if (alignZero(maxDistance - t1) > 0){
+                result = List.of(new GeoPoint(this,ray.getPoint(t1)));
+            }
+            if (alignZero(maxDistance - t2) > 0){
+                //We will check if the first point is accepted
+                if (result == null){
+                    result = List.of(new GeoPoint(this,ray.getPoint(t2)));
+                }
+                else {
+                    result.add(new GeoPoint(this,ray.getPoint(t2)));
+                }
+            }
+
         }
 
         return result;

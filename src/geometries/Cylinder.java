@@ -58,29 +58,14 @@ public class Cylinder extends Tube {
            return super.axisRay.getDir().normalize();
         }
 
-
-//        // If none of the above conditions are true, then the point is on the lateral surface of the cylinder.
-//        // We can compute the normal vector by subtracting the projection of the vector v onto the axis ray from v itself.
-//        return v.subtract(super.axisRay.getDir().scale(d)).normalize();
+          // If none of the above conditions are true, then the point is on the lateral surface of the cylinder.
+          // We can compute the normal vector by subtracting the projection of the vector v onto the axis ray from v itself.
+          // return v.subtract(super.axisRay.getDir().scale(d)).normalize();
         return null;//impossible case
     }
 
-
-    /**
-     * @param ray
-     * @return
-     */
     @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        return findGeoIntersectionsHelper(ray);
-    }
-
-    /**
-     * @param ray
-     * @return
-     */
-    @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        return null;
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
+        return super.findGeoIntersectionsHelper(ray, maxDistance);
     }
 }
