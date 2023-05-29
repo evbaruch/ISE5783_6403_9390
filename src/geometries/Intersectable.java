@@ -42,7 +42,19 @@ public abstract class Intersectable {
       return geoList == null ? null : geoList.stream().map(gp -> gp.point).toList();
    }
 
-   public abstract List<GeoPoint> findGeoIntersections(Ray ray);
-   protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
+   //public abstract List<GeoPoint> findGeoIntersections(Ray ray);
+   //protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
+
+
+   public final List<GeoPoint> findGeoIntersections(Ray ray) {
+      return findGeoIntersections(ray, Double.POSITIVE_INFINITY);
+   }
+
+   public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
+      return findGeoIntersectionsHelper(ray, maxDistance);
+   }
+
+   protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
+
 
 }

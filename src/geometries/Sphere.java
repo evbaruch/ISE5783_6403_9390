@@ -6,6 +6,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
+
 public class Sphere extends RadialGeometry {
     private Point center;
 
@@ -20,14 +22,18 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         List<GeoPoint> result;
         //A special case that Ray starts in the center
         if(ray.getP0().equals(center)) {
-            result = List.of(new GeoPoint(this,
-                    ray.getPoint(radius))
-            );
-            return result;
+            Point point = ray.getPoint(radius);
+            double distance = ray.getP0().distance(point);
+
+            if(alignZero(maxDistance - distance) >= 0){
+                result = List.of(new GeoPoint(this, point));
+                return result;
+            }
+            return null;
         }
 
         Vector u = center.subtract(ray.getP0());
@@ -50,8 +56,15 @@ public class Sphere extends RadialGeometry {
 
 
         if (t1 <= 0) {
-            // One intersection point is behind the ray, the other is in front
-            result = List.of(new GeoPoint(this,ray.getPoint(t2)));
+            Point point = ray.getPoint(t2);
+            double distance = ray.getP0().distance(point);
+
+            if (alignZero(maxDistance - distance) >= 0){
+                // One intersection point is behind the ray, the other is in front
+                result = List.of(new GeoPoint(this,point));
+            }
+
+            result = null;
         } else {
             // Both intersection points are in front of the ray
             result = List.of(new GeoPoint(this ,ray.getPoint(t1)),new GeoPoint(this ,ray.getPoint(t2)));
@@ -59,17 +72,4 @@ public class Sphere extends RadialGeometry {
 
         return result;
     }
-
-    /**
-     * @param ray
-     * @return
-     */
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        return findGeoIntersectionsHelper(ray);
-    }
-
-
-
-
 }

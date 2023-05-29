@@ -19,8 +19,30 @@ import static primitives.Util.alignZero;
  */
 public class RayTracerBasic extends RayTracerBase {
 
-    /**
+    private static final double DELTA = 0.1;
 
+
+    private boolean unshaded(GeoPoint gp, Vector l) {
+        Vector lightDirection = l.scale(-1); // from point to light source
+        Ray lightRay = new Ray(gp.point, lightDirection);
+        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay);
+        return intersections == null ? true : false;
+    }
+
+//    private boolean unshaded(GeoPoint gp, LightSource light, Vector l, Vector n, double nl)
+//    {
+//        Vector lightDirection = l.scale(-1); // from point to light source
+//        Vector epsVector = n.scale(nl < 0 ? DELTA : -DELTA);
+//        Point point = gp.point.add(epsVector);
+//        Ray lightRay = new Ray(point, lightDirection);
+//        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay);
+//        if (intersections == null) return true;
+//
+//    }
+
+
+
+    /**
      Constructs a new instance of the RayTracerBasic class with the specified scene.
      @param scene The scene to be rendered.
      */
@@ -42,162 +64,6 @@ public class RayTracerBasic extends RayTracerBase {
         GeoPoint closestPoint = ray.findClosestGeoPoint(intersections);
         return calcColor(closestPoint,ray);
     }
-
-
-
-//    private Color calcColor(GeoPoint geoPoint){
-//        //
-//        return scene.ambientLight.getIntensity()
-//                .add(geoPoint.geometry.getEmission());
-//    }
-//    private Color calcColor(GeoPoint geoPoint) {
-//        Color ambientLightIntensity = scene.ambientLight.getIntensity();
-//        Color emissionColor = geoPoint.geometry.getEmission();
-//        Color lightIntensity = Color.BLACK; // Initialize with no light intensity
-//
-//        // Iterate over the light sources in the scene and calculate the total light intensity
-//        for (LightSource lightSource : scene.lights) {
-//            lightIntensity = lightIntensity.add(lightSource.getIntensity(geoPoint.point));
-//        }
-//
-//        // Combine the ambient light intensity, emission color, and total light intensity
-//        return ambientLightIntensity.add(emissionColor).add(lightIntensity);
-//    }
-
-//    private Color calcColor(GeoPoint geoPoint) {
-//        Color ambientLightIntensity = scene.ambientLight.getIntensity();
-//        Color emissionColor = geoPoint.geometry.getEmission();
-//        Color diffuseColor = Color.BLACK; // Initialize with no diffuse color
-//        Color specularColor = Color.BLACK; // Initialize with no specular color
-//
-//        // Iterate over the light sources in the scene and calculate the diffuse and specular components
-//        for (LightSource lightSource : scene.lights) {
-//            // Calculate the diffuse component
-//            Vector l = lightSource.getL(geoPoint.point).normalize(); // Light direction vector
-//            Vector n = geoPoint.geometry.getNormal(geoPoint.point).normalize(); // Surface normal vector
-//            double ln = Math.max(0, l.dotProduct(n)); // Dot product of light direction and surface normal
-//            Color lightDiffuseColor = lightSource.getIntensity(geoPoint.point).scale(ln);
-//            diffuseColor = diffuseColor.add(lightDiffuseColor);
-//
-//            // Calculate the specular component
-//            double shininess = geoPoint.geometry.getMaterial().nShininess; // Shininess factor
-//            Vector r = l.subtract(n.scale(2 * ln)).normalize(); // Reflection vector
-//            double specularFactor = Math.pow(Math.max(0, r.dotProduct(l)), shininess); // Specular factor
-//            Color lightSpecularColor = lightSource.getIntensity(geoPoint.point).scale(specularFactor).scale(geoPoint.geometry.getMaterial().Ks);
-//            specularColor = specularColor.add(lightSpecularColor);
-//        }
-//
-//        // Combine the ambient light intensity, emission color, diffuse color, and specular color
-//        return ambientLightIntensity.scale(geoPoint.geometry.getMaterial().kd)
-//                .add(emissionColor)
-//                .add(diffuseColor)
-//                .add(specularColor);
-//    }
-
-
-//    private Color calcColor(GeoPoint geoPoint) {
-//        Color ambientLightIntensity = scene.ambientLight.getIntensity();
-//        Color emissionColor = geoPoint.geometry.getEmission();
-//
-//        Color diffuseColor = calculateDiffuseColor(geoPoint);
-//        Color specularColor = calculateSpecularColor(geoPoint);
-//
-//        return ambientLightIntensity.scale(geoPoint.geometry.getMaterial().kd)
-//                .add(emissionColor)
-//                .add(diffuseColor)
-//                .add(specularColor);
-//    }
-//
-//    private Color calculateDiffuseColor(GeoPoint geoPoint) {
-//        Color diffuseColor = Color.BLACK;
-//
-//        for (LightSource lightSource : scene.lights) {
-//            Vector l = lightSource.getL(geoPoint.point).normalize();
-//            Vector n = geoPoint.geometry.getNormal(geoPoint.point).normalize();
-//            double ln = Math.max(0, l.dotProduct(n));
-//
-//            Color lightDiffuseColor = lightSource.getIntensity(geoPoint.point).scale(ln);
-//            diffuseColor = diffuseColor.add(lightDiffuseColor);
-//        }
-//
-//        return diffuseColor;
-//    }
-//
-//    private Color calculateSpecularColor(GeoPoint geoPoint) {
-//        Color specularColor = Color.BLACK;
-//
-//        for (LightSource lightSource : scene.lights) {
-//            Vector l = lightSource.getL(geoPoint.point).normalize();
-//            Vector n = geoPoint.geometry.getNormal(geoPoint.point).normalize();
-//            double ln = Math.max(0, l.dotProduct(n));
-//            double shininess = geoPoint.geometry.getMaterial().nShininess;
-//            Vector r = l.subtract(n.scale(2 * ln)).normalize();
-//            double specularFactor = Math.pow(Math.max(0, r.dotProduct(-geoPoint.point.getV())), shininess);
-//
-//            Color lightSpecularColor = lightSource.getIntensity(geoPoint.point)
-//                    .scale(specularFactor)
-//                    .scale(geoPoint.geometry.getMaterial().Ks);
-//
-//            specularColor = specularColor.add(lightSpecularColor);
-//        }
-//
-//        return specularColor;
-//    }
-
-
-
-//    private Color calcColor(GeoPoint geoPoint,Ray ray) {
-//        Color ambientLightIntensity = scene.ambientLight.getIntensity();
-//        Color emissionColor = geoPoint.geometry.getEmission();
-//
-//        Color diffuseColor = calculateDiffuseColor(geoPoint);
-//        Color specularColor = calculateSpecularColor(geoPoint,ray);
-//
-//        return ambientLightIntensity.scale(geoPoint.geometry.getMaterial().kd)
-//                .add(emissionColor)
-//                .add(diffuseColor)
-//                .add(specularColor);
-//    }
-//
-//    private Color calculateDiffuseColor(GeoPoint geoPoint) {
-//        Color diffuseColor = Color.BLACK;
-//        Material material = geoPoint.geometry.getMaterial();
-//
-//        for (LightSource lightSource : scene.lights) {
-//            Vector lightDirection = lightSource.getL(geoPoint.point).normalize();
-//            Vector surfaceNormal = geoPoint.geometry.getNormal(geoPoint.point).normalize();
-//            double ln = Math.max(0, lightDirection.dotProduct(surfaceNormal));
-//
-//            Color lightDiffuseColor = lightSource.getIntensity(geoPoint.point).scale(ln);
-//            diffuseColor = diffuseColor.add(lightDiffuseColor);
-//        }
-//
-//        diffuseColor = diffuseColor.scale(material.kd);
-//        return diffuseColor;
-//    }
-//
-//    private Color calculateSpecularColor(GeoPoint geoPoint, Ray ray) {
-//        Color specularColor = Color.BLACK;
-//        Material material = geoPoint.geometry.getMaterial();
-//        Vector viewDirection = geoPoint.point.subtract(ray.getDir()).normalize();
-//
-//        for (LightSource lightSource : scene.lights) {
-//            Vector lightDirection = lightSource.getL(geoPoint.point).normalize();
-//            Vector surfaceNormal = geoPoint.geometry.getNormal(geoPoint.point).normalize();
-//            double ln = Math.max(0, lightDirection.dotProduct(surfaceNormal));
-//            double shininess = material.nShininess;
-//
-//            Vector reflectionDirection = lightDirection.subtract(surfaceNormal.scale(2 * ln)).normalize();
-//
-//            double specularFactor = Math.pow(Math.max(0, reflectionDirection.dotProduct(viewDirection)), shininess);
-//
-//            Color lightSpecularColor = lightSource.getIntensity(geoPoint.point).scale(specularFactor).scale(material.Ks);
-//            specularColor = specularColor.add(lightSpecularColor);
-//        }
-//
-//        return specularColor;
-//    }
-
 
     private Color calcColor(GeoPoint intersection, Ray ray) {
         return scene.getAmbientLight().getIntensity()
@@ -238,7 +104,7 @@ public class RayTracerBasic extends RayTracerBase {
             double nl = alignZero(n.dotProduct(l));
 
             // If the signs of nl and nv are the same, calculate the diffuse and specular effects
-            if (nl * nv > 0) { // sign(nl) == sing(nv)
+            if (nl * nv > 0 && unshaded(gp, l)) { // sign(nl) == sing(nv)
 
                 // Get the intensity of the light source at the geometric point
                 Color iL = lightSource.getIntensity(gp.point);

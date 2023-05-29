@@ -57,8 +57,7 @@ public class PointLight extends Light implements LightSource{
     @Override
     public Vector getL(Point p) {
         return p.subtract(position).normalize(); // Calculate the direction vector from the point to the light source
-    }//
-
+    }
 
     /**
      * Sets the constant attenuation factor for the point light.
@@ -91,5 +90,10 @@ public class PointLight extends Light implements LightSource{
     public PointLight setKq(double kq) {
         this.Kq = kq;
         return this;
+    }
+
+    @Override
+    public double getDistance(Point point) {
+        return point.distance(position);
     }
 }
