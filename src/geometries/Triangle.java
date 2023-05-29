@@ -17,16 +17,16 @@ public class Triangle extends Polygon {
      * @return
      */
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray , double maxDistance) {
         // Find intersections with the plane containing the triangle
-        List<Point> intersections = plane.findIntersections(ray);
+        List<GeoPoint> intersections = plane.findGeoIntersections(ray,maxDistance);
 
         // If there are no intersections with the plane, return null
         if (intersections == null) {
             return null;
         }
         List<Point> triangleIntersections = new ArrayList<Point>();
-        for (Point p : intersections) {
+        for (GeoPoint p : intersections) {
             // Check if the intersection point is inside the triangle
             Vector v1 = vertices.get(0).subtract(ray.getP0());
             Vector v2 = vertices.get(1).subtract(ray.getP0());
@@ -41,7 +41,7 @@ public class Triangle extends Polygon {
             double t3 = ray.getDir().dotProduct(n3);
 
             if ((t1 >0 && t2 > 0 && t3 > 0)||(t1 < 0 && t2 < 0 && t3 <0)) {
-                triangleIntersections.add(p);
+                triangleIntersections.add(p.point);
             }
         }
         // If there are no intersections with the triangle, return null
@@ -51,15 +51,4 @@ public class Triangle extends Polygon {
 
         return List.of(new GeoPoint(this,triangleIntersections.get(0))) ;
     }
-
-
-    /**
-     * @param ray
-     * @return
-     */
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        return findGeoIntersectionsHelper(ray);
-    }
-
 }

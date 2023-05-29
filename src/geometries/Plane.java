@@ -39,18 +39,10 @@ public class Plane extends Geometry{
     }
 
 
-    /**
-     * @param ray
-     * @return
-     */
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        return findGeoIntersectionsHelper(ray);
-    }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
-        List<Point> result = null;
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray , double maxDistance) {
+        Point result = null;
 
         // Get the triangle's normal,
         Vector n = getNormal();
@@ -63,10 +55,12 @@ public class Plane extends Geometry{
         if (!isZero(nv)){
             // Calculate the intersection point between the ray and the plane.
             double t = alignZero( n.dotProduct(q0.subtract(p0)) / nv);
-            // Check if the intersection point is in front of the starting point of the ray.
-            if (t > 0 && Double.isFinite(t)) {
-                // Calculate the intersection point coordinates and return it
-                result = List.of(ray.getPoint(t));
+            if(alignZero(maxDistance - t) > 0){
+                // Check if the intersection point is in front of the starting point of the ray.
+                if (t > 0 && Double.isFinite(t)) {
+                    // Calculate the intersection point coordinates and return it
+                    result = ray.getPoint(t);
+                }
             }
         }
 
@@ -74,7 +68,7 @@ public class Plane extends Geometry{
             return null;
         }
         // Return the intersection point or null if no intersection exists.
-        return List.of(new GeoPoint(this,result.get(0))) ;
+        return List.of(new GeoPoint(this,result)) ;
     }
 
 }

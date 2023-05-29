@@ -25,11 +25,11 @@ public class Geometries extends Intersectable {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
 
         List<GeoPoint> result = null;
         for (Intersectable shape : intersectables) {
-            List<GeoPoint> shapePoints = shape.findGeoIntersections(ray);
+            List<GeoPoint> shapePoints = shape.findGeoIntersections(ray, maxDistance);
             if (shapePoints != null) {
                 if (result == null) {
                     result = new LinkedList<>();
@@ -38,15 +38,6 @@ public class Geometries extends Intersectable {
             }
         }
         return result;
-    }
-
-    /**
-     * @param ray
-     * @return
-     */
-    @Override
-    public List<GeoPoint> findGeoIntersections(Ray ray) {
-        return findGeoIntersectionsHelper(ray);
     }
 
 }
