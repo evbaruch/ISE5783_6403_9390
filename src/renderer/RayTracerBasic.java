@@ -22,23 +22,22 @@ public class RayTracerBasic extends RayTracerBase {
     private static final double DELTA = 0.1;
 
 
-    private boolean unshaded(GeoPoint gp, Vector l) {
+//    private boolean unshaded(GeoPoint gp, Vector l, double distance) {
+//        Vector lightDirection = l.scale(-1); // from point to light source
+//        Ray lightRay = new Ray(gp.point, lightDirection);
+//        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay, distance);
+//        return intersections == null ? true : false;
+//    }
+
+    private boolean unshaded(GeoPoint gp, LightSource light, Vector l,  Vector n, double nl) {
         Vector lightDirection = l.scale(-1); // from point to light source
-        Ray lightRay = new Ray(gp.point, lightDirection);
-        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay);
+        Vector epsVector = n.scale(nl < 0 ? DELTA : -DELTA);//(-1)
+
+        Point point = gp.point.add(epsVector);
+        Ray lightRay = new Ray(point, lightDirection);
+        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay, light.getDistance(gp.point));
         return intersections == null ? true : false;
     }
-
-//    private boolean unshaded(GeoPoint gp, LightSource light, Vector l, Vector n, double nl)
-//    {
-//        Vector lightDirection = l.scale(-1); // from point to light source
-//        Vector epsVector = n.scale(nl < 0 ? DELTA : -DELTA);
-//        Point point = gp.point.add(epsVector);
-//        Ray lightRay = new Ray(point, lightDirection);
-//        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay);
-//        if (intersections == null) return true;
-//
-//    }
 
 
 
@@ -104,7 +103,7 @@ public class RayTracerBasic extends RayTracerBase {
             double nl = alignZero(n.dotProduct(l));
 
             // If the signs of nl and nv are the same, calculate the diffuse and specular effects
-            if (nl * nv > 0 && unshaded(gp, l)) { // sign(nl) == sing(nv)
+            if (nl * nv > 0 && unshaded(gp, lightSource, l, n, nl)) { // sign(nl) == sing(nv)
 
                 // Get the intensity of the light source at the geometric point
                 Color iL = lightSource.getIntensity(gp.point);
