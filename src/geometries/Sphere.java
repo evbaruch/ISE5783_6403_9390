@@ -60,22 +60,19 @@ public class Sphere extends RadialGeometry {
             if (alignZero(maxDistance - t2) > 0){
                 result = List.of(new GeoPoint(this,ray.getPoint(t2)));
             }
-        } else {
+        }
+        else {
             // Both intersection points are in front of the ray
             //We will check that our point is at the appropriate distance
-            if (alignZero(maxDistance - t1) > 0){
+            if (alignZero(maxDistance - t1) > 0 && alignZero(maxDistance - t2) > 0){
+                result = List.of(new GeoPoint(this,ray.getPoint(t1)), new GeoPoint(this,ray.getPoint(t2)));
+            }
+            else if (alignZero(maxDistance - t1) > 0){
                 result = List.of(new GeoPoint(this,ray.getPoint(t1)));
             }
-            if (alignZero(maxDistance - t2) > 0){
-                //We will check if the first point is accepted
-                if (result == null){
-                    result = List.of(new GeoPoint(this,ray.getPoint(t2)));
-                }
-                else {
-                    result.add(new GeoPoint(this,ray.getPoint(t2)));
-                }
+            else {
+                result = List.of(new GeoPoint(this,ray.getPoint(t2)));
             }
-
         }
 
         return result;
