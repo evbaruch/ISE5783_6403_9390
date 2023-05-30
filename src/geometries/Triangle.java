@@ -13,8 +13,12 @@ public class Triangle extends Polygon {
     }
 
     /**
-     * @param ray
-     * @return
+     * Helper method to find the geometric intersections between a ray and the triangle.
+     *
+     * @param ray         The ray to intersect with the triangle
+     * @param maxDistance The maximum distance of valid intersections
+     * @return A list of GeoPoint objects representing the geometric intersections,
+     *         or null if no intersection is found
      */
     @Override
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray , double maxDistance) {
