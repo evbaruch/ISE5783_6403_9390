@@ -21,14 +21,16 @@ public class RayTracerBasic extends RayTracerBase {
 
     private static final double DELTA = 0.1;
 
-
-//    private boolean unshaded(GeoPoint gp, Vector l, double distance) {
-//        Vector lightDirection = l.scale(-1); // from point to light source
-//        Ray lightRay = new Ray(gp.point, lightDirection);
-//        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay, distance);
-//        return intersections == null ? true : false;
-//    }
-
+    /**
+     * Checks if a point is unshaded by a specific light source.
+     *
+     * @param gp       The geometric point representing the intersection.
+     * @param light    The light source.
+     * @param l        The direction vector from the point to the light source.
+     * @param n        The normal vector at the intersection point.
+     * @param nl       The dot product between the normal vector and the direction vector to the light source.
+     * @return True if the point is unshaded by the light source, false otherwise.
+     */
     private boolean unshaded(GeoPoint gp, LightSource light, Vector l,  Vector n, double nl) {
         Vector lightDirection = l.scale(-1); // from point to light source
         Vector epsVector = n.scale(nl < 0 ? DELTA : -DELTA);//(-1)
@@ -118,12 +120,29 @@ public class RayTracerBasic extends RayTracerBase {
         return color;
     }
 
-
+    /**
+     * Calculates the diffusive reflection contribution for a given material and dot product between the normal vector
+     * and the direction vector to the light source.
+     *
+     * @param material The material of the object.
+     * @param nl       The dot product between the normal vector and the direction vector to the light source.
+     * @return The diffusive reflection contribution as a Double3 color value.
+     */
     private Double3 calcDiffusive(Material material, double nl) {
         double absNl = (nl < 0) ? -nl : nl;
         return material.kd.scale(absNl);
     }
 
+    /**
+     * Calculates the specular reflection contribution for a given material and lighting conditions.
+     *
+     * @param material The material of the object.
+     * @param n        The normal vector at the intersection point.
+     * @param l        The direction vector from the point to the light source.
+     * @param nl       The dot product between the normal vector and the direction vector to the light source.
+     * @param v        The direction vector from the point to the viewer.
+     * @return The specular reflection contribution as a Double3 color value.
+     */
     private Double3 calcSpecular(Material material, Vector n, Vector l, double nl, Vector v) {
         Double3 ks = material.Ks;
         int shininess = material.nShininess;
