@@ -5,11 +5,11 @@ package renderer;
 
 import static java.awt.Color.*;
 
-import geometries.Geometries;
+import geometries.*;
+import lighting.LightSource;
+import lighting.PointLight;
 import org.junit.jupiter.api.Test;
 
-import geometries.Sphere;
-import geometries.Triangle;
 import lighting.AmbientLight;
 import lighting.SpotLight;
 import primitives.*;
@@ -23,11 +23,13 @@ import scene.Scene;
 public class ReflectionRefractionTests {
    private Scene scene;// = new Scene("Test scene");
 
-   /** Produce a picture of a sphere lighted by a spot light */
+   /**
+    * Produce a picture of a sphere lighted by a spot light
+    */
    @Test
    public void twoSpheres() {
       Camera camera = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
-         .setVPSize(150, 150).setVPDistance(1000);
+              .setVPSize(150, 150).setVPDistance(1000);
 
       Geometries gGeometries = new Geometries(
               new Sphere(
@@ -52,16 +54,18 @@ public class ReflectionRefractionTests {
 
 
       camera.setImageWriter(new ImageWriter("refractionTwoSpheres", 500, 500))
-         .setRayTracer(new RayTracerBasic(scene))
-         .renderImage()
-         .writeToImage();
+              .setRayTracer(new RayTracerBasic(scene))
+              .renderImage()
+              .writeToImage();
    }
 
-   /** Produce a picture of a sphere lighted by a spot light */
+   /**
+    * Produce a picture of a sphere lighted by a spot light
+    */
    @Test
    public void twoSpheresOnMirrors() {
       Camera camera = new Camera(new Point(0, 0, 10000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
-         .setVPSize(2500, 2500).setVPDistance(10000);
+              .setVPSize(2500, 2500).setVPDistance(10000);
 
       Geometries gGeometries = new Geometries(
               new Sphere(
@@ -106,9 +110,9 @@ public class ReflectionRefractionTests {
 
       ImageWriter imageWriter = new ImageWriter("reflectionTwoSpheresMirrored", 500, 500);
       camera.setImageWriter(imageWriter) //
-         .setRayTracer(new RayTracerBasic(scene)) //
-         .renderImage() //
-         .writeToImage();
+              .setRayTracer(new RayTracerBasic(scene)) //
+              .renderImage() //
+              .writeToImage();
    }
 
    //   /** Produce a picture of a sphere lighted by a spot light */
@@ -144,13 +148,15 @@ public class ReflectionRefractionTests {
    //         .writeToImage();
    //   }
 
-   /** Produce a picture of a two triangles lighted by a spot light with a
+   /**
+    * Produce a picture of a two triangles lighted by a spot light with a
     * partially
-    * transparent Sphere producing partial shadow */
+    * transparent Sphere producing partial shadow
+    */
    @Test
    public void trianglesTransparentSphere() {
       Camera camera = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
-         .setVPSize(200, 200).setVPDistance(1000);
+              .setVPSize(200, 200).setVPDistance(1000);
 
       Geometries gGeometries = new Geometries(
               new Triangle(
@@ -182,8 +188,53 @@ public class ReflectionRefractionTests {
 
       ImageWriter imageWriter = new ImageWriter("refractionShadow", 600, 600);
       camera.setImageWriter(imageWriter) //
-         .setRayTracer(new RayTracerBasic(scene)) //
-         .renderImage() //
-         .writeToImage();
+              .setRayTracer(new RayTracerBasic(scene)) //
+              .renderImage() //
+              .writeToImage();
    }
+
+   @Test
+   public void test() {
+      Camera camera = new Camera(new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
+              .setVPSize(200, 200).setVPDistance(1000);
+
+      Geometries geometries = new Geometries(
+              new Sphere(
+                      new Point(0, 0, -40), 50d)
+                      .setEmission(new Color(BLUE))
+                      .setMaterial(
+                              new Material()
+                                      .setKd(0.4)
+                                      .setKs(0.3)
+                                      .setShininess(100)
+                                      .setKt(0.3).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
+                                      ,
+              new Polygon(
+                      new Point(60,30,-10),
+                      new Point(80,-10,5),
+                      new Point(-80,-10,5),
+                      new Point(-80,30,-10)
+                      )
+                      .setEmission(new Color(RED))
+      );
+
+      scene = new Scene.SceneBuilder("Test scene")
+              .setGeometries(geometries)
+              .setLights(
+                      new SpotLight(
+                              new Color(1000, 600, 0),
+                              new Point(-100, -100, 500),
+                              new Vector(-1, -1, -2))
+                              .setKl(0.0004)
+                              .setKq(0.0000006))
+              .build();
+
+
+      ImageWriter imageWriter = new ImageWriter("refractionShadow", 600, 600);
+      camera.setImageWriter(imageWriter)
+              .setRayTracer(new RayTracerBasic(scene))
+              .renderImage()
+              .writeToImage();
+   }
+
 }

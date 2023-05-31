@@ -11,6 +11,11 @@ public class Material {
     public static final double VACUUM_REFRACTIVE_INDEX = 1.0;
 
     /**
+     * Refractive index for glass material.
+     */
+    public static final double GLASS_REFRACTIVE_INDEX = 1.5;
+
+    /**
      * Refractive index for air at STP.
      */
     public static final double AIR_REFRACTIVE_INDEX = 1.000273;
