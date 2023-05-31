@@ -163,26 +163,61 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
+    /**
+     * Constructs the refracted ray based on Snell's law at the given intersection point.
+     *
+     * If the refractive indices of the intersected geometry and the scene are the same,
+     * it returns a new ray with the same direction as the incident ray.
+     *
+     * If total internal reflection occurs, it calculates the reflected ray.
+     * Otherwise, it computes the refracted ray according to Snell's law.
+     *
+     * @param geoPoint The intersection point on the geometry.
+     * @param inRay    The incident ray.
+     * @return The refracted ray.
+     */
     private Ray constructRefractedRay(GeoPoint geoPoint, Ray inRay) {
-        boolean snell = false;
+        boolean snell = true;
         if (snell) {
             Vector n = geoPoint.geometry.getNormal(geoPoint.point);
             double Ni = scene.getRefractiveIndex();
             double Nj = geoPoint.geometry.getMaterial().refractiveIndex;
 
-            if (Ni == Nj ) {
+            // Case: Same refractive indices
+            if (Ni == Nj) {
+                // No refraction occurs, return a new ray with the same direction
                 return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), inRay.getDir());
             }
 
             double incidentAngle = Math.acos(n.dotProduct(inRay.getDir()));
-            double refractedAngle = Math.asin((Ni / Nj) * Math.sin(incidentAngle));
+            double sinThetaR = (Ni / Nj) * Math.sin(incidentAngle);
+
+            // Case: Total internal reflection
+            if (sinThetaR >= 1.0) {
+
+                //  The incident ray undergoes total internal reflection at the interface between two mediums.
+                //  Calculate the reflected direction using the law of reflection.
+                //  The reflected direction is obtained by subtracting two times the projection of the incident ray direction onto the surface normal vector,
+                //  scaled by the surface normal vector itself.
+                Vector reflectedDir = inRay.getDir().subtract(n.scale(2 * inRay.getDir().dotProduct(n)));
+                //  Create a new ray representing the reflected ray.
+                //  Shift the origin slightly along the incident ray direction and set the direction as the calculated reflected direction.
+                return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), reflectedDir);
+            }
+
+            double refractedAngle = Math.asin(sinThetaR);
+
+            // Case: Regular refraction
+            // Calculate the refracted direction using Snell's law: n1 * sin(theta1) = n2 * sin(theta2)
+            // refractedDir = (n1/n2) * incidentDir + (n1/n2 * cos(theta1) - cos(theta2)) * normalDir
             Vector refractedDir = inRay.getDir().scale(Ni / Nj).add(n.scale((Ni / Nj) * Math.cos(incidentAngle) - Math.cos(refractedAngle)));
 
+            // Return a new ray with the refracted direction
             return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), refractedDir);
+
         } else {
 
-            Point p = shiptPoint(geoPoint,inRay.getDir());
-            return new Ray(p, inRay.getDir());
+            return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), inRay.getDir());
         }
 
     }
