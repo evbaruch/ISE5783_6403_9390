@@ -4,12 +4,27 @@ import geometries.Geometries;
 import lighting.AmbientLight;
 import lighting.LightSource;
 import primitives.Color;
+import primitives.Material;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Scene {
+
+    /**
+
+     The refractive index of the scene content.
+     */
+    private final double refractiveIndex;
+    /**
+
+     Retrieves the refractive index of the scene content.
+     @return The refractive index of the scene content.
+     */
+    public double getRefractiveIndex() {
+        return refractiveIndex;
+    }
     private final String name;
     private final Color background ;
     private AmbientLight ambientLight;
@@ -47,10 +62,18 @@ public class Scene {
         this.ambientLight = sceneBuilder.ambientLight;
         this.lights = sceneBuilder.lights;
         this.geometries = sceneBuilder.geometries;
+        this.refractiveIndex = sceneBuilder.refractiveIndex;
     }
 
     public static class SceneBuilder {
 
+
+
+        /**
+
+         The refractive index of the scene content.
+         */
+        public double refractiveIndex = 1;
         public final String name;
         public Color background = Color.BLACK;
         public AmbientLight ambientLight = AmbientLight.NONE;
@@ -75,6 +98,10 @@ public class Scene {
         }
         public SceneBuilder setGeometries(Geometries geometries) {
             this.geometries = geometries;
+            return this;
+        }
+        public SceneBuilder setRefractiveIndex(double refractiveIndex) {
+            this.refractiveIndex = refractiveIndex;
             return this;
         }
 
