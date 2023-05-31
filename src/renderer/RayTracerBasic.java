@@ -61,12 +61,11 @@ public class RayTracerBasic extends RayTracerBase {
 
     private Color calcColor(GeoPoint gp, Ray ray) {
         return calcColor(gp, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K).add(scene.getAmbientLight().getIntensity());
-
     }
 
 
     private Color calcColor(GeoPoint gp, Ray ray, int level, Double3 k) {
-        Color color = calcLocalEffects(gp, ray);
+        Color color = calcLocalEffects(gp, ray, k);
         return level == 1 ? color : color.add(calcGlobalEffects(gp, ray, level, k));
     }
 
@@ -78,7 +77,7 @@ public class RayTracerBasic extends RayTracerBase {
      * @param ray The ray.
      * @return The color with local effects applied.
      */
-    private Color calcLocalEffects(GeoPoint gp, Ray ray) {
+    private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {
         // Start with the emission color of the geometry
         Color color = gp.geometry.getEmission();
 
@@ -105,16 +104,18 @@ public class RayTracerBasic extends RayTracerBase {
             double nl = alignZero(n.dotProduct(l));
 
             // If the signs of nl and nv are the same, calculate the diffuse and specular effects
-            if (nl * nv > 0 && unshaded(gp, lightSource, l)) { // sign(nl) == sing(nv)
+            if (nl * nv > 0) { // sign(nl) == sing(nv)
+                Double3 ktr = transparency(gp, lightSource, l);
+                if (ktr.product(k).greaterThan(MIN_CALC_COLOR_K)){
+                    // Get the intensity of the light source at the geometric point
+                    Color iL = lightSource.getIntensity(gp.point).scale(ktr);
 
-                // Get the intensity of the light source at the geometric point
-                Color iL = lightSource.getIntensity(gp.point);
-
-                // Add the diffuse and specular components to the color
-                color = color.add(
-                        iL.scale(calcDiffusive(material, nl)),
-                        iL.scale(calcSpecular(material, n, l, nl, v))
-                );
+                    // Add the diffuse and specular components to the color
+                    color = color.add(
+                            iL.scale(calcDiffusive(material, nl)),
+                            iL.scale(calcSpecular(material, n, l, nl, v))
+                    );
+                }
             }
         }
         return color;
@@ -231,7 +232,7 @@ public class RayTracerBasic extends RayTracerBase {
      * @param l        The direction vector from the point to the light source.
      * @return True if the point is unshaded by the light source, false otherwise.
      */
-    private boolean unshaded(GeoPoint gp, LightSource light, Vector l) {
+    private Double3 transparency(GeoPoint gp, LightSource light, Vector l) {
         // gp = Point on the shape, light = the light source,
         // l = light direction, n = the normal vector
         // nl = dotProduct of n and l
@@ -246,18 +247,14 @@ public class RayTracerBasic extends RayTracerBase {
 
         //We will only return false here if there is a point on the path that is not transparent at all
         if (intersections == null){
-            return true;
+            return Double3.ONE;//צריך עיון
         } else{
-            boolean flag = true;
+            Double3 ktr = Double3.ONE;
             //We will go over all the points and check transparency
             for(GeoPoint intersection : intersections){
-                if (intersection.geometry.getMaterial().Kt.equals(Double3.ZERO))
-                {
-                    flag = false;
-                    break;
-                }
+                ktr = ktr.product(intersection.geometry.getMaterial().Kt);
             }
-            return flag;
+            return ktr;
         }
     }
 
