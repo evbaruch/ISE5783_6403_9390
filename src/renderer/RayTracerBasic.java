@@ -154,8 +154,12 @@ public class RayTracerBasic extends RayTracerBase {
         boolean snell = false;
         if (snell) {
             Vector n = geoPoint.geometry.getNormal(geoPoint.point);
-            double Ni = 1.0003;
-            double Nj = 1.52;
+            double Ni = scene.getRefractiveIndex();
+            double Nj = geoPoint.geometry.getMaterial().refractiveIndex;
+
+            if (Ni == Nj ) {
+                return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), inRay.getDir());
+            }
 
             double incidentAngle = Math.acos(n.dotProduct(inRay.getDir()));
             double refractedAngle = Math.asin((Ni / Nj) * Math.sin(incidentAngle));
