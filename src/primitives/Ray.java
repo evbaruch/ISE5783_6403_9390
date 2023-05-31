@@ -50,7 +50,7 @@ public class Ray {
      * @return The closest point to the reference point, or null if the list is empty.
      */
     public GeoPoint findClosestGeoPoint(List<GeoPoint> points) {
-        if (points.isEmpty()) {
+        if (points == null) {
             return null;
         }
         double closestDistance = Double.MAX_VALUE;
