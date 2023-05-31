@@ -75,6 +75,25 @@ public class RayTracerBasic extends RayTracerBase {
                 .add(calcLocalEffects(intersection, ray));
     }
 
+
+    private Ray constructRefractedRay(GeoPoint geoPoint, Ray inRay) {
+        boolean snell = false;
+        if (snell) {
+            Vector n = geoPoint.geometry.getNormal(geoPoint.point);
+            double Ni = 1.0003;
+            double Nj = 1.52;
+
+            double incidentAngle = Math.acos(n.dotProduct(inRay.getDir()));
+            double refractedAngle = Math.asin((Ni / Nj) * Math.sin(incidentAngle));
+            Vector refractedDir = inRay.getDir().scale(Ni / Nj).add(n.scale((Ni / Nj) * Math.cos(incidentAngle) - Math.cos(refractedAngle)));
+
+            return new Ray(geoPoint.point, refractedDir);
+        } else {
+            return new Ray(geoPoint.point, inRay.getDir());
+        }
+
+    }
+
     /**
      * Calculates the local effects (diffuse and specular) at a given geometric point.
      *

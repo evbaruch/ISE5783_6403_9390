@@ -53,7 +53,6 @@ public class Ray {
         if (points.isEmpty()) {
             return null;
         }
-
         double closestDistance = Double.MAX_VALUE;
         GeoPoint closestPoint = null;
 
