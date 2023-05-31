@@ -105,7 +105,7 @@ public class RayTracerBasic extends RayTracerBase {
             double nl = alignZero(n.dotProduct(l));
 
             // If the signs of nl and nv are the same, calculate the diffuse and specular effects
-            if (nl * nv > 0 && unshaded(gp, lightSource, l, n, nl)) { // sign(nl) == sing(nv)
+            if (nl * nv > 0 && unshaded(gp, lightSource, l)) { // sign(nl) == sing(nv)
 
                 // Get the intensity of the light source at the geometric point
                 Color iL = lightSource.getIntensity(gp.point);
@@ -124,10 +124,10 @@ public class RayTracerBasic extends RayTracerBase {
     private Color calcGlobalEffects(GeoPoint gp, Ray inRay, int level, Double3 k) {
         Color color = Color.BLACK;
         Material mat = gp.geometry.getMaterial();
+
         Double3 kr = mat.Kr;
         Double3 kkr = k.product(kr);
-
-        if (!kkr.greaterThan(MIN_CALC_COLOR_K)){
+        if (kkr.greaterThan(MIN_CALC_COLOR_K)){
             Ray reflectedRay = constructReflectedRay(gp, inRay);
             GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
             if (reflectedPoint == null){
@@ -152,16 +152,13 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
-    private Ray constructReflectedRay(GeoPoint gp,Ray inRay){//צריך עיון
-        Vector r = inRay.getDir().subtract(
-                gp.geometry.getNormal(gp.point).scale(
-                        2 * gp.geometry.getNormal(gp.point).dotProduct(
-                                inRay.getDir()
-                        )
-                )
-        ).normalize();
+    private Ray constructReflectedRay(GeoPoint gp,Ray inRay){
+        Vector v = inRay.getDir();
+        Vector n = gp.geometry.getNormal(gp.point);
+        double vn = v.dotProduct(n);
+        Vector r = v.subtract(n.scale(2 * vn));
 
-        Point p = gp.point.add(r.scale(-DELTA));
+        Point p = shiptPoint(gp,r);
         return new Ray(p,r);
     }
 
@@ -184,7 +181,8 @@ public class RayTracerBasic extends RayTracerBase {
             return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), refractedDir);
         } else {
 
-            return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), inRay.getDir());
+            Point p = shiptPoint(geoPoint,inRay.getDir());
+            return new Ray(p, inRay.getDir());
         }
 
     }
@@ -196,21 +194,16 @@ public class RayTracerBasic extends RayTracerBase {
      * @param gp       The geometric point representing the intersection.
      * @param light    The light source.
      * @param l        The direction vector from the point to the light source.
-     * @param n        The normal vector at the intersection point.
-     * @param nl       The dot product between the normal vector and the direction vector to the light source.
      * @return True if the point is unshaded by the light source, false otherwise.
      */
-    private boolean unshaded(GeoPoint gp, LightSource light, Vector l,  Vector n, double nl) {
+    private boolean unshaded(GeoPoint gp, LightSource light, Vector l) {
         // gp = Point on the shape, light = the light source,
-        // l = vector in the direction of the light, n = the normal vector
+        // l = light direction, n = the normal vector
         // nl = dotProduct of n and l
 
-        // We will rotate the vector towards the light from point to light source
         Vector lightDirection = l.scale(-1);
-        // epsVector Its size is small, and it is towards the light
-        Vector epsVector = n.scale(nl < 0 ? DELTA : -DELTA);
-        // We will move the point towards the light a little by DELTA
-        Point point = gp.point.add(epsVector);
+        //Find the new point
+        Point point = shiptPoint(gp,lightDirection);
         // will be built from the new point  a ray
         Ray lightRay = new Ray(point, lightDirection);
         //We will find the entire score up to the light source
@@ -274,6 +267,16 @@ public class RayTracerBasic extends RayTracerBase {
         }
 
         return ks.scale(result);
+    }
+
+
+    private Point shiptPoint(GeoPoint gp,Vector v)
+    {
+        //Moves the point on the normal in the direction of the vector
+        Vector n = gp.geometry.getNormal(gp.point);
+        double d = n.dotProduct(v);
+        Vector epsVector = n.scale(d > 0 ? DELTA : -DELTA);
+        return gp.point.add(epsVector);
     }
 
 }
