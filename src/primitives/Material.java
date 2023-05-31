@@ -5,8 +5,31 @@ package primitives;
  * Material properties include the diffuse coefficient (kd), specular coefficient (Ks), and shininess.
  */
 public class Material {
-    public  Double3 kd = new Double3(0,0,0);
-    public  Double3 Ks = new Double3(0,0,0);
+    /**
+     *
+     */
+    public  Double3 kd = Double3.ZERO;
+
+    /**
+     *
+     */
+    public  Double3 Ks = Double3.ZERO;
+
+    /**
+     *
+     */
+    public Double3 Kt = Double3.ZERO;
+
+
+
+    /**
+     *
+     */
+    public Double3 Kr = Double3.ZERO;
+
+    /**
+     *
+     */
     public int nShininess = 0;
 
     /**
@@ -61,6 +84,25 @@ public class Material {
      */
     public Material setShininess(int nShininess) {
         this.nShininess = nShininess;
+        return this;
+    }
+    public Material setKt(Double3 kt) {
+        Kt = kt;
+        return this;
+    }
+
+    public Material setKr(Double3 kr) {
+        Kr = kr;
+        return this;
+    }
+
+    public Material setKt(double kt) {
+        Kt = new Double3(kt);
+        return this;
+    }
+
+    public Material setKr(double kr) {
+        Kr = new Double3(kr);
         return this;
     }
 }
