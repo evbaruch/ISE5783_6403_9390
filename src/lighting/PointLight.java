@@ -12,6 +12,30 @@ public class PointLight extends Light implements LightSource{
 
     private Point position;
 
+
+    /**
+
+     The constant coefficient (Kc) determines the attenuation of light intensity
+     with respect to distance. It represents the constant term in the attenuation
+     equation and is used to calculate the overall light intensity. A higher Kc value
+     results in less attenuation and a longer reach of the light.
+     */
+
+    /**
+
+     The linear coefficient (Kl) determines the linear attenuation of light intensity
+     with respect to distance. It represents the linear term in the attenuation equation
+     and is used to calculate the overall light intensity. A higher Kl value results in
+     a more rapid decrease in light intensity with increasing distance.
+     */
+
+    /**
+
+     The quadratic coefficient (Kq) determines the quadratic attenuation of light intensity
+     with respect to distance. It represents the quadratic term in the attenuation equation
+     and is used to calculate the overall light intensity. A higher Kq value results in a
+     more significant decrease in light intensity with increasing distance.
+     */
     private double Kc = 1, Kl = 0, Kq = 0;
 
     /**
