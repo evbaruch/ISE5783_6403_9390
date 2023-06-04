@@ -31,7 +31,7 @@ public class Camera {
     /**
      * Sets the ray tracer base to be used for rendering the scene.
      *
-     * @param rayTracerBase the ray tracer base to be used for rendering the scene.
+     * @param rayTracer the ray tracer base to be used for rendering the scene.
      * @return the camera instance with the updated ray tracer base.
      */
     public Camera setRayTracer(RayTracerBase rayTracer) {
@@ -231,6 +231,71 @@ public class Camera {
     private Color castRay(Ray ray){
 
         return this.rayTracer.traceRay(ray);
+    }
+
+
+    /**
+     * Adjusts the horizontal rotation of the camera left/right around the Vup vector.
+     * @param angle The angle in degrees (0 to 360) representing the horizontal rotation.
+     * @return The camera object after the rotation.
+     */
+    public Camera adjustHorizontalRotation(double angle) {
+        // Convert the angle from degrees to radians.
+        double angleInRadians = Math.toRadians(angle);
+
+        // Calculate the new Vto vector by scaling the current VTo vector by the cosine of the angle
+        // and adding the scaled Vright vector multiplied by the sine of the angle.
+        this.Vto = Vto.scale(Math.cos(angleInRadians)).add(Vright.scale(Math.sin(angleInRadians)));
+
+        // Calculate the new VRight vector by scaling the current VRight vector by the cosine of the angle
+        // and subtracting the scaled Vto vector multiplied by the sine of the angle.
+        this.Vright = Vright.scale(Math.cos(angleInRadians)).subtract(Vto.scale(Math.sin(angleInRadians)));
+
+        // Return the camera after the horizontal rotation.
+        return this;
+    }
+
+
+    /**
+     * Adjusts the longitudinal rotation of the camera around the Vto vector.
+     * @param angle the angle in degrees (0 to 360)
+     * @return the camera after the rotation
+     */
+    public Camera rotateLongitudinally(double angle) {
+        // Convert the angle from degrees to radians.
+        double angleInRadian = Math.toRadians(angle);
+
+        // Calculate the new Vup vector by scaling the current Vup vector by the cosine of the angle
+        // and subtracting the scaled Vright vector multiplied by the sine of the angle.
+        this.Vup = Vup.scale(Math.cos(angleInRadian)).subtract(Vright.scale(Math.sin(angleInRadian)));
+
+        // Calculate the new Vright vector by scaling the current Vright vector by the cosine of the angle
+        // and adding the scaled Vup vector multiplied by the sine of the angle.
+        this.Vright = Vright.scale(Math.cos(angleInRadian)).add(Vup.scale(Math.sin(angleInRadian)));
+
+        // Return the updated Camera object with the rotated orientation.
+        return this;
+    }
+
+    /**
+     * tilt is the rotation of the camera up/down around the Vright vector
+     * @param angle the angle in degree (0 to 360)
+     * @return the camera after the rotation
+     */
+    public Camera tiltCamera(double angle) {
+        // Convert the angle from degrees to radians.
+        double angleInRadian = Math.toRadians(angle*-1);
+
+        // Calculate the new VTo vector by scaling the current VTo vector by the cosine of the angle
+        // and subtracting the scaled VUp vector multiplied by the sine of the angle.
+        this.Vto = Vto.scale(Math.cos(angleInRadian)).subtract(Vup.scale(Math.sin(angleInRadian)));
+
+        // Calculate the new VUp vector by scaling the current VUp vector by the cosine of the angle
+        // and adding the scaled VTo vector multiplied by the sine of the angle.
+        this.Vup = Vup.scale(Math.cos(angleInRadian)).add(Vto.scale(Math.sin(angleInRadian)));
+
+        // Return the camera after the tilt rotation.
+        return this;
     }
 
 }

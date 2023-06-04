@@ -178,7 +178,7 @@ public class RayTracerBasic extends RayTracerBase {
      * @return The refracted ray.
      */
     private Ray constructRefractedRay(GeoPoint geoPoint, Ray inRay) {
-        boolean snell = false;
+        boolean snell = true;
         if (snell) {
             Vector n = geoPoint.geometry.getNormal(geoPoint.point);
             double Ni = scene.getRefractiveIndex();
