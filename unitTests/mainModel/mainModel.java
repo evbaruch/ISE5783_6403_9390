@@ -1,6 +1,7 @@
 package mainModel;
 
 import geometries.Geometries;
+import geometries.Plane;
 import geometries.Polygon;
 import geometries.Sphere;
 import lighting.PointLight;
@@ -196,6 +197,10 @@ public class mainModel {
                         .setMaterial(new Material()
                                 .setKs(0.3).setKd(0.7))
                 ,
+                new Plane(new Point(0,0,10000),new Vector(0,0,1)).setEmission(new Color(YELLOW).scale(4).add(new Color(WHITE).reduce(1.4)))
+                        .setMaterial(new Material()
+                                .setKs(0.3).setKd(0.7))
+                ,
                 new Polygon(
                         // Represents the mirror
                         new Point(-20.0, -35.0, -199.0),
@@ -205,7 +210,7 @@ public class mainModel {
                 )
                         .setEmission(new Color(GRAY))
                         .setMaterial(new Material()
-                                .setKs(0.3).setKd(0.7).setKr(0.9).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
+                                .setKs(0.3).setKd(0.7).setKr(0.4).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
                 ,
                 new Polygon(
                         // Represents the wall on the positive y-axis side of the room
@@ -462,7 +467,14 @@ public class mainModel {
                         .setMaterial(new Material()
                                 .setKd(0.7).setKs(0.3))
                 ,
-                new Sphere(new Point(0,0,0),10d).setEmission(new Color(BLUE))
+                new Sphere(new Point(0,-30,0),5d)
+                        .setEmission(new Color(BLUE))
+                        .setMaterial(
+                                new Material()
+                                        .setKd(0.7)
+                                        .setKs(0.3)
+                                        .setKt(0.9)
+                                        .setRefractiveIndex(Material.VACUUM_REFRACTIVE_INDEX))
                 );
 
 
