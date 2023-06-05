@@ -1,9 +1,6 @@
 package mainModel;
 
-import geometries.Geometries;
-import geometries.Plane;
-import geometries.Polygon;
-import geometries.Sphere;
+import geometries.*;
 import lighting.PointLight;
 import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
@@ -30,6 +27,16 @@ public class mainModel {
     public void room(){
         Camera camera = new Camera(new Point(20, 20, 700), new Vector(0, 0, -1), new Vector(0, 1, 0))
                 .setVPSize(200, 200).setVPDistance(1000).tiltCamera(-2).adjustHorizontalRotation(-2);
+
+        Material material = new Material()
+                .setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX)
+                .setShininess(7)
+                .setKd(0.1)//diffuse
+                .setKs(0.9)//specular
+                .setKt(0.85)//transmission
+                .setKr(0);//reflection
+
+        Color color = new Color(1, 1, 10);
 
         Geometries geometries = new Geometries(
                 new Polygon(
@@ -475,6 +482,450 @@ public class mainModel {
                                         .setKs(0.3)
                                         .setKt(0.9)
                                         .setRefractiveIndex(Material.VACUUM_REFRACTIVE_INDEX))
+                ,
+                new Polygon(
+                        new Point(5.700000, -0.000000, 3.225308),
+                        new Point(4.030509, 4.030509, 3.225308),
+                        new Point(0.000000, 5.700000, 3.225308),
+                        new Point(-4.030509, 4.030509, 3.225308),
+                        new Point(-5.700000, 0.000000, 3.225308),
+                        new Point(-4.030509, -4.030508, 3.225308),
+                        new Point(-0.000000, -5.700000, 3.225308),
+                        new Point(4.030508, -4.030509, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(6.880509, -2.850000, 2.413967),
+                        new Point(4.030508, -4.030509, 3.225308),
+                        new Point(5.700000, -0.000000, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(6.880508, 2.850000, 2.413967),
+                        new Point(5.700000, -0.000000, 3.225308),
+                        new Point(4.030509, 4.030509, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(2.850000, 6.880508, 2.413967),
+                        new Point(4.030509, 4.030509, 3.225308),
+                        new Point(0.000000, 5.700000, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-2.850000, 6.880509, 2.413967),
+                        new Point(0.000000, 5.700000, 3.225308),
+                        new Point(-4.030508, 4.030509, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-6.880508, 2.850000, 2.413967),
+                        new Point(-4.030508, 4.030509, 3.225308),
+                        new Point(-5.700000, 0.000000, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-6.880509, -2.849999, 2.413967),
+                        new Point(-5.700000, 0.000000, 3.225308),
+                        new Point(-4.030509, -4.030508, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-2.850000, -6.880508, 2.413967),
+                        new Point(-4.030509, -4.030508, 3.225308),
+                        new Point(-0.000000, -5.700000, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(2.849999, -6.880509, 2.413967),
+                        new Point(-0.000000, -5.700000, 3.225308),
+                        new Point(4.030508, -4.030509, 3.225308))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(5.700000, -0.000000, 3.225308),
+                        new Point(6.880509, -2.850000, 2.413967),
+                        new Point(6.880509, 2.850001, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.000002, -0.000001, 0.269999),
+                        new Point(6.880509, -2.850000, 2.413967),
+                        new Point(6.880509, 2.850001, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(4.030509, 4.030509, 3.225308),
+                        new Point(6.880509, 2.850000, 2.413967),
+                        new Point(2.850000, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071069, 7.071068, 0.269999),
+                        new Point(6.880509, 2.850000, 2.413967),
+                        new Point(2.850000, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 5.700000, 3.225308),
+                        new Point(2.850001, 6.880509, 2.413967),
+                        new Point(-2.850001, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 10.000001, 0.269999),
+                        new Point(2.850001, 6.880509, 2.413967),
+                        new Point(-2.850001, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-4.030508, 4.030509, 3.225308),
+                        new Point(-2.849999, 6.880509, 2.413967),
+                        new Point(-6.880509, 2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, 7.071069, 0.269999),
+                        new Point(-2.849999, 6.880509, 2.413967),
+                        new Point(-6.880509, 2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-5.700000, 0.000000, 3.225308),
+                        new Point(-6.880509, 2.850001, 2.413967),
+                        new Point(-6.880509, -2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-10.000001, 0.000001, 0.269999),
+                        new Point(-6.880509, 2.850001, 2.413967),
+                        new Point(-6.880509, -2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-4.030509, -4.030508, 3.225308),
+                        new Point(-6.880509, -2.849999, 2.413967),
+                        new Point(-2.850000, -6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071069, -7.071068, 0.269999),
+                        new Point(-6.880509, -2.849999, 2.413967),
+                        new Point(-2.850000, -6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000000, -5.700000, 3.225308),
+                        new Point(-2.850001, -6.880509, 2.413967),
+                        new Point(2.850000, -6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000001, -10.000001, 0.269999),
+                        new Point(-2.850001, -6.880509, 2.413967),
+                        new Point(2.850000, -6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(4.030508, -4.030509, 3.225308),
+                        new Point(2.849999, -6.880510, 2.413967),
+                        new Point(6.880509, -2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071068, -7.071069, 0.269999),
+                        new Point(2.849999, -6.880510, 2.413967),
+                        new Point(6.880509, -2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.000002, -0.000001, 0.269999),
+                        new Point(9.529282, -3.947159, 0.005913),
+                        new Point(6.880509, -2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.000002, -0.000001, 0.269999),
+                        new Point(9.529282, 3.947158, 0.005913),
+                        new Point(6.880509, 2.850001, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071069, 7.071068, 0.269999),
+                        new Point(9.529282, 3.947158, 0.005913),
+                        new Point(6.880509, 2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071069, 7.071068, 0.269999),
+                        new Point(3.947158, 9.529282, 0.005913),
+                        new Point(2.850000, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 10.000001, 0.269999),
+                        new Point(3.947158, 9.529282, 0.005913),
+                        new Point(2.850001, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 10.000001, 0.269999),
+                        new Point(-3.947158, 9.529282, 0.005913),
+                        new Point(-2.850001, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, 7.071069, 0.269999),
+                        new Point(-3.947158, 9.529282, 0.005913),
+                        new Point(-2.849999, 6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, 7.071069, 0.269999),
+                        new Point(-9.529282, 3.947158, 0.005913),
+                        new Point(-6.880509, 2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-10.000001, 0.000001, 0.269999),
+                        new Point(-9.529282, 3.947158, 0.005913),
+                        new Point(-6.880509, 2.850001, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-10.000001, 0.000001, 0.269999),
+                        new Point(-9.529282, -3.947157, 0.005913),
+                        new Point(-6.880509, -2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071069, -7.071068, 0.269999),
+                        new Point(-9.529282, -3.947157, 0.005913),
+                        new Point(-6.880509, -2.849999, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071069, -7.071068, 0.269999),
+                        new Point(-3.947159, -9.529282, 0.005913),
+                        new Point(-2.850000, -6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000001, -10.000001, 0.269999),
+                        new Point(-3.947159, -9.529282, 0.005913),
+                        new Point(-2.850001, -6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000001, -10.000001, 0.269999),
+                        new Point(3.947157, -9.529282, 0.005913),
+                        new Point(2.850000, -6.880509, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071068, -7.071069, 0.269999),
+                        new Point(3.947157, -9.529282, 0.005913),
+                        new Point(2.849999, -6.880510, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071068, -7.071069, 0.269999),
+                        new Point(9.529282, -3.947159, 0.005913),
+                        new Point(6.880509, -2.850000, 2.413967))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.000006, -0.000001, -0.269994),
+                        new Point(9.529282, -3.947159, 0.005913),
+                        new Point(1.799999, -0.745584, -7.335573))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.000006, -0.000001, -0.269994),
+                        new Point(9.529282, 3.947158, 0.005913),
+                        new Point(1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071068, 7.071068, -0.269999),
+                        new Point(9.529282, 3.947158, 0.005913),
+                        new Point(1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071068, 7.071068, -0.269999),
+                        new Point(3.947158, 9.529282, 0.005913),
+                        new Point(0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 10.000000, -0.269999),
+                        new Point(3.947158, 9.529282, 0.005913),
+                        new Point(0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 10.000000, -0.269999),
+                        new Point(-3.947158, 9.529282, 0.005913),
+                        new Point(-0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, 7.071068, -0.269999),
+                        new Point(-3.947158, 9.529282, 0.005913),
+                        new Point(-0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, 7.071068, -0.269999),
+                        new Point(-9.529282, 3.947158, 0.005913),
+                        new Point(-1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-10.000000, 0.000001, -0.269999),
+                        new Point(-9.529282, 3.947158, 0.005913),
+                        new Point(-1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-10.000000, 0.000001, -0.269999),
+                        new Point(-9.529282, -3.947157, 0.005913),
+                        new Point(-1.800000, -0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, -7.071068, -0.269999),
+                        new Point(-9.529282, -3.947157, 0.005913),
+                        new Point(-1.800000, -0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, -7.071068, -0.269999),
+                        new Point(-3.947159, -9.529282, 0.005913),
+                        new Point(-0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000001, -10.000000, -0.269999),
+                        new Point(-3.947159, -9.529282, 0.005913),
+                        new Point(-0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000001, -10.000000, -0.269999),
+                        new Point(3.947157, -9.529282, 0.005913),
+                        new Point(0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071067, -7.071069, -0.269999),
+                        new Point(3.947157, -9.529282, 0.005913),
+                        new Point(0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071067, -7.071069, -0.269999),
+                        new Point(9.529282, -3.947159, 0.005913),
+                        new Point(1.800000, -0.745585, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.000006, -0.000001, -0.269994),
+                        new Point(1.800000, 0.745584, -7.335572),
+                        new Point(1.799999, -0.745584, -7.335573))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000000, 0.000000, -8.886552),
+                        new Point(1.800000, 0.745584, -7.335572),
+                        new Point(1.799999, -0.745584, -7.335573))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071068, 7.071068, -0.269999),
+                        new Point(0.745584, 1.800000, -7.335572),
+                        new Point(1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000000, -0.000000, -8.886552),
+                        new Point(0.745584, 1.800000, -7.335572),
+                        new Point(1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 10.000000, -0.269999),
+                        new Point(-0.745584, 1.800000, -7.335572),
+                        new Point(0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000000, -0.000000, -8.886552),
+                        new Point(-0.745584, 1.800000, -7.335572),
+                        new Point(0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, 7.071068, -0.269999),
+                        new Point(-1.800000, 0.745584, -7.335572),
+                        new Point(-0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, 0.000000, -8.886552),
+                        new Point(-1.800000, 0.745584, -7.335572),
+                        new Point(-0.745584, 1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-10.000000, 0.000001, -0.269999),
+                        new Point(-1.800000, -0.745584, -7.335572),
+                        new Point(-1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000000, 0.000000, -8.886552),
+                        new Point(-1.800000, -0.745584, -7.335572),
+                        new Point(-1.800000, 0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-7.071068, -7.071068, -0.269999),
+                        new Point(-0.745584, -1.800000, -7.335572),
+                        new Point(-1.800000, -0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000000, -0.000000, -8.886552),
+                        new Point(-0.745584, -1.800000, -7.335572),
+                        new Point(-1.800000, -0.745584, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000001, -10.000000, -0.269999),
+                        new Point(0.745584, -1.800000, -7.335572),
+                        new Point(-0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.000000, -0.000000, -8.886552),
+                        new Point(0.745584, -1.800000, -7.335572),
+                        new Point(-0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(7.071067, -7.071069, -0.269999),
+                        new Point(1.800000, -0.745585, -7.335572),
+                        new Point(0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(-0.000000, -0.000000, -8.886552),
+                        new Point(1.800000, -0.745585, -7.335572),
+                        new Point(0.745584, -1.800000, -7.335572))
+                        .setEmission(color)
+                        .setMaterial(material)
                 );
 
 
