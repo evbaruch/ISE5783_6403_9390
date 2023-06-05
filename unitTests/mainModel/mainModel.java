@@ -27,8 +27,8 @@ public class mainModel {
 
     @Test
     public void room(){
-        Camera camera = new Camera(new Point(0, 0, 700), new Vector(0, 0, -1), new Vector(0, 1, 0))
-                .setVPSize(200, 200).setVPDistance(1000).tiltCamera(0);
+        Camera camera = new Camera(new Point(20, 20, 700), new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setVPSize(200, 200).setVPDistance(1000).tiltCamera(-2).adjustHorizontalRotation(-2);
 
         Geometries geometries = new Geometries(
                 new Polygon(
@@ -461,6 +461,8 @@ public class mainModel {
                         .setEmission(new Color(139, 69, 19))
                         .setMaterial(new Material()
                                 .setKd(0.7).setKs(0.3))
+                ,
+                new Sphere(new Point(0,0,0),10d).setEmission(new Color(BLUE))
                 );
 
 
@@ -469,22 +471,7 @@ public class mainModel {
         scene = new Scene.SceneBuilder("Test scene snell")
                 .setGeometries(geometries)
                 .setLights(
-                        new SpotLight(
-                                new Color(255,255,255),
-                                new Point(0,60,-100),
-                                new Vector(0,-1,0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
-                        ,
-                        new SpotLight(
-                                new Color(255,255,255),
-                                new Point(20,60,0),
-                                new Vector(0,-1,0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
-                        ,
-                        new SpotLight(
-                                new Color(255,255,255),
-                                new Point(20,60,100),
-                                new Vector(0,-1,0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
-                        ,
-                        new PointLight(new Color(255,255,255).reduce(1.5),new Point(0, 60, -50))
+                       // new PointLight(new Color(255,255,255).reduce(1.5),new Point(0, 60, -50))
                           )
                 .build();
 
