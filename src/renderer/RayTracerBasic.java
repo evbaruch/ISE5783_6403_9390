@@ -1,11 +1,15 @@
 package renderer;
 
 
+import geometries.Plane;
 import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+
 import geometries.Intersectable.GeoPoint;
 
 import static primitives.Util.alignZero;
@@ -172,6 +176,22 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
+    private List<Ray> Beam(GeoPoint geoPoint ,Ray ray , double angel){
+        List<Ray> rays = new LinkedList<>();
+        Random random = new Random();
+        Vector up = ray.getDir().perpendicular();
+        Vector right = up.crossProduct(ray.getDir());
+        for (int i = 0 ; i < angel/1.5 ; i++)
+        {
+            Vector displacement = up.scale(random.nextDouble(-angel, angel)).add(right.scale(random.nextDouble(-angel, angel)));
+            Point point = shiptPoint(geoPoint,ray.getDir()).add(displacement);
+            Vector v = point.subtract(ray.getP0());
+            rays.add(new Ray(ray.getP0(),v));
+        }
+        return rays;
+    }
+
+
     /**
      * Calculates the color contribution from global effects (reflection and refraction) at a given intersection point.
      *
@@ -197,15 +217,26 @@ public class RayTracerBasic extends RayTracerBase {
             // Construct the refracted ray based on the intersection point and incoming ray.
             Ray refractedRay = constructRefractedRay(gp, inRay);
 
+
+
             // Find the closest intersection point for the refracted ray.
             GeoPoint refractedPoint = findClosestIntersection(refractedRay);
 
             // Check if a valid intersection point exists.
             if (refractedPoint != null) {
-                // Calculate the color at the refracted intersection point, considering global effects recursively.
-                // The calcColor method takes the refracted intersection point, refracted ray, updated level, and kkt coefficient as parameters.
-                // It returns the color calculated based on the local and global effects at the refracted point.
-                color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
+                if (mat.blurAngle >0) {
+                    List<Ray> rays = Beam(gp, refractedRay, mat.blurAngle);
+                    for (Ray ray : rays) {
+                        color = color.add(calcColor(refractedPoint, ray, level, kkt).scale(kt));
+                    }
+                    color = color.reduce(rays.size());
+                }
+
+                    // Calculate the color at the refracted intersection point, considering global effects recursively.
+                    // The calcColor method takes the refracted intersection point, refracted ray, updated level, and kkt coefficient as parameters.
+                    // It returns the color calculated based on the local and global effects at the refracted point.
+                    color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
+
             }
         }
 
@@ -223,10 +254,19 @@ public class RayTracerBasic extends RayTracerBase {
 
             // Check if a valid intersection point exists.
             if (reflectedPoint != null) {
+                if (mat.glossMeasure > 0) {
+                    List<Ray> rays = Beam(gp, reflectedRay, mat.glossMeasure);
+                    for (Ray ray : rays) {
+                        color = color.add(calcColor(reflectedPoint, ray, level, kkr).scale(kr));
+                    }
+                    color = color.reduce(rays.size());
+                }
+
                 // Calculate the color at the reflected intersection point, considering global effects recursively.
                 // The calcColor method takes the reflected intersection point, reflected ray, updated level, and kkr coefficient as parameters.
                 // It returns the color calculated based on the local and global effects at the reflected point.
                 color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
+
             }
         }
 

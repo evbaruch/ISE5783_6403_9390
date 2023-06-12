@@ -1,7 +1,5 @@
 package primitives;
 
-import java.util.IllegalFormatCodePointException;
-
 /**
  * This class represents a vector in a three-dimensional space.
  * It extends the {@link Point} class, which means it has x, y, and z coordinates.
@@ -118,5 +116,11 @@ public class Vector extends Point {
         return "Vector{" +
                 "v =" + xyz +
                 '}';
+    }
+
+    public Vector perpendicular()
+    {
+        // (x ,y, z)*(-y ,x ,0) = x*-y + y*x +0*z = 0
+        return new Vector(this.xyz.d2*-1,this.xyz.d1,0);
     }
 }
