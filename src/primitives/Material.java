@@ -121,14 +121,24 @@ public class Material {
     public static final double TANTALUM_PENTOXIDE_REFRACTIVE_INDEX = 2.25;
 
     /**
-     *
+     * the length of the rays' max spread at a blurry surface
      */
     public double blurAngle = 0;
 
     /**
-     *
+     * the length of the rays' max spread at a glossy surface
      */
-    public double  glossMeasure = 0;
+    public double glossAngle = 0;
+
+    /**
+     * number of rays when hitting a blurry surface
+     */
+    public int numBlur = 0;
+
+    /**
+     * number of rays when hitting a glossy surface
+     */
+    public int numGloss = 0;
 
     /**
      * The diffuse reflection coefficient (kd) of the material.
@@ -156,6 +166,28 @@ public class Material {
     public int nShininess = 0;
 
     /**
+     * Sets the number of rays when hitting a blurry surface.
+     *
+     * @param numBlur The number of blur rays to set.
+     * @return The Material instance with the updated number of blur rays.
+     */
+    public Material setNumBlur(int numBlur) {
+        this.numBlur = numBlur;
+        return this;
+    }
+
+    /**
+     * Sets the number of rays when hitting a glossy surface.
+     *
+     * @param numGloss The number of gloss rays to set.
+     * @return The Material instance with the updated number of gloss rays.
+     */
+    public Material setNumGloss(int numGloss) {
+        this.numGloss = numGloss;
+        return this;
+    }
+
+    /**
      * The refractive index of the material, used in Snell's law calculations.
      */
     public double refractiveIndex = 1;
@@ -171,13 +203,25 @@ public class Material {
         return this;
     }
 
+    /**
+     * Sets the length of the rays' max spread at a blurry surface.
+     *
+     * @param blurAngle The blur angle to set.
+     * @return The Material instance with the updated blur angle.
+     */
     public Material setBlurAngle(double blurAngle) {
         this.blurAngle = blurAngle;
         return this;
     }
 
-    public Material setGlossMeasure(double glossMeasure) {
-        this.glossMeasure = glossMeasure;
+    /**
+     * Sets the length of the rays' max spread at a glossy surface.
+     *
+     * @param glossAngle The gloss angle to set.
+     * @return The Material instance with the updated gloss angle.
+     */
+    public Material setGlossAngle(double glossAngle) {
+        this.glossAngle = glossAngle;
         return this;
     }
 
@@ -235,21 +279,46 @@ public class Material {
         this.nShininess = nShininess;
         return this;
     }
+
+    /**
+     * Sets the transmission coefficient (Kt) of the material.
+     *
+     * @param kt The transmission coefficient to set, specified as a 3D vector.
+     * @return The Material instance with the updated transmission coefficient.
+     */
     public Material setKt(Double3 kt) {
         Kt = kt;
         return this;
     }
 
+    /**
+     * Sets the reflection coefficient (Kr) of the material.
+     *
+     * @param kr The reflection coefficient to set, specified as a 3D vector.
+     * @return The Material instance with the updated reflection coefficient.
+     */
     public Material setKr(Double3 kr) {
         Kr = kr;
         return this;
     }
 
+    /**
+     * Sets the transmission coefficient (Kt) of the material to a uniform value.
+     *
+     * @param kt The uniform value to set for the transmission coefficient.
+     * @return The Material instance with the updated transmission coefficient.
+     */
     public Material setKt(double kt) {
         Kt = new Double3(kt);
         return this;
     }
 
+    /**
+     * Sets the reflection coefficient (Kr) of the material to a uniform value.
+     *
+     * @param kr The uniform value to set for the reflection coefficient.
+     * @return The Material instance with the updated reflection coefficient.
+     */
     public Material setKr(double kr) {
         Kr = new Double3(kr);
         return this;

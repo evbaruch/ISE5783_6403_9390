@@ -171,12 +171,13 @@ public class Camera {
 
 
     /**
-     Constructs a ray from the camera passing through the given pixel coordinates on the view plane.
-     @param nX the number of pixels in the X axis.
-     @param nY the number of pixels in the Y axis.
-     @param j the X coordinate of the pixel.
-     @param i the Y coordinate of the pixel.
-     @return a ray passing through the given pixel coordinates on the view plane.
+     * Constructs a list of rays for a given pixel position.
+     *
+     * @param nX The number of pixels in the X direction.
+     * @param nY The number of pixels in the Y direction.
+     * @param j  The column index of the pixel.
+     * @param i  The row index of the pixel.
+     * @return A list of rays for the given pixel position.
      */
     public List<Ray> constructRays(int nX, int nY, int j, int i ) {
 
@@ -200,16 +201,22 @@ public class Camera {
             Pij = Pij.add(Vup.scale(Yi));
         }
 
+        // Create a list to store the rays
         List<Ray> listRay = new LinkedList<>();
         Random random = new Random();
+
+        // Generate rays with random offsets within the pixel
         for (int k = 0;k < this.rayNum; k++){
             Point p;
 
+            // Calculate the random position within the pixel
             p = Pij.add(Vright.scale(random.nextDouble(-Rx /2, Rx /2)));
             p = p.add(Vup.scale(random.nextDouble(-Ry /2, Ry /2)));
 
             //Calculation of the vector from the point to the screen according to i j with the addition of randomization
             Vector Vij =  p.subtract(location);
+
+            // Create a ray from the location to the point
             Ray ray = new Ray(location, Vij);
             listRay.add(ray);
         }
@@ -225,25 +232,34 @@ public class Camera {
      * @throws UnsupportedOperationException if the implementation is not supported.
      */
     public Camera renderImage() throws MissingResourceException, UnsupportedOperationException {
+        // Check if all necessary fields are provided
         if (Vto == null || Vup == null || Vright == null || imageWriter == null || location == null || rayTracer == null || distance <= 0.0|| height <= 0.0|| width <= 0.0) {
             throw new MissingResourceException("One or more necessary fields are null.", "Camera", "");
         }
         try {
-
+            // Get the dimensions of the image
             int nx = imageWriter.getNx();
             int ny = imageWriter.getNy();
+
+            // Validate the image dimensions
             if (nx <= 0 || ny <= 0) {
                 throw new IllegalArgumentException("Invalid image dimensions");
             }
-
+            // Iterate over each pixel in the image
             for (int i = 0; i < nx; i++) {
                 for (int j = 0; j < ny; j++) {
+                    // Check if multiple rays per pixel are used
                     if (this.rayNum > 1) {
+                        // Construct a list of rays for the current pixel
                         List<Ray> rays = constructRays(nx, ny, i, j);
+
+                        // Cast the rays and write the resulting color to the image
                         imageWriter.writePixel(i, j, castRays(rays));
                     }
                     else {
+                        // Construct a single ray for the current pixel
                         Ray ray = constructRay(nx, ny, i, j);
+                        // Cast the ray and write the resulting color to the image
                         imageWriter.writePixel(i, j, castRay(ray));
                     }
 
@@ -297,16 +313,32 @@ public class Camera {
         imageWriter.writeToImage();
     }
 
+    /**
+     * Casts a single ray and retrieves the color of the traced ray.
+     *
+     * @param ray The ray to trace.
+     * @return The color obtained by tracing the ray.
+     */
     private Color castRay(Ray ray){
 
         return this.rayTracer.traceRay(ray);
     }
 
+    /**
+     * Casts a list of rays and computes the average color of the traced rays.
+     *
+     * @param rays The list of rays to trace.
+     * @return The average color obtained by tracing the rays.
+     */
     private Color castRays(List<Ray> rays) {
         Color color = new Color(0,0,0);
+
+        // Trace each ray and accumulate the colors
         for (Ray ray : rays) {
             color = color.add( this.rayTracer.traceRay(ray));
         }
+
+        // Reduce the color by the number of rays to compute the average
         return color.reduce(rays.size());
     }
 

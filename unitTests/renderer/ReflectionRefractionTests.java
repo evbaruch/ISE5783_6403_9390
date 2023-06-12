@@ -557,7 +557,7 @@ public class ReflectionRefractionTests {
                       new Point(60.0, 90.0, -200.0),
                       new Point(-60.0, 90.0, -200.0)
               )
-                      .setEmission(new Color(GRAY))
+                      .setEmission(new Color(BLACK))
                       .setMaterial(new Material()
                               .setKr(0.5).setKs(0.3).setKd(0.7)),
 
@@ -585,7 +585,7 @@ public class ReflectionRefractionTests {
                               .setKs(0.3).setKd(0.7))
 
               ,
-              new Sphere( new Point(0,0,-60),20d)
+              new Sphere( new Point(0,0,-70),20d)
                       .setEmission(new Color(30,40,100))
                       .setMaterial(
                               new Material()
@@ -595,9 +595,9 @@ public class ReflectionRefractionTests {
                                       .setKt(0.3).setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX))
               ,
               new Sphere(
-                      new Point(12, 4, -50), 10d)
+                      new Point(12, 4, -60), 10d)
                       .setEmission(new Color(RED))
-                      .setMaterial(new Material().setKd(0.7).setKs(0.3).setKr(0.5).setShininess(100).setKt(0.3).setGlossMeasure(20))
+                      .setMaterial(new Material().setKd(0.7).setKs(0.3).setKr(0.5).setShininess(100).setKt(0.3))
               ,
               new Polygon(
                new Point(-10.0, -70.0, 200.0),
@@ -605,13 +605,13 @@ public class ReflectionRefractionTests {
                new Point(40.0, 0.0, 200.0),
                new Point(-10.0, 0.0, 200.0))
                .setEmission(new Color(0,25,0))
-                      .setEmission(new Color(0,0,0))
+                      .setEmission(new Color(5,20,5))
                       .setMaterial(
                               new Material()
                                       .setKd(0.4)
                                       .setKs(0.2)
                                       .setShininess(20)
-                                      .setKt(0.9).setBlurAngle(40)
+                                      .setKt(0.9).setBlurAngle(6).setNumBlur(100)
                                       )
 
       );
@@ -623,11 +623,6 @@ public class ReflectionRefractionTests {
                       new SpotLight(
                               new Color(255,255,255),
                               new Point(0,60,-100),
-                              new Vector(0,-1,0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
-                      ,
-                      new SpotLight(
-                              new Color(255,255,255),
-                              new Point(20,60,0),
                               new Vector(0,-1,0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
                       ,
                       new SpotLight(
