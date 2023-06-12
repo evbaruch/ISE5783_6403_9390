@@ -178,20 +178,20 @@ public class Camera {
      @param i the Y coordinate of the pixel.
      @return a ray passing through the given pixel coordinates on the view plane.
      */
-    public List<Ray> constructRays(int nX, int nY, int j, int i ) {
+    public List<Ray> constructRays(int nX, int nY, int j, int i) {
 
-        //Image center
+        // Calculate the image center
         Point Pc = location.add(Vto.scale(distance));
 
-        //Calculate the size of each pixel
+        // Calculate the size of each pixel
         double Rx = width / nX;
         double Ry = height / nY;
 
-        //Calculation of displacement according to i j
+        // Calculate the displacement according to i and j
         double Xj = (j - (double) (nX - 1) / 2) * Rx;
         double Yi = -(i - (double) (nY - 1) / 2) * Ry;
 
-        //Calculating the pixels function according to i j and gives a point
+        // Calculate the pixel position according to i and j, giving a point
         Point Pij = Pc;
         if (alignZero(Xj) != 0) {
             Pij = Pij.add(Vright.scale(Xj));
@@ -202,14 +202,15 @@ public class Camera {
 
         List<Ray> listRay = new LinkedList<>();
         Random random = new Random();
-        for (int k = 0;k < this.rayNum; k++){
+        for (int k = 0; k < this.rayNum; k++) {
             Point p;
 
-            p = Pij.add(Vright.scale(random.nextDouble(-Rx /2, Rx /2)));
-            p = p.add(Vup.scale(random.nextDouble(-Ry /2, Ry /2)));
+            // Add randomization to the pixel position within the pixel boundaries
+            p = Pij.add(Vright.scale(random.nextDouble(-Rx / 2, Rx / 2)));
+            p = p.add(Vup.scale(random.nextDouble(-Ry / 2, Ry / 2)));
 
-            //Calculation of the vector from the point to the screen according to i j with the addition of randomization
-            Vector Vij =  p.subtract(location);
+            // Calculate the vector from the point to the screen according to i, j, and randomization
+            Vector Vij = p.subtract(location);
             Ray ray = new Ray(location, Vij);
             listRay.add(ray);
         }
@@ -238,6 +239,9 @@ public class Camera {
 
             for (int i = 0; i < nx; i++) {
                 for (int j = 0; j < ny; j++) {
+
+                    //System.out.println("i = " + i + ", j = " + j);//Debug
+
                     if (this.rayNum > 1) {
                         List<Ray> rays = constructRays(nx, ny, i, j);
                         imageWriter.writePixel(i, j, castRays(rays));
@@ -246,8 +250,6 @@ public class Camera {
                         Ray ray = constructRay(nx, ny, i, j);
                         imageWriter.writePixel(i, j, castRay(ray));
                     }
-
-
                 }
             }
 

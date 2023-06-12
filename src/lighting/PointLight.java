@@ -95,29 +95,48 @@ public class PointLight extends Light implements LightSource{
     }
 
 
+    /**
+     * Calculates and returns a list of normalized vectors pointing from the given point
+     * to random points on the surface of a sphere with the specified radius and position.
+     * The number of vectors to be generated is determined by the numOfgetL parameter.
+     *
+     * @param p          The reference point from which the vectors will be calculated.
+     * @param numOfgetL  The number of vectors to generate.
+     * @return A list of normalized vectors pointing from the reference point to random points on the sphere.
+     */
     @Override
     public List<Vector> getL(Point p, int numOfgetL) {
 
         List<Vector> listVector = new LinkedList<>();
 
-        if (numOfgetL <= 1 && alignZero(this.radius) == 0){
+        if (numOfgetL <= 1 && alignZero(this.radius) == 0) {
+            // If only one vector is requested and the sphere has no radius,
+            // add a normalized vector pointing from the reference point to the sphere's position.
             listVector.add(p.subtract(position).normalize());
-        }else {
+        } else {
             Random random = new Random();
 
-            for (int k = 0;k < numOfgetL; k++){
-                double x =  random.nextDouble(-1, 1);
-                double y =  random.nextDouble(-1, 1);
-                double z =  random.nextDouble(-1, 1);
+            for (int k = 0; k < numOfgetL; k++) {
+                // Generate random coordinates within the range of -1 to 1.
+                double x = random.nextDouble(-1, 1);
+                double y = random.nextDouble(-1, 1);
+                double z = random.nextDouble(-1, 1);
 
-                Vector v = new Vector(x,y,z).normalize().scale(this.radius);
+                // Create a vector with the generated coordinates, normalize it, and scale it by the sphere's radius.
+                Vector v = new Vector(x, y, z).normalize().scale(this.radius);
+
+                // Calculate a point on the surface of the sphere by adding the generated vector to the reference point.
                 Point pointOnBall = p.add(v);
 
+                // Add a normalized vector pointing from the reference point to the calculated point on the sphere.
                 listVector.add(pointOnBall.subtract(position).normalize());
             }
         }
+
+        // Return the list of generated vectors.
         return listVector;
     }
+
 
     /**
      * Sets the constant attenuation factor for the point light.

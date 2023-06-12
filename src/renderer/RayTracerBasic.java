@@ -139,11 +139,13 @@ public class RayTracerBasic extends RayTracerBase {
         // Calculate the dot product of the normal and the view direction
         double nv = alignZero(n.dotProduct(v));
 
+        // Get the material of the geometry
+        Material material = gp.geometry.getMaterial();
+
         // If the dot product is close to zero, return the emission color
         if (nv == 0) return color;
 
-        // Get the material of the geometry
-        Material material = gp.geometry.getMaterial();
+
 
         // Iterate over each light source in the scene
         for (LightSource lightSource : scene.getLights()) {
