@@ -597,7 +597,23 @@ public class ReflectionRefractionTests {
               new Sphere(
                       new Point(12, 4, -50), 10d)
                       .setEmission(new Color(RED))
-                      .setMaterial(new Material().setKd(0.7).setKs(0.3).setKr(0.5).setShininess(100))
+                      .setMaterial(new Material().setKd(0.7).setKs(0.3).setKr(0.5).setShininess(100).setKt(0.3).setGlossMeasure(2))
+              ,
+              new Polygon(
+               new Point(-10.0, -70.0, 200.0),
+               new Point(40.0, -70.0, 200.0),
+               new Point(40.0, 0.0, 200.0),
+               new Point(-10.0, 0.0, 200.0))
+               .setEmission(new Color(0,25,0))
+                      .setEmission(new Color(0,0,0))
+                      .setMaterial(
+                              new Material()
+                                      .setKd(0.4)
+                                      .setKs(0.2)
+                                      .setShininess(20)
+                                      .setKt(0.9).setBlurAngle(20)
+                                      )
+
       );
 
 

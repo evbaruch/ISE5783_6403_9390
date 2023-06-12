@@ -9,6 +9,7 @@ import java.util.List;
 import geometries.Intersectable.GeoPoint;
 
 import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 
 /**
@@ -50,6 +51,7 @@ public class RayTracerBasic extends RayTracerBase {
         }
         return calcColor(closestPoint,ray);
     }
+
 
 
     private GeoPoint findClosestIntersection(Ray ray){
@@ -131,9 +133,21 @@ public class RayTracerBasic extends RayTracerBase {
         if (kkr.greaterThan(MIN_CALC_COLOR_K)){
             Ray reflectedRay = constructReflectedRay(gp, inRay);
             GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
+            if(mat.glossMeasure > 0)
+            {
+                Beam beam = new Beam();
+                GeoPoint geoPointBlur = new GeoPoint(gp.geometry, gp.point.add(gp.geometry.getNormal(gp.point)));
+                beam.constructBeam( mat.glossMeasure/10,mat.glossMeasure/10, geoPointBlur.point , (int)mat.glossMeasure, reflectedRay);
+                for(Ray ray : beam.getRays())
+                {
+                    color = color.add(calcGlobalEffects(ray,level, k, mat.Kr));
+                }
+                color = color.reduce(beam.getRays().size());
+            }
             if (reflectedPoint == null){
                 return  color;
             }
+
             color = color.add(calcColor(reflectedPoint, reflectedRay,level - 1,kkr).scale(kr));
         }
 
@@ -142,9 +156,20 @@ public class RayTracerBasic extends RayTracerBase {
         if (kkt.greaterThan( MIN_CALC_COLOR_K))
         {
             Ray refractedRay = constructRefractedRay(gp, inRay);
+
             GeoPoint refractedPoint = findClosestIntersection(refractedRay);
+
             if (refractedPoint == null){
                 return  color;
+            }
+
+            if(mat.blurAngle > 0) {
+                Beam beam = new Beam();
+                beam.constructBeam(mat.blurAngle/8 , mat.blurAngle/8, refractedPoint.point, (int)mat.blurAngle, refractedRay);
+                for (Ray ray : beam.getRays()) {
+                    color = color.add(calcGlobalEffects(ray, level, k, mat.Kt));
+                }
+                color = color.reduce(beam.getRays().size());
             }
             color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
         }
@@ -152,6 +177,24 @@ public class RayTracerBasic extends RayTracerBase {
         return color;
     }
 
+
+    /**
+     * calculates the global effects of the point with the help of the
+     * reflected ray and the refracted ray
+     *
+     * @param level The material of the geometry.
+     * @param ray The dot product of the normal and the light source.
+     * @return the color of the point.
+     */
+    private Color calcGlobalEffects(Ray ray, int level, Double3 k, Double3 kx) {
+        Double3 kkx = k.product(kx);
+        if (kkx.lowerThan(MIN_CALC_COLOR_K)) return Color.BLACK;
+        GeoPoint gp = findClosestIntersection(ray);
+        if (gp == null) return scene.getBackground().scale(kx);
+
+        return isZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDir()))? Color.BLACK :
+                calcColor(gp, ray, level-1, kkx).scale(kx);
+    }
 
     private Ray constructReflectedRay(GeoPoint gp,Ray inRay){
         Vector v = inRay.getDir();
