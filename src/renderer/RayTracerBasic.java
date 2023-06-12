@@ -1,7 +1,6 @@
 package renderer;
 
 
-import geometries.Plane;
 import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
@@ -178,17 +177,39 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
-    private List<Ray> Beam(GeoPoint geoPoint ,Ray ray , double angel){
+    /**
+     * Generates a beam of rays with a spread angle around the given ray's direction.
+     *
+     * @param ray The central ray around which the beam is generated.
+     * @param spreadAngle The spread angle of the beam.
+     * @param numRays The number of rays in the beam.
+     * @return A list of rays representing the beam.
+     */
+    private List<Ray> Beam(Ray ray, double spreadAngle, int numRays) {
         List<Ray> rays = new LinkedList<>();
         Random random = new Random();
-        Vector up = ray.getDir().perpendicular();
-        Vector right = up.crossProduct(ray.getDir());
-        for (int i = 0 ; i < angel/1.5 ; i++)
-        {
-            Vector displacement = up.scale(random.nextDouble(-angel, angel)).add(right.scale(random.nextDouble(-angel, angel)));
-            Point point = shiptPoint(geoPoint,ray.getDir()).add(displacement);
-            Vector v = point.subtract(ray.getP0());
-            rays.add(new Ray(ray.getP0(),v));
+
+        // Calculate the endpoint of the given ray
+        Point p = ray.getP0().add(ray.getDir());
+
+        // Calculate two perpendicular vectors to the ray's direction vector
+        Vector v = ray.getDir().perpendicular();
+        Vector u = v.crossProduct(ray.getDir());
+
+        for (int i = 0; i < numRays; i++) {
+            // Generate a random displacement within the spread angle range
+            double displacementV = random.nextDouble(-spreadAngle, spreadAngle);
+            double displacementU = random.nextDouble(-spreadAngle, spreadAngle);
+
+            // Calculate the displaced point on the plane perpendicular to the ray direction
+            Vector displacement = v.scale(displacementV).add(u.scale(displacementU));
+            Point displacedPoint = p.add(displacement);
+
+            // Calculate the direction from the original point to the displaced point
+            Vector vr = displacedPoint.subtract(ray.getP0());
+
+            // Create a new ray using the original point and the displaced direction
+            rays.add(new Ray(ray.getP0(), vr));
         }
         return rays;
     }
@@ -226,12 +247,31 @@ public class RayTracerBasic extends RayTracerBase {
 
             // Check if a valid intersection point exists.
             if (refractedPoint != null) {
-                if (mat.blurAngle >0) {
-                    List<Ray> rays = Beam(gp, refractedRay, mat.blurAngle);
+                if (mat.blurAngle > 0) {
+                    // Generate a beam of rays with spread angle
+                    List<Ray> rays = Beam(refractedRay, mat.blurAngle, mat.numBlur);
+
+                    // Calculate color contribution from each ray in the beam
                     for (Ray ray : rays) {
-                        color = color.add(calcColor(refractedPoint, ray, level, kkt).scale(kt));
+                        GeoPoint intersection = findClosestIntersection(ray);
+                        if(intersection != null){
+                        // Calculate the color contribution from the ray's intersection
+                        Color intersectionColor = calcColor(intersection, ray, level - 1, kkt);
+
+                        // Scale the intersection color by the transmission coefficient (Kt)
+                        Color scaledColor = intersectionColor.scale(mat.Kt);
+
+                        // Add the scaled color contribution to the total color
+                        color = color.add(scaledColor);
+                        }
+                        else
+                        {
+                            color = color.add(scene.getBackground());
+                        }
                     }
-                    color = color.reduce(rays.size());
+
+                    // Reduce the color by the number of rays in the beam to get the average color
+                    color = color.reduce(mat.numBlur);
                 }
 
                     // Calculate the color at the refracted intersection point, considering global effects recursively.
@@ -256,12 +296,25 @@ public class RayTracerBasic extends RayTracerBase {
 
             // Check if a valid intersection point exists.
             if (reflectedPoint != null) {
-                if (mat.glossMeasure > 0) {
-                    List<Ray> rays = Beam(gp, reflectedRay, mat.glossMeasure);
+                // Check if the material has a non-zero gloss angle
+                if (mat.glossAngle > 0) {
+                    // Generate a beam of rays with spread angle
+                    List<Ray> rays = Beam(reflectedRay, mat.glossAngle, mat.numGloss);
+
+                    // Calculate color contribution from each ray in the beam
                     for (Ray ray : rays) {
-                        color = color.add(calcColor(reflectedPoint, ray, level, kkr).scale(kr));
+                        // Calculate the color contribution from the reflected point along the ray
+                        Color intersectionColor = calcColor(reflectedPoint, ray, level - 1, kkr);
+
+                        // Scale the intersection color by the reflection coefficient (Kr)
+                        Color scaledColor = intersectionColor.scale(kr);
+
+                        // Add the scaled color contribution to the total color
+                        color = color.add(scaledColor);
                     }
-                    color = color.reduce(rays.size());
+
+                    // Reduce the color by the number of rays in the beam to get the average color
+                    color = color.reduce(mat.numGloss);
                 }
 
                 // Calculate the color at the reflected intersection point, considering global effects recursively.

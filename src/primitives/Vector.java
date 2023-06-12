@@ -118,9 +118,14 @@ public class Vector extends Point {
                 '}';
     }
 
-    public Vector perpendicular()
-    {
+    /**
+     Returns a vector that is perpendicular to the current vector in 3D space.
+     @return A perpendicular vector in 3D space.
+     */
+    public Vector perpendicular() {
+        // Calculate the perpendicular vector in 3D space using the formula (-y, x, 0)
+        // where (x, y, z) is the current vector.
         // (x ,y, z)*(-y ,x ,0) = x*-y + y*x +0*z = 0
-        return new Vector(this.xyz.d2*-1,this.xyz.d1,0);
+        return new Vector(-this.xyz.d2, this.xyz.d1, 0);
     }
 }
