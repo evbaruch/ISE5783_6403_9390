@@ -30,6 +30,7 @@ public class Scene {
     private AmbientLight ambientLight;
     private final List<LightSource> lights;
     private final Geometries geometries ;
+    private int softShade = 1;
 
     public String getName() {
         return name;
@@ -51,6 +52,10 @@ public class Scene {
         return geometries;
     }
 
+    public int getSoftShade() {
+        return softShade;
+    }
+
     public Scene setAmbientLight(AmbientLight ambientLight) {
         this.ambientLight = ambientLight;
         return this;
@@ -63,11 +68,10 @@ public class Scene {
         this.lights = sceneBuilder.lights;
         this.geometries = sceneBuilder.geometries;
         this.refractiveIndex = sceneBuilder.refractiveIndex;
+        this.softShade = sceneBuilder.softShade;
     }
 
     public static class SceneBuilder {
-
-
 
         /**
 
@@ -80,6 +84,7 @@ public class Scene {
         public List<LightSource> lights = new LinkedList<>();
 
         public Geometries geometries = new Geometries();
+        private int softShade = 1;
 
         public SceneBuilder(String name){
             this.name = name;
@@ -102,6 +107,11 @@ public class Scene {
         }
         public SceneBuilder setRefractiveIndex(double refractiveIndex) {
             this.refractiveIndex = refractiveIndex;
+            return this;
+        }
+
+        public SceneBuilder setSoftShade(int softShade) {
+            this.softShade = softShade;
             return this;
         }
 

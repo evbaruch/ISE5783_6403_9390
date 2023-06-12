@@ -19,6 +19,7 @@ public class Camera {
     private  int rayNum = 1;
 
 
+
     /**
 
      Sets the image writer to be used by this camera for writing the rendered image.
@@ -50,6 +51,7 @@ public class Camera {
         this.rayNum = rayNum;
         return this;
     }
+
 
     /**
 

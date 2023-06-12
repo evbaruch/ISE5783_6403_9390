@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Represents a directional light source in a lighting system.
  * A directional light is a light source that is infinitely far away and emits light in a specific direction.
@@ -46,6 +48,12 @@ public class DirectionalLight extends Light implements LightSource {
     public Vector getL(Point p) {
         return direction.normalize();
     }
+
+    @Override
+    public List<Vector> getL(Point p, int numOfgetL) {
+        return null;
+    }
+
 
     /**
      * Calculates the distance between this point and the specified point.

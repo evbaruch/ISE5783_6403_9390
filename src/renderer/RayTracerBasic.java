@@ -145,23 +145,26 @@ public class RayTracerBasic extends RayTracerBase {
         for (LightSource lightSource : scene.getLights()) {
 
             // Get the light direction at the geometric point
-            Vector l = lightSource.getL(gp.point);
+            List<Vector> listL = lightSource.getL(gp.point, scene.getSoftShade());
 
-            // Calculate the dot product of the normal and the light direction
-            double nl = alignZero(n.dotProduct(l));
+            for (Vector l: listL){
 
-            // If the signs of nl and nv are the same, calculate the diffuse and specular effects
-            if (nl * nv > 0) { // sign(nl) == sing(nv)
-                Double3 ktr = transparency(gp, lightSource, l);
-                if (ktr.product(k).greaterThan(MIN_CALC_COLOR_K)){
-                    // Get the intensity of the light source at the geometric point
-                    Color iL = lightSource.getIntensity(gp.point).scale(ktr);
+                // Calculate the dot product of the normal and the light direction
+                double nl = alignZero(n.dotProduct(l));
 
-                    // Add the diffuse and specular components to the color
-                    color = color.add(
-                            iL.scale(calcDiffusive(material, nl)),
-                            iL.scale(calcSpecular(material, n, l, nl, v))
-                    );
+                // If the signs of nl and nv are the same, calculate the diffuse and specular effects
+                if (nl * nv > 0) { // sign(nl) == sing(nv)
+                    Double3 ktr = transparency(gp, lightSource, l).reduce(scene.getSoftShade());
+                    if (ktr.product(k).greaterThan(MIN_CALC_COLOR_K)){
+                        // Get the intensity of the light source at the geometric point
+                        Color iL = lightSource.getIntensity(gp.point).scale(ktr);
+
+                        // Add the diffuse and specular components to the color
+                        color = color.add(
+                                iL.scale(calcDiffusive(material, nl)),
+                                iL.scale(calcSpecular(material, n, l, nl, v))
+                        );
+                    }
                 }
             }
         }

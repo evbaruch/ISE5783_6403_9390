@@ -4,6 +4,8 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Represents a light source in a lighting system.
  */
@@ -25,6 +27,8 @@ public interface LightSource {
      * @return The direction of the light at the specified point.
      */
     public Vector getL(Point p);
+
+    public List<Vector> getL(Point p, int numOfgetL);
 
 
     double getDistance(Point point);

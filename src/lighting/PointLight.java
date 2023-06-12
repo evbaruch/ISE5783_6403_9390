@@ -2,7 +2,14 @@ package lighting;
 
 import primitives.Color;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+
+import static primitives.Util.alignZero;
 
 /**
  * Represents a point light source in a lighting system.
@@ -38,6 +45,9 @@ public class PointLight extends Light implements LightSource{
      more significant decrease in light intensity with increasing distance.
      */
     private double Kc = 1, Kl = 0, Kq = 0;
+
+    //The radius is the size of the light source
+    private double radius = 0;
 
     /**
      * Constructs a PointLight object with the specified intensity and position.
@@ -84,6 +94,31 @@ public class PointLight extends Light implements LightSource{
         return p.subtract(position).normalize(); // Calculate the direction vector from the point to the light source
     }
 
+
+    @Override
+    public List<Vector> getL(Point p, int numOfgetL) {
+
+        List<Vector> listVector = new LinkedList<>();
+
+        if (numOfgetL <= 1 && alignZero(this.radius) == 0){
+            listVector.add(p.subtract(position).normalize());
+        }else {
+            Random random = new Random();
+
+            for (int k = 0;k < numOfgetL; k++){
+                double x =  random.nextDouble(-1, 1);
+                double y =  random.nextDouble(-1, 1);
+                double z =  random.nextDouble(-1, 1);
+
+                Vector v = new Vector(x,y,z).normalize().scale(this.radius);
+                Point pointOnBall = p.add(v);
+
+                listVector.add(pointOnBall.subtract(position).normalize());
+            }
+        }
+        return listVector;
+    }
+
     /**
      * Sets the constant attenuation factor for the point light.
      *
@@ -115,6 +150,16 @@ public class PointLight extends Light implements LightSource{
     public PointLight setKq(double kq) {
         this.Kq = kq;
         return this;
+    }
+
+
+    public PointLight setRadius(double r) {
+        this.radius = r;//
+        return this;
+    }
+
+    public double getRadius() {
+        return this.radius;
     }
 
     /**
