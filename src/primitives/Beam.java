@@ -1,5 +1,6 @@
 package primitives;
 
+import geometries.Plane;
 import renderer.Camera;
 
 import java.util.Collections;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Beam {
-    List<Ray> rays;
+    private List<Ray> rays;
 
     public Beam() {
         this.rays = new LinkedList();
@@ -38,11 +39,19 @@ public class Beam {
         Random random = new Random();
         for (int k = 0; k < precision; k++) {
 
+
             double xJitt = random.nextDouble(-Rx /2, Rx /2);
             double yJitt = random.nextDouble(-Ry /2, Ry /2);
 
+            //Plane plane = new Plane(Pij,ray.getDir());
+
             //Returns the ray from the point by i j
-            this.add(CalcRay(Pij.movePointOnViewPlane(ray.getVup(),ray.getVright(),yJitt,xJitt, Rx, Ry),ray.getP0().add(ray.getDir().scale(0.01))));
+            //Point A = Pij.add(ray.getVup().scale(yJitt).add(ray.getVright().scale(xJitt)));
+            //Point a = Pij.movePointOnViewPlane(ray.getVup(),ray.getVright(),yJitt,xJitt, Rx, Ry);
+            Point B = ray.getP0();
+
+
+            //this.add(CalcRay(A,B));
         }
         return this.getRays();
     }

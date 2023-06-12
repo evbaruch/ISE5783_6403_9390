@@ -8,6 +8,7 @@ import java.util.MissingResourceException;
 import java.util.Random;
 
 import static primitives.Util.alignZero;
+import static primitives.Util.random;
 
 public class Camera {
     private Point location;
@@ -159,9 +160,6 @@ public class Camera {
             Pij = Pij.add(Vup.scale(Yi));
         }
 
-
-
-
         //Calculation of the vector from the point to the screen according to i j
         Vector Vij =  Pij.subtract(location);
 
@@ -179,8 +177,6 @@ public class Camera {
      @return a ray passing through the given pixel coordinates on the view plane.
      */
     public List<Ray> constructRays(int nX, int nY, int j, int i ) {
-
-        Beam beam = new Beam();
 
         //Image center
         Point Pc = location.add(Vto.scale(distance));
@@ -202,34 +198,23 @@ public class Camera {
             Pij = Pij.add(Vup.scale(Yi));
         }
 
-        //Calculation of the vector from the point to the screen according to i j
-        Vector Vij =  Pij.subtract(location);
+        List<Ray> listRay = new LinkedList<>();
+        Random random = new Random();
+        for (int k = 0;k < this.rayNum; k++){
+            Point p;
 
-        Ray initialRay = new Ray(location, Vij);
-        beam.add(initialRay);
-        beam.constructBeam( Rx,Ry, Pij, this.rayNum, initialRay);
-        //beam.constructBeam( Rx,Ry, Pij, this.rayNum,this.Vup,this.Vright,this.location );
-        return beam.getRays();
+            p = Pij.add(Vright.scale(random.nextDouble(-Rx /2, Rx /2)));
+            p = p.add(Vup.scale(random.nextDouble(-Ry /2, Ry /2)));
+
+            //Calculation of the vector from the point to the screen according to i j with the addition of randomization
+            Vector Vij =  p.subtract(location);
+            Ray ray = new Ray(location, Vij);
+            listRay.add(ray);
+        }
+
+        return listRay;
     }
 
-//    private List<Ray> constructBeam(double Rx, double Ry, Point Pij ,int precision ) {
-//        Random random = new Random();
-//        for (int k = 0; k < precision; k++) {
-//
-//            double xJitt = random.nextDouble(-Rx /2, Rx /2);
-//            double yJitt = random.nextDouble(-Ry /2, Ry /2);
-//
-//            //Returns the ray from the point by i j
-//            this.add(CalcRay(Pij.movePointOnViewPlane(Vup,Vright,yJitt,xJitt, Rx, Ry),location));
-//        }
-//    }
-
-
-//    public Ray CalcRay (Point point,Point base){
-//        Vector newVector = point.subtract(base);
-//        // Create and return the updated ray with the same direction
-//        return new Ray(base, newVector);
-//     }
 
     /**
      * Renders the image of the current scene using the implemented ray tracing algorithm.

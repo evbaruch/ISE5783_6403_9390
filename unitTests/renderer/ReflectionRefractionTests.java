@@ -68,7 +68,7 @@ public class ReflectionRefractionTests {
    @Test
    public void twoSpheresOnMirrors() {
       Camera camera = new Camera(new Point(0, 0, 10000), new Vector(0, 0, -1), new Vector(0, 1, 0)) //
-              .setVPSize(2500, 2500).setVPDistance(10000);
+              .setVPSize(2500, 2500).setVPDistance(10000).setRayNum(100);
 
       Geometries gGeometries = new Geometries(
               new Sphere(

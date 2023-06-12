@@ -109,15 +109,7 @@ public class Point {
     public double distance(Point p){
         return Math.sqrt(distanceSquared(p));
     }
-    public Point movePointOnViewPlane(Vector vUp, Vector vRight, double randomX, double randomY , double Rx , double Ry) {
-        // Step 1: Determine the displacement vector on the plane
-        Vector displacement = vUp.scale(randomX).add(vRight.scale(randomY));
 
-        // Step 2: Update the origin point of the ray
-        Point newPoint = this.add(displacement);
-
-        return newPoint;
-    }
 
     public double getX() {
         return this.xyz.d1;

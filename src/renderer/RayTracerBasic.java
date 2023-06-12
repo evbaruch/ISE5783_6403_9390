@@ -9,7 +9,6 @@ import java.util.List;
 import geometries.Intersectable.GeoPoint;
 
 import static primitives.Util.alignZero;
-import static primitives.Util.isZero;
 
 
 /**
@@ -28,6 +27,8 @@ public class RayTracerBasic extends RayTracerBase {
     private static final double MIN_CALC_COLOR_K = 0.001;
 
     private static final Double3 INITIAL_K = Double3.ONE;
+
+    private  static final boolean SNELL = true;
 
     /**
      Constructs a new instance of the RayTracerBasic class with the specified scene.
@@ -53,22 +54,66 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
-
+    /**
+     * Finds the closest intersection of a given ray with the geometries in the scene.
+     *
+     * @param ray The ray for which to find the closest intersection.
+     * @return The closest intersection point as a GeoPoint object.
+     */
     private GeoPoint findClosestIntersection(Ray ray){
-        return ray.findClosestGeoPoint(
-                this.scene.getGeometries().findGeoIntersections(ray)
-        );
+        // Find the intersections of the ray with the geometries in the scene
+        // using the findGeoIntersections method of the Geometries class.
+        // The method returns a list of GeoPoint objects representing the intersections.
+        List<GeoPoint> intersections = this.scene.getGeometries().findGeoIntersections(ray);
+
+        // Find the closest intersection point using the findClosestGeoPoint method of the Ray class.
+        // The method takes a list of GeoPoint objects and returns the closest one.
+        return ray.findClosestGeoPoint(intersections);
     }
 
 
+    /**
+     * Calculates the color at a given intersection point.
+     *
+     * @param gp The intersection point as a GeoPoint object.
+     * @param ray The ray that intersects with the object.
+     * @return The calculated color at the intersection point.
+     */
     private Color calcColor(GeoPoint gp, Ray ray) {
+        // Calculate the color at the intersection point by adding the result of the
+        // calcColor method with the ambient light intensity.
+        // The calcColor method takes the intersection point, ray, maximum calculation level,
+        // and initial K coefficient as parameters.
+        // The add method returns a new Color object that is the sum of the two colors.
         return calcColor(gp, ray, MAX_CALC_COLOR_LEVEL, INITIAL_K).add(scene.getAmbientLight().getIntensity());
     }
 
 
+    /**
+     * Calculates the color at a given intersection point, taking into account local and global effects.
+     *
+     * @param gp The intersection point as a GeoPoint object.
+     * @param ray The ray that intersects with the object.
+     * @param level The current calculation level, used to control recursion depth.
+     * @param k The coefficient used for global effects.
+     * @return The calculated color at the intersection point, considering local and global effects.
+     */
     private Color calcColor(GeoPoint gp, Ray ray, int level, Double3 k) {
+        // Calculate the color at the intersection point, taking into account local effects.
+        // The calcLocalEffects method takes the intersection point, ray, and coefficient k as parameters.
+        // It returns the color calculated based on the local effects.
         Color color = calcLocalEffects(gp, ray, k);
-        return level == 1 ? color : color.add(calcGlobalEffects(gp, ray, level, k));
+
+        // Check the current calculation level.
+        if (level == 1) {
+            // If the current level is 1, return the color without considering global effects.
+            return color;
+        } else {
+            // If the current level is greater than 1, calculate the global effects and add them to the color.
+            // The calcGlobalEffects method takes the intersection point, ray, current level, and coefficient k as parameters.
+            // It returns the color calculated based on the global effects.
+            return color.add(calcGlobalEffects(gp, ray, level, k));
+        }
     }
 
 
@@ -124,54 +169,62 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
+    /**
+     * Calculates the color contribution from global effects (reflection and refraction) at a given intersection point.
+     *
+     * @param gp The intersection point as a GeoPoint object.
+     * @param inRay The incoming ray that intersects with the object.
+     * @param level The current calculation level, used to control recursion depth.
+     * @param k The coefficient used for global effects.
+     * @return The calculated color contribution from global effects at the intersection point.
+     */
     private Color calcGlobalEffects(GeoPoint gp, Ray inRay, int level, Double3 k) {
+        // Initialize the color as black.
         Color color = Color.BLACK;
+
+        // Get the material of the intersected geometry.
         Material mat = gp.geometry.getMaterial();
 
-        Double3 kr = mat.Kr;
-        Double3 kkr = k.product(kr);
-        if (kkr.greaterThan(MIN_CALC_COLOR_K)){
-            Ray reflectedRay = constructReflectedRay(gp, inRay);
-            GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
-            if(mat.glossMeasure > 0)
-            {
-                Beam beam = new Beam();
-                GeoPoint geoPointBlur = new GeoPoint(gp.geometry, gp.point.add(gp.geometry.getNormal(gp.point)));
-                beam.constructBeam( mat.glossMeasure/10,mat.glossMeasure/10, geoPointBlur.point , (int)mat.glossMeasure, reflectedRay);
-                for(Ray ray : beam.getRays())
-                {
-                    color = color.add(calcGlobalEffects(ray,level, k, mat.Kr));
-                }
-                color = color.reduce(beam.getRays().size());
-            }
-            if (reflectedPoint == null){
-                return  color;
-            }
-
-            color = color.add(calcColor(reflectedPoint, reflectedRay,level - 1,kkr).scale(kr));
-        }
-
+        // Calculate the coefficient for transmission (refraction) effects.
         Double3 kt = mat.Kt;
         Double3 kkt = k.product(kt);
-        if (kkt.greaterThan( MIN_CALC_COLOR_K))
-        {
+
+        // Check if the transmission coefficient is greater than the minimum calculation coefficient.
+        if (kkt.greaterThan(MIN_CALC_COLOR_K)) {
+            // Construct the refracted ray based on the intersection point and incoming ray.
             Ray refractedRay = constructRefractedRay(gp, inRay);
 
+            // Find the closest intersection point for the refracted ray.
             GeoPoint refractedPoint = findClosestIntersection(refractedRay);
 
-            if (refractedPoint == null){
-                return  color;
+            // Check if a valid intersection point exists.
+            if (refractedPoint != null) {
+                // Calculate the color at the refracted intersection point, considering global effects recursively.
+                // The calcColor method takes the refracted intersection point, refracted ray, updated level, and kkt coefficient as parameters.
+                // It returns the color calculated based on the local and global effects at the refracted point.
+                color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
             }
+        }
 
-            if(mat.blurAngle > 0) {
-                Beam beam = new Beam();
-                beam.constructBeam(mat.blurAngle/8 , mat.blurAngle/8, refractedPoint.point, (int)mat.blurAngle, refractedRay);
-                for (Ray ray : beam.getRays()) {
-                    color = color.add(calcGlobalEffects(ray, level, k, mat.Kt));
-                }
-                color = color.reduce(beam.getRays().size());
+        // Calculate the coefficient for reflection effects.
+        Double3 kr = mat.Kr;
+        Double3 kkr = k.product(kr);
+
+        // Check if the reflection coefficient is greater than the minimum calculation coefficient.
+        if (kkr.greaterThan(MIN_CALC_COLOR_K)) {
+            // Construct the reflected ray based on the intersection point and incoming ray.
+            Ray reflectedRay = constructReflectedRay(gp, inRay);
+
+            // Find the closest intersection point for the reflected ray.
+            GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
+
+            // Check if a valid intersection point exists.
+            if (reflectedPoint != null) {
+                // Calculate the color at the reflected intersection point, considering global effects recursively.
+                // The calcColor method takes the reflected intersection point, reflected ray, updated level, and kkr coefficient as parameters.
+                // It returns the color calculated based on the local and global effects at the reflected point.
+                color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
             }
-            color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
         }
 
         return color;
@@ -179,32 +232,32 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
-     * calculates the global effects of the point with the help of the
-     * reflected ray and the refracted ray
+     * Constructs a reflected ray based on the intersection point and incoming ray.
      *
-     * @param level The material of the geometry.
-     * @param ray The dot product of the normal and the light source.
-     * @return the color of the point.
+     * @param gp The intersection point as a GeoPoint object.
+     * @param inRay The incoming ray that intersects with the object.
+     * @return The reflected ray.
      */
-    private Color calcGlobalEffects(Ray ray, int level, Double3 k, Double3 kx) {
-        Double3 kkx = k.product(kx);
-        if (kkx.lowerThan(MIN_CALC_COLOR_K)) return Color.BLACK;
-        GeoPoint gp = findClosestIntersection(ray);
-        if (gp == null) return scene.getBackground().scale(kx);
-
-        return isZero(gp.geometry.getNormal(gp.point).dotProduct(ray.getDir()))? Color.BLACK :
-                calcColor(gp, ray, level-1, kkx).scale(kx);
-    }
-
-    private Ray constructReflectedRay(GeoPoint gp,Ray inRay){
+    private Ray constructReflectedRay(GeoPoint gp, Ray inRay) {
+        // Get the direction vector of the incoming ray.
         Vector v = inRay.getDir();
+
+        // Get the normal vector of the geometry at the intersection point.
         Vector n = gp.geometry.getNormal(gp.point);
+
+        // Calculate the dot product between the incoming ray direction and the normal vector.
         double vn = v.dotProduct(n);
+
+        // Calculate the reflected vector using the reflection formula: r = v - 2 * (v dot n) * n
         Vector r = v.subtract(n.scale(2 * vn));
 
-        Point p = shiptPoint(gp,r);
-        return new Ray(p,r);
+        // Shift the intersection point slightly along the reflected vector to avoid self-intersections.
+        Point p = shiptPoint(gp, r);
+
+        // Create and return a new ray with the shifted intersection point and reflected direction.
+        return new Ray(p, r);
     }
+
 
 
     /**
@@ -221,49 +274,50 @@ public class RayTracerBasic extends RayTracerBase {
      * @return The refracted ray.
      */
     private Ray constructRefractedRay(GeoPoint geoPoint, Ray inRay) {
-        boolean snell = true;
-        if (snell) {
-            Vector n = geoPoint.geometry.getNormal(geoPoint.point);
+        if (SNELL) {
             double Ni = scene.getRefractiveIndex();
             double Nj = geoPoint.geometry.getMaterial().refractiveIndex;
 
             // Case: Same refractive indices
-            if (Ni == Nj) {
-                // No refraction occurs, return a new ray with the same direction
-                return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), inRay.getDir());
+            if (Ni != Nj) {
+                Vector n = geoPoint.geometry.getNormal(geoPoint.point);
+                double incidentAngle = Math.acos(n.dotProduct(inRay.getDir()));
+                double sinThetaR = (Ni / Nj) * Math.sin(incidentAngle);
+
+                //Case: Total internal reflection
+                if (sinThetaR >= 1) {
+
+                    //  The incident ray undergoes total internal reflection at the interface between two mediums.
+                    //  Calculate the reflected direction using the law of reflection.
+                    //  The reflected direction is obtained by subtracting two times the projection of the incident ray direction onto the surface normal vector,
+                    //  scaled by the surface normal vector itself.
+
+                    //  Create a new ray representing the reflected ray.
+                    //  Shift the origin slightly along the incident ray direction and set the direction as the calculated reflected direction.
+                    return  constructReflectedRay(geoPoint,inRay);
+                }
+
+                double refractedAngle = Math.asin(sinThetaR);
+
+                // Case: Regular refraction
+                // Calculate the refracted direction using Snell's law: n1 * sin(theta1) = n2 * sin(theta2)
+                // refractedDir = (n1/n2) * incidentDir + (n1/n2 * cos(theta1) - cos(theta2)) * normalDir
+                Vector refractedDir = inRay.getDir().scale(Ni / Nj).add(n.scale((Ni / Nj) * Math.cos(incidentAngle) - Math.cos(refractedAngle)));
+
+                // Shift the intersection point slightly along the reflected vector to avoid self-intersections.
+                Point p = shiptPoint(geoPoint, refractedDir);
+
+
+                // Return a new ray with the refracted direction
+                return new Ray(p, refractedDir);
             }
 
-            double incidentAngle = Math.acos(n.dotProduct(inRay.getDir()));
-            double sinThetaR = (Ni / Nj) * Math.sin(incidentAngle);
-
-            // Case: Total internal reflection
-            if (sinThetaR >= 1.0) {
-
-                //  The incident ray undergoes total internal reflection at the interface between two mediums.
-                //  Calculate the reflected direction using the law of reflection.
-                //  The reflected direction is obtained by subtracting two times the projection of the incident ray direction onto the surface normal vector,
-                //  scaled by the surface normal vector itself.
-                Vector reflectedDir = inRay.getDir().subtract(n.scale(2 * inRay.getDir().dotProduct(n)));
-                //  Create a new ray representing the reflected ray.
-                //  Shift the origin slightly along the incident ray direction and set the direction as the calculated reflected direction.
-                return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), reflectedDir);
-            }
-
-            double refractedAngle = Math.asin(sinThetaR);
-
-            // Case: Regular refraction
-            // Calculate the refracted direction using Snell's law: n1 * sin(theta1) = n2 * sin(theta2)
-            // refractedDir = (n1/n2) * incidentDir + (n1/n2 * cos(theta1) - cos(theta2)) * normalDir
-            Vector refractedDir = inRay.getDir().scale(Ni / Nj).add(n.scale((Ni / Nj) * Math.cos(incidentAngle) - Math.cos(refractedAngle)));
-
-            // Return a new ray with the refracted direction
-            return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), refractedDir);
-
-        } else {
-
-            return new Ray(geoPoint.point.add(inRay.getDir().scale(DELTA)), inRay.getDir());
         }
 
+        // Shift the intersection point slightly along the reflected vector to avoid self-intersections.
+        Point p = shiptPoint(geoPoint, inRay.getDir());
+
+        return new Ray(p, inRay.getDir());
     }
 
 
@@ -290,7 +344,7 @@ public class RayTracerBasic extends RayTracerBase {
 
         //We will only return false here if there is a point on the path that is not transparent at all
         if (intersections == null){
-            return Double3.ONE;//צריך עיון
+            return Double3.ONE;
         } else{
             Double3 ktr = Double3.ONE;
             //We will go over all the points and check transparency
@@ -345,13 +399,26 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
 
-    private Point shiptPoint(GeoPoint gp,Vector v)
-    {
-        //Moves the point on the normal in the direction of the vector
+    /**
+     * Shifts the intersection point along the normal vector in the direction of the given vector.
+     *
+     * @param gp The intersection point as a GeoPoint object.
+     * @param v The vector indicating the direction of the shift.
+     * @return The shifted point.
+     */
+    private Point shiptPoint(GeoPoint gp, Vector v) {
+        // Get the normal vector of the geometry at the intersection point.
         Vector n = gp.geometry.getNormal(gp.point);
+
+        // Calculate the dot product between the normal vector and the given vector.
         double d = n.dotProduct(v);
+
+        // Scale the normal vector by the dot product multiplied by the delta constant (positive or negative).
         Vector epsVector = n.scale(d > 0 ? DELTA : -DELTA);
+
+        // Add the scaled vector to the intersection point to obtain the shifted point.
         return gp.point.add(epsVector);
     }
+
 
 }
