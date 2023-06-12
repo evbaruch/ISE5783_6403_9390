@@ -120,6 +120,10 @@ public class Material {
      */
     public static final double TANTALUM_PENTOXIDE_REFRACTIVE_INDEX = 2.25;
 
+    public double blurAngle = 0;
+    public double  glossMeasure = 0;
+
+
 
     /**
      * The diffuse reflection coefficient (kd) of the material.
@@ -159,6 +163,16 @@ public class Material {
      */
     public Material setRefractiveIndex(double refractiveIndex) {
         this.refractiveIndex = refractiveIndex;
+        return this;
+    }
+
+    public Material setBlurAngle(double blurAngle) {
+        this.blurAngle = blurAngle;
+        return this;
+    }
+
+    public Material setGlossMeasure(double glossMeasure) {
+        this.glossMeasure = glossMeasure;
         return this;
     }
 

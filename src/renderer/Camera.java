@@ -1,11 +1,11 @@
 package renderer;
 
-import primitives.Color;
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
+import primitives.*;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Random;
 
 import static primitives.Util.alignZero;
 
@@ -15,6 +15,7 @@ public class Camera {
     private double width, height, distance;
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
+    private  int rayNum = 1;
 
 
     /**
@@ -39,6 +40,15 @@ public class Camera {
         return this;
     }
 
+    /**
+     *
+     * @param rayNum
+     * @return
+     */
+    public Camera setRayNum(int rayNum) {
+        this.rayNum = rayNum;
+        return this;
+    }
 
     /**
 
@@ -159,6 +169,68 @@ public class Camera {
         return new Ray(location,Vij);
     }
 
+
+    /**
+     Constructs a ray from the camera passing through the given pixel coordinates on the view plane.
+     @param nX the number of pixels in the X axis.
+     @param nY the number of pixels in the Y axis.
+     @param j the X coordinate of the pixel.
+     @param i the Y coordinate of the pixel.
+     @return a ray passing through the given pixel coordinates on the view plane.
+     */
+    public List<Ray> constructRays(int nX, int nY, int j, int i ) {
+
+        Beam beam = new Beam();
+
+        //Image center
+        Point Pc = location.add(Vto.scale(distance));
+
+        //Calculate the size of each pixel
+        double Rx = width / nX;
+        double Ry = height / nY;
+
+        //Calculation of displacement according to i j
+        double Xj = (j - (double) (nX - 1) / 2) * Rx;
+        double Yi = -(i - (double) (nY - 1) / 2) * Ry;
+
+        //Calculating the pixels function according to i j and gives a point
+        Point Pij = Pc;
+        if (alignZero(Xj) != 0) {
+            Pij = Pij.add(Vright.scale(Xj));
+        }
+        if (alignZero(Yi) != 0) {
+            Pij = Pij.add(Vup.scale(Yi));
+        }
+
+        //Calculation of the vector from the point to the screen according to i j
+        Vector Vij =  Pij.subtract(location);
+
+        Ray initialRay = new Ray(location, Vij);
+        beam.add(initialRay);
+        beam.constructBeam( Rx,Ry, Pij, this.rayNum, initialRay);
+        //beam.constructBeam( Rx,Ry, Pij, this.rayNum,this.Vup,this.Vright,this.location );
+        return beam.getRays();
+    }
+
+//    private List<Ray> constructBeam(double Rx, double Ry, Point Pij ,int precision ) {
+//        Random random = new Random();
+//        for (int k = 0; k < precision; k++) {
+//
+//            double xJitt = random.nextDouble(-Rx /2, Rx /2);
+//            double yJitt = random.nextDouble(-Ry /2, Ry /2);
+//
+//            //Returns the ray from the point by i j
+//            this.add(CalcRay(Pij.movePointOnViewPlane(Vup,Vright,yJitt,xJitt, Rx, Ry),location));
+//        }
+//    }
+
+
+//    public Ray CalcRay (Point point,Point base){
+//        Vector newVector = point.subtract(base);
+//        // Create and return the updated ray with the same direction
+//        return new Ray(base, newVector);
+//     }
+
     /**
      * Renders the image of the current scene using the implemented ray tracing algorithm.
      *
@@ -179,8 +251,16 @@ public class Camera {
 
             for (int i = 0; i < nx; i++) {
                 for (int j = 0; j < ny; j++) {
-                    Ray ray = constructRay(nx, ny, i, j);
-                    imageWriter.writePixel(i, j, castRay(ray));
+                    if (this.rayNum > 1) {
+                        List<Ray> rays = constructRays(nx, ny, i, j);
+                        imageWriter.writePixel(i, j, castRays(rays));
+                    }
+                    else {
+                        Ray ray = constructRay(nx, ny, i, j);
+                        imageWriter.writePixel(i, j, castRay(ray));
+                    }
+
+
                 }
             }
 
@@ -189,6 +269,8 @@ public class Camera {
         }
         return this;
     }
+
+
 
 
     /**
@@ -231,6 +313,14 @@ public class Camera {
     private Color castRay(Ray ray){
 
         return this.rayTracer.traceRay(ray);
+    }
+
+    private Color castRays(List<Ray> rays) {
+        Color color = new Color(0,0,0);
+        for (Ray ray : rays) {
+            color = color.add( this.rayTracer.traceRay(ray));
+        }
+        return color.reduce(rays.size());
     }
 
 

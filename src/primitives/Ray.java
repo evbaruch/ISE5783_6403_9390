@@ -71,4 +71,19 @@ public class Ray {
         return points == null || points.isEmpty() ? null
                 : findClosestGeoPoint(points.stream().map(p -> new GeoPoint(null, p)).toList()).point;
     }
+
+
+    public Vector getVto() {
+        return this.dir.normalize();
+    }
+
+    public Vector getVright() {
+        return new Vector(this.dir.xyz.d2*-1, this.dir.xyz.d1*-1,0).normalize();
+    }
+
+    public Vector getVup() {
+        return this.dir.crossProduct(this.getVright()).normalize();
+    }
+
+
 }

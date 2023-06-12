@@ -13,6 +13,7 @@ public class PointLight extends Light implements LightSource{
     private Point position;
 
 
+
     /**
 
      The constant coefficient (Kc) determines the attenuation of light intensity
