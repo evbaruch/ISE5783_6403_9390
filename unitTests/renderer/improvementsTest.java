@@ -42,7 +42,7 @@ public class improvementsTest {
 
         Scene scene = new Scene.SceneBuilder("Test scene")
                 .setGeometries(geometries)
-                .setSoftShade(30)
+                .setSoftShade(10)
                 .setAmbientLight(new AmbientLight(new Color(WHITE), 0.15))
                 .setLights(
                         new SpotLight(
@@ -62,7 +62,7 @@ public class improvementsTest {
                 .setVPSize(200, 200)
                 .setVPDistance(1000)
                 .setRayTracer(new RayTracerBasic(scene))
-                .setRayNum(30);
+                .setRayNum(10);
 
 
         camera.setImageWriter(new ImageWriter("improvementsShadowTrianglesSphere", 600, 600)) //
@@ -83,7 +83,7 @@ public class improvementsTest {
                 new Vector(0, 1, 0)) //
                 .setVPSize(200, 200)
                 .setVPDistance(1000)
-                .setRayNum(30);
+                .setRayNum(10);
 
         Geometries gGeometries = new Geometries(
                 new Triangle(
@@ -104,7 +104,7 @@ public class improvementsTest {
 
         Scene scene = new Scene.SceneBuilder("Test scene")
                 .setGeometries(gGeometries)
-                .setSoftShade(30)
+                .setSoftShade(10)
                 .setLights(
                         new SpotLight(
                                 new Color(700, 400, 400),
