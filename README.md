@@ -1,15 +1,5 @@
 # Mini Project in Introduction to Software Engineering
 
-**Presented by:**  
-Evyatar Baruch  
-Yehuda Pailent 
-
-
-
-**Year:** 5783 – 2023
-
-**Mentor/Lecturer:** Aliezer Ginzburg
-
 ![Project Photo](images/diamond.png)
 
 ## Table of Contents
@@ -26,6 +16,7 @@ Yehuda Pailent
 11. [Conclusion](#conclusion)
 12. [References](#references)
 13. [Appendices](#appendices)
+14. [Credits](#credits)
 
 ## Executive Summary
 
@@ -242,4 +233,15 @@ By addressing the identified limitations, continuing to refine the renderer, and
 ## Appendices
 
 Here are some additional resources and references that were used during the project:
-Include any supplementary materials, such as code snippets, screenshots, diagrams, or additional documentation.
+Include any supplementary materials, such as code snippets, screenshots, diagrams, or additional documentation.  
+
+
+## Credits
+
+### Project Team
+- Evyatar Baruch  [LinkedIn](https://www.linkedin.com/in/evyatar-baruch-0947a3244) | [Student GitHub](https://github.com/evbaruch) - [Private GitHub](https://github.com/aviaMader)
+- Yehuda Pailent  [LinkedIn](https://www.linkedin.com/) | [GitHub](https://github.com/yehuda-p)
+
+### Mentor/Lecturer
+- Aliezer Ginzburg  [LinkedIn](https://www.linkedin.com/) | [GitHub](https://github.com/yehuda-p)
+
