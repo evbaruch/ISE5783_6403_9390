@@ -1,6 +1,9 @@
 package primitives;
 
-
+/**
+ * Represents a color associated with a ray in the context of adaptive supersampling.
+ * It serves as a container for the ray and its corresponding color.
+ */
 public class ColorRay {
     private final Ray ray;
     private final Color color;

@@ -171,6 +171,17 @@ public class Camera {
         return new Ray(location,Vij);
     }
 
+    /**
+     * Calculates the middle point of a pixel in the image plane.
+     *
+     * @param nX the number of pixels in the X-axis
+     * @param nY the number of pixels in the Y-axis
+     * @param j the column index of the pixel
+     * @param i the row index of the pixel
+     * @param Rx the pixel width
+     * @param Ry the pixel height
+     * @return the middle point of the pixel
+     */
     public Point middlePoint(int nX, int nY, int j, int i,double Rx,double Ry){
 
         //Image center
@@ -191,6 +202,15 @@ public class Camera {
         return Pij;
     }
 
+    /**
+     * Constructs the adaptive supersampling for a specific pixel.
+     *
+     * @param nX the number of pixels in the X-axis
+     * @param nY the number of pixels in the Y-axis
+     * @param j the column index of the pixel
+     * @param i the row index of the pixel
+     * @return the ColorRay representing the computed color of the pixel
+     */
     public ColorRay constructAdaptiveSuperSampling(int nX, int nY, int j, int i) {
         //Calculate the size of each pixel
         double Rx = width / nX;
@@ -258,51 +278,81 @@ public class Camera {
     }
 
 
-
+    /**
+     * Performs adaptive supersampling to compute the color of a pixel.
+     *
+     * @param rayIntersect the point of intersection between the ray and the scene
+     * @param Rx the pixel width
+     * @param Ry the pixel height
+     * @param rayNum the number of rays to cast for supersampling
+     * @return the ColorRay representing the computed color of the pixel
+     */
     public ColorRay AdaptiveSuperSampling(Point rayIntersect, double Rx, double Ry ,int rayNum) {
+
+        // Cast rays for the four corners of the pixel
         ColorRay topLeft = castRay(Rx, Ry, -1, -1 ,rayIntersect);
         ColorRay topRight = castRay( Rx, Ry, 1, -1,rayIntersect);
         ColorRay bottomLeft = castRay( Rx, Ry, -1, 1,rayIntersect);
         ColorRay bottomRight = castRay(Rx, Ry, 1, 1,rayIntersect);
 
+        // Check if all four colors are similar or the rayNum has reached the limit
         if ((topLeft.getColor().equals(topRight.getColor())
                 && topLeft.getColor().equals(bottomLeft.getColor())
                 && topLeft.getColor().equals(bottomRight.getColor()))
         || rayNum <=0 ) {
 
-            // Return the colorRay if all four colors are similar
+            // Return the colorRay if all four colors are similar or rayNum limit reached
             return topLeft;
         } else {
             // Recursively divide the pixel and perform adaptive supersampling
             double newRx = Rx / 2;
             double newRy = Ry / 2;
+
+            // Compute the four subpixel points within the pixel
             Point A = rayIntersect
                     .add(this.Vup.scale((Ry/2)*-1)
                     .add(this.Vright.scale((Rx/2)*-1)));
+
             Point B = rayIntersect
                     .add(this.Vup.scale((Ry/2)*1)
                             .add(this.Vright.scale((Rx/2)*-1)));
+
             Point C = rayIntersect
                     .add(this.Vup.scale((Ry/2)*-1)
                             .add(this.Vright.scale((Rx/2)*1)));
+
             Point D = rayIntersect
                     .add(this.Vup.scale((Ry/2)*1)
                             .add(this.Vright.scale((Rx/2)*1)));
+
+            // Recursively compute the color of the subpixels
             ColorRay topLeftSubpixel = AdaptiveSuperSampling(A, newRx, newRy, rayNum / 4);
             ColorRay topRightSubpixel = AdaptiveSuperSampling(B, newRx, newRy, rayNum / 4);
             ColorRay bottomLeftSubpixel = AdaptiveSuperSampling(C, newRx, newRy, rayNum / 4);
             ColorRay bottomRightSubpixel = AdaptiveSuperSampling(C, newRx, newRy, rayNum / 4);
 
-            // Return the average color of the subpixels
+            // Compute the average color of the subpixels
             Color averageColor = topLeftSubpixel.getColor()
                     .add(topRightSubpixel.getColor())
                     .add(bottomLeftSubpixel.getColor())
                     .add(bottomRightSubpixel.getColor())
                     .reduce(4);
+
+            // Return the ColorRay representing the average color
             return new ColorRay(new Ray(location, rayIntersect.subtract(location)), averageColor);
         }
     }
 
+    /**
+     * Casts a ray from a specific corner of the pixel.
+     *
+     * @param Rx the pixel width
+     * @param Ry the pixel height
+     * @param offsetX the offset along the X-axis for the corner
+     * @param offsetY the offset along the Y-axis for the corner
+     * @param mid the midpoint of the pixel
+     * @return the ColorRay representing the computed color of the ray
+     */
     private ColorRay castRay(double Rx, double Ry, int offsetX, int offsetY, Point mid) {
         // Calculate the displaced ray at the corner of the pixel
         Point cornerPoint = mid
@@ -364,36 +414,6 @@ public class Camera {
                     }
                 });
             });
-            // Iterate over each pixel in the image
-//            for (int i = 0; i < nx; i++) {
-//                for (int j = 0; j < ny; j++) {
-//                    // Check if multiple rays per pixel are used
-//                    if (this.rayNum > 1) {
-//                        if(1==1) {
-//                            // Construct a list of rays for the current pixel
-//                            List<Ray> rays = constructRays(nx, ny, i, j);
-//
-//                            // Cast the rays and write the resulting color to the image
-//                            imageWriter.writePixel(i, j, castRays(rays));
-//                            System.out.println(i+","+j);
-//                        }
-//                        else {
-//                            ColorRay colorRay = constructAdaptiveSuperSampling(nx, ny, i, j);
-//                            imageWriter.writePixel(i, j, colorRay.getColor());
-//                            System.out.println(i+","+j);
-//                        }
-//
-//                    }
-//                    else {
-//                        // Construct a single ray for the current pixel
-//                        Ray ray = constructRay(nx, ny, i, j);
-//                        // Cast the ray and write the resulting color to the image
-//                        imageWriter.writePixel(i, j, castRay(ray));
-//                    }
-//
-//
-//                }
-//            }
 
         } catch (Exception e) {
             throw new UnsupportedOperationException("Failed to render image", e);
@@ -539,35 +559,70 @@ public class Camera {
     }
 
     /**
-     * pitch is the rotation of the camera up/down around the vRight vector
-     * @param angle the angle in degree (0 to 360)
-     * @return the camera after the rotation
+     * Moves the camera up or down by the specified amount.
+     *
+     * @param num The amount to move the camera up or down.
+     * @return A new camera object with the updated position and orientation.
      */
-    public Camera pitchCamera(double angle) {
-        if(isZero(angle))
-            return this;
-        double radian = Math.toRadians(angle);
+    public Camera upDown(double num){
+        location = location.add(this.Vup.scale(num));
 
-        double cos = Math.cos(radian);
-        double sin = Math.sin(radian);
-
-        Vector newVTo = this.Vto.scale(cos).subtract(this.Vup.scale(sin));
-        Vector newVUp = this.Vup.scale(cos).add(this.Vto.scale(sin));
-
-        this.Vto = newVTo;
-        this.Vup = newVUp;
-
-        return this;
+        // Create a new camera object with the updated position and orientation
+        return new Camera(location, this.Vto, this.Vup)
+                .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
     }
 
-    public Camera moveCameraOnSphere(double radius, double alpha , double beta) {
+    /**
+     * Moves the camera in or out by the specified amount.
+     *
+     * @param num The amount to move the camera in or out.
+     * @return A new camera object with the updated position and orientation.
+     */
+    public Camera inOut(double num){
+        location = location.add(this.Vto.scale(num));
+
+        // Create a new camera object with the updated position and orientation
+        return new Camera(location, this.Vto, this.Vup)
+                .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
+    }
+
+    /**
+     * Moves the camera right or left by the specified amount.
+     *
+     * @param num The amount to move the camera right or left.
+     * @return A new camera object with the updated position and orientation.
+     */
+    public Camera rightLeft(double num){
+        location = location.add(this.Vright.scale(num));
+
+        // Create a new camera object with the updated position and orientation
+        return new Camera(location, this.Vto, this.Vup)
+                .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
+    }
+
+    /**
+     * Moves the camera on a sphere around a specified axis.
+     *
+     * @param radius the radius of the sphere
+     * @param axis the axis point around which the camera moves
+     * @param alpha the angle (in degrees) along the latitude of the sphere
+     * @param beta the angle (in degrees) along the longitude of the sphere
+     * @return the updated camera object with the new position
+     */
+    public Camera moveCameraOnSphere(double radius ,Point axis, double alpha , double beta) {
+
+        // Calculate the coordinates on the sphere using spherical coordinates
         double a = radius * Math.cos(Math.toRadians(alpha)) * Math.sin(Math.toRadians(beta));
         double b = radius * Math.sin(Math.toRadians(alpha)) * Math.cos(Math.toRadians(beta));
         double c = radius * Math.cos(Math.toRadians(beta));
 
         Point point = new Point(a, b, c);
 
-        return new Camera(point, new Point(0,0,0).subtract(point),this.Vright.crossProduct(new Point(0,0,0).subtract(point)))
+        // Calculate the new direction vector from the axis to the point on the sphere
+        Vto = axis.subtract(point);
+
+        // Create a new camera object with the updated position and orientation
+        return new Camera(point,this.Vto,this.Vright.crossProduct(this.Vto))
                 .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
     }
 

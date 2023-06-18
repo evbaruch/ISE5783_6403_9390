@@ -633,7 +633,7 @@ public class ReflectionRefractionTests {
                .build();
 
        for (int i = 0; i < 100; i++) {
-           camera = camera.moveCameraOnSphere(1000, i*0.5, 0);
+           camera = camera.moveCameraOnSphere(1000,new Point(0,0,0), i*0.5, 0);
            ImageWriter imageWriter = new ImageWriter("roomUp"+i, 600, 600);
            camera.setImageWriter(imageWriter)
                    .setRayTracer(new RayTracerBasic(scene))

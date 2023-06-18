@@ -489,7 +489,7 @@ public class mainModel2 {
         );
 
         Camera camera = new Camera(new Point(0, 130, 30), new Vector(0, -1, 0), new Vector(0, 0, 1))
-                .setVPSize(150, 150).setVPDistance(500).setRayNum(100).tiltCamera(-15).adjustHorizontalRotation(0);
+                .setVPSize(150, 150).setVPDistance(500).tiltCamera(-15).adjustHorizontalRotation(0);
 
 
 
@@ -524,10 +524,13 @@ public class mainModel2 {
                         ))
                 .build();
 
+        for (int i = 0; i < 720; i++) {
+            camera = camera.moveCameraOnSphere(100, new Point(0, 0, 0), 0.5*i, 0);
 
-        camera.setImageWriter(new ImageWriter("diamond", 500, 500))
-                .setRayTracer(new RayTracerBasic(scene))
-                .renderImage()
-                .writeToImage();
+            camera.setImageWriter(new ImageWriter("diamond"+i, 500, 500))
+                    .setRayTracer(new RayTracerBasic(scene))
+                    .renderImage()
+                    .writeToImage();
+        }
     }
 }
