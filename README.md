@@ -228,7 +228,18 @@ In conclusion, the mini-project was not only successful in achieving its goals b
 By addressing the identified limitations, continuing to refine the renderer, and leveraging our newfound knowledge, we can further enhance the capabilities and impact of our renderer. The mini-project served as a stepping stone towards our growth as software engineers and highlighted the potential for future advancements in rendering technology.
 
 ## References
-Cite all the sources, references, and frameworks utilized during the mini-project.
+
+- [Boundary Value Analysis - ToolsQA](https://www.toolsqa.com/software-testing/istqb/boundary-value-analysis/)
+- [Equivalence Partitioning & Boundary Value Analysis - Guru99](https://www.guru99.com/equivalence-partitioning-boundary-value-analysis.html)
+- [Builder Pattern in Java - HowToDoInJava](https://howtodoinjava.com/design-patterns/creational/builder-pattern-in-java)
+- [Ray Tracing Shapes - Hugi Scene](http://hugi.scene.org/online/hugi24/coding%20graphics%20chris%20dragan%20raytracing%20shapes.htm)
+- [Depth of Field Implementation in Raytracer - Stack Overflow](https://stackoverflow.com/questions/13532947/references-for-depth-of-field-implementation-in-a-raytracer)
+- [Java Multithreading Tutorial - GeeksforGeeks](https://www.geeksforgeeks.org/java-multithreading-tutorial/)
+- [Ray Tracing in One Weekend - GitHub](https://github.com/RayTracing/raytracing.github.io)
+- [Ray Tracing in Rust - Mr. Dan's Blog](https://misterdanb.github.io/raytracinginrust/)
+
 
 ## Appendices
+
+Here are some additional resources and references that were used during the project:
 Include any supplementary materials, such as code snippets, screenshots, diagrams, or additional documentation.
