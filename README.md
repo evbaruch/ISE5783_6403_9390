@@ -1,7 +1,3 @@
-
-https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/c7964ea9-e958-41f2-bc06-3235a26fa101
-
-https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/5d672687-4951-44b9-8dc3-7be2231d4763
 # Mini Project in Introduction to Software Engineering
 
 ![Project Photo](images/diamond.png)
@@ -17,10 +13,11 @@ https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/5d672687-4951-44b
 8. [Testing and Quality Assurance](#testing-and-quality-assurance)  
 9. [Performance acceleration](#performance-acceleration)
 10. [Rendered Images](#rendered-images)
-11. [Conclusion](#conclusion)
-12. [References](#references)
-13. [Appendices](#appendices)
-14. [Credits](#credits)
+11. [Rendered videos](#rendered videos)
+12. [Conclusion](#conclusion)
+13. [References](#references)
+14. [Appendices](#appendices)
+15. [Credits](#credits)
 
 ## Executive Summary
 
