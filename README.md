@@ -189,8 +189,6 @@ Description: Briefly describe the scene and any notable features or effects.
 
 
 ## Rendered videos
-
-### Spinning balls in space
 https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/4079ecf4-3312-401b-af32-1f01dfa3db3c  
 Description: Briefly describe the scene and any notable features or effects.
 
