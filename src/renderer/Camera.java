@@ -1,14 +1,16 @@
 package renderer;
 
+import geometries.Geometries;
+import geometries.Geometry;
+import geometries.Sphere;
 import primitives.*;
-
+import java.util.stream.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Random;
 
-import static primitives.Util.alignZero;
-import static primitives.Util.random;
+import static primitives.Util.*;
 
 public class Camera {
     private Point location;
@@ -169,6 +171,35 @@ public class Camera {
         return new Ray(location,Vij);
     }
 
+    public Point middlePoint(int nX, int nY, int j, int i,double Rx,double Ry){
+
+        //Image center
+        Point Pc = location.add(Vto.scale(distance));
+
+        //Calculation of displacement according to i j
+        double Xj = (j - (double)(nX - 1)/2)*Rx;
+        double Yi = -(i - (double)(nY - 1)/2)*Ry;
+
+        //Calculating the pixels function according to i j and gives a point
+        Point Pij = Pc;
+        if (alignZero(Xj) != 0){
+            Pij = Pij.add(Vright.scale(Xj));
+        }
+        if (alignZero(Yi) != 0){
+            Pij = Pij.add(Vup.scale(Yi));
+        }
+        return Pij;
+    }
+
+    public ColorRay constructAdaptiveSuperSampling(int nX, int nY, int j, int i) {
+        //Calculate the size of each pixel
+        double Rx = width / nX;
+        double Ry = height / nY;
+
+        Point mid = middlePoint(nX, nY,j,i,Rx,Ry);
+        return AdaptiveSuperSampling(mid,Rx,Ry,this.rayNum);
+    }
+
 
     /**
      * Constructs a list of rays for a given pixel position.
@@ -201,6 +232,8 @@ public class Camera {
             Pij = Pij.add(Vup.scale(Yi));
         }
 
+
+
         // Create a list to store the rays
         List<Ray> listRay = new LinkedList<>();
         Random random = new Random();
@@ -225,6 +258,65 @@ public class Camera {
     }
 
 
+
+    public ColorRay AdaptiveSuperSampling(Point rayIntersect, double Rx, double Ry ,int rayNum) {
+        ColorRay topLeft = castRay(Rx, Ry, -1, -1 ,rayIntersect);
+        ColorRay topRight = castRay( Rx, Ry, 1, -1,rayIntersect);
+        ColorRay bottomLeft = castRay( Rx, Ry, -1, 1,rayIntersect);
+        ColorRay bottomRight = castRay(Rx, Ry, 1, 1,rayIntersect);
+
+        if ((topLeft.getColor().equals(topRight.getColor())
+                && topLeft.getColor().equals(bottomLeft.getColor())
+                && topLeft.getColor().equals(bottomRight.getColor()))
+        || rayNum <=0 ) {
+
+            // Return the colorRay if all four colors are similar
+            return topLeft;
+        } else {
+            // Recursively divide the pixel and perform adaptive supersampling
+            double newRx = Rx / 2;
+            double newRy = Ry / 2;
+            Point A = rayIntersect
+                    .add(this.Vup.scale((Ry/2)*-1)
+                    .add(this.Vright.scale((Rx/2)*-1)));
+            Point B = rayIntersect
+                    .add(this.Vup.scale((Ry/2)*1)
+                            .add(this.Vright.scale((Rx/2)*-1)));
+            Point C = rayIntersect
+                    .add(this.Vup.scale((Ry/2)*-1)
+                            .add(this.Vright.scale((Rx/2)*1)));
+            Point D = rayIntersect
+                    .add(this.Vup.scale((Ry/2)*1)
+                            .add(this.Vright.scale((Rx/2)*1)));
+            ColorRay topLeftSubpixel = AdaptiveSuperSampling(A, newRx, newRy, rayNum / 4);
+            ColorRay topRightSubpixel = AdaptiveSuperSampling(B, newRx, newRy, rayNum / 4);
+            ColorRay bottomLeftSubpixel = AdaptiveSuperSampling(C, newRx, newRy, rayNum / 4);
+            ColorRay bottomRightSubpixel = AdaptiveSuperSampling(C, newRx, newRy, rayNum / 4);
+
+            // Return the average color of the subpixels
+            Color averageColor = topLeftSubpixel.getColor()
+                    .add(topRightSubpixel.getColor())
+                    .add(bottomLeftSubpixel.getColor())
+                    .add(bottomRightSubpixel.getColor())
+                    .reduce(4);
+            return new ColorRay(new Ray(location, rayIntersect.subtract(location)), averageColor);
+        }
+    }
+
+    private ColorRay castRay(double Rx, double Ry, int offsetX, int offsetY, Point mid) {
+        // Calculate the displaced ray at the corner of the pixel
+        Point cornerPoint = mid
+                .add(this.Vup.scale((Ry/2)*offsetY)
+                .add(this.Vright.scale((Rx/2)*offsetX)));
+        Ray cornerRay = new Ray(location, cornerPoint.subtract(location));
+
+        // Perform ray casting and return the ColorRay
+        Color color = castRay(cornerRay);
+        return new ColorRay(cornerRay, color);
+    }
+
+
+
     /**
      * Renders the image of the current scene using the implemented ray tracing algorithm.
      *
@@ -245,16 +337,24 @@ public class Camera {
             if (nx <= 0 || ny <= 0) {
                 throw new IllegalArgumentException("Invalid image dimensions");
             }
-            // Iterate over each pixel in the image
-            for (int i = 0; i < nx; i++) {
-                for (int j = 0; j < ny; j++) {
-                    // Check if multiple rays per pixel are used
-                    if (this.rayNum > 1) {
-                        // Construct a list of rays for the current pixel
-                        List<Ray> rays = constructRays(nx, ny, i, j);
 
-                        // Cast the rays and write the resulting color to the image
-                        imageWriter.writePixel(i, j, castRays(rays));
+            Pixel.initialize(ny,nx,1);
+            IntStream.range(0,ny).parallel().forEach(i -> {
+                IntStream.range(0,nx).parallel().forEach(j -> {
+                // Check if multiple rays per pixel are used
+                    if (this.rayNum > 1) {
+                        if(1==2) {
+                            // Construct a list of rays for the current pixel
+                            List<Ray> rays = constructRays(nx, ny, i, j);
+
+                            // Cast the rays and write the resulting color to the image
+                            imageWriter.writePixel(i, j, castRays(rays));
+                        }
+                        else {
+                            ColorRay colorRay = constructAdaptiveSuperSampling(nx, ny, i, j);
+                            imageWriter.writePixel(i, j, colorRay.getColor());
+                        }
+
                     }
                     else {
                         // Construct a single ray for the current pixel
@@ -262,10 +362,38 @@ public class Camera {
                         // Cast the ray and write the resulting color to the image
                         imageWriter.writePixel(i, j, castRay(ray));
                     }
-
-
-                }
-            }
+                });
+            });
+            // Iterate over each pixel in the image
+//            for (int i = 0; i < nx; i++) {
+//                for (int j = 0; j < ny; j++) {
+//                    // Check if multiple rays per pixel are used
+//                    if (this.rayNum > 1) {
+//                        if(1==1) {
+//                            // Construct a list of rays for the current pixel
+//                            List<Ray> rays = constructRays(nx, ny, i, j);
+//
+//                            // Cast the rays and write the resulting color to the image
+//                            imageWriter.writePixel(i, j, castRays(rays));
+//                            System.out.println(i+","+j);
+//                        }
+//                        else {
+//                            ColorRay colorRay = constructAdaptiveSuperSampling(nx, ny, i, j);
+//                            imageWriter.writePixel(i, j, colorRay.getColor());
+//                            System.out.println(i+","+j);
+//                        }
+//
+//                    }
+//                    else {
+//                        // Construct a single ray for the current pixel
+//                        Ray ray = constructRay(nx, ny, i, j);
+//                        // Cast the ray and write the resulting color to the image
+//                        imageWriter.writePixel(i, j, castRay(ray));
+//                    }
+//
+//
+//                }
+//            }
 
         } catch (Exception e) {
             throw new UnsupportedOperationException("Failed to render image", e);
@@ -393,18 +521,57 @@ public class Camera {
      */
     public Camera tiltCamera(double angle) {
         // Convert the angle from degrees to radians.
-        double angleInRadian = Math.toRadians(angle*-1);
+        double angleInRadian = Math.toRadians(angle);
 
+        Vector to = this.Vto;
+        Vector up = this.Vup;
         // Calculate the new VTo vector by scaling the current VTo vector by the cosine of the angle
         // and subtracting the scaled VUp vector multiplied by the sine of the angle.
-        this.Vto = Vto.scale(Math.cos(angleInRadian)).subtract(Vup.scale(Math.sin(angleInRadian)));
+        this.Vto = (to.scale(Math.cos(angleInRadian)).subtract(up.scale(Math.sin(angleInRadian))));
 
+        this.Vup = this.Vright.crossProduct(this.Vto);
         // Calculate the new VUp vector by scaling the current VUp vector by the cosine of the angle
         // and adding the scaled VTo vector multiplied by the sine of the angle.
-        this.Vup = Vup.scale(Math.cos(angleInRadian)).add(Vto.scale(Math.sin(angleInRadian)));
+        //this.Vup = (up.scale(Math.sin(angleInRadian)).add(to.scale(Math.cos(angleInRadian))));
 
         // Return the camera after the tilt rotation.
         return this;
     }
 
-}
+    /**
+     * pitch is the rotation of the camera up/down around the vRight vector
+     * @param angle the angle in degree (0 to 360)
+     * @return the camera after the rotation
+     */
+    public Camera pitchCamera(double angle) {
+        if(isZero(angle))
+            return this;
+        double radian = Math.toRadians(angle);
+
+        double cos = Math.cos(radian);
+        double sin = Math.sin(radian);
+
+        Vector newVTo = this.Vto.scale(cos).subtract(this.Vup.scale(sin));
+        Vector newVUp = this.Vup.scale(cos).add(this.Vto.scale(sin));
+
+        this.Vto = newVTo;
+        this.Vup = newVUp;
+
+        return this;
+    }
+
+    public Camera moveCameraOnSphere(double radius, double alpha , double beta) {
+        double a = radius * Math.cos(Math.toRadians(alpha)) * Math.sin(Math.toRadians(beta));
+        double b = radius * Math.sin(Math.toRadians(alpha)) * Math.cos(Math.toRadians(beta));
+        double c = radius * Math.cos(Math.toRadians(beta));
+
+        Point point = new Point(a, b, c);
+
+        return new Camera(point, new Point(0,0,0).subtract(point),this.Vright.crossProduct(new Point(0,0,0).subtract(point)))
+                .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
+    }
+
+
+
+
+ }

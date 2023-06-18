@@ -491,6 +491,8 @@ public class mainModel2 {
         Camera camera = new Camera(new Point(0, 130, 30), new Vector(0, -1, 0), new Vector(0, 0, 1))
                 .setVPSize(150, 150).setVPDistance(500).setRayNum(100).tiltCamera(-15).adjustHorizontalRotation(0);
 
+
+
         //Camera camera = new Camera(new Point(0, 0, 100), new Vector(0, 0, -1), new Vector(0, 1, 0))
         //        .setVPSize(150, 150).setVPDistance(500).tiltCamera(0).adjustHorizontalRotation(0);
 

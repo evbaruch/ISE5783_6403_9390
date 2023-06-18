@@ -523,119 +523,122 @@ public class ReflectionRefractionTests {
    }
 
    @Test
-   public void roomUp(){
-      Camera camera = new Camera(new Point(0, -110, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
-              .setVPSize(200, 200).setVPDistance(1000).tiltCamera(8);
+   public void roomUp() {
+       Camera camera = new Camera(new Point(0, -110, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
+               .setVPSize(200, 200).setVPDistance(1000);
 
-      Geometries geometries = new Geometries(
-              new Polygon(
-                      // Represents the floor of the room
-                      new Point(-60.0, -50.0, 200.0),
-                      new Point(60.0, -50.0, 200.0),
-                      new Point(60.0, -20.0, -200.0),
-                      new Point(-60.0, -20.0, -200.0)
-              )
-                      .setEmission(new Color(GRAY))
-                      .setMaterial(new Material()
-                              .setKr(0.5).setKs(0.3).setKd(0.7))
-              ,
-              new Polygon(
-                      // Represents the ceiling of the room
-                      new Point(-60.0, 60.0, 200.0),
-                      new Point(60.0, 60.0, 200.0),
-                      new Point(60.0, 90.0, -200.0),
-                      new Point(-60.0, 90.0, -200.0)
-              )
-                      .setEmission(new Color(GRAY))
-                      .setMaterial(new Material()
-                              .setKr(0.5).setKs(0.3).setKd(0.7))
-              ,
-              new Polygon(
-                      // Represents the wall on the positive Z-axis side of the room
-                      new Point(-60.0, -20.0, -200.0),
-                      new Point(60.0, -20.0, -200.0),
-                      new Point(60.0, 90.0, -200.0),
-                      new Point(-60.0, 90.0, -200.0)
-              )
-                      .setEmission(new Color(BLACK))
-                      .setMaterial(new Material()
-                              .setKr(0.5).setKs(0.3).setKd(0.7)),
+       Geometries geometries = new Geometries(
+               new Polygon(
+                       // Represents the floor of the room
+                       new Point(-60.0, -50.0, 200.0),
+                       new Point(60.0, -50.0, 200.0),
+                       new Point(60.0, -20.0, -200.0),
+                       new Point(-60.0, -20.0, -200.0)
+               )
+                       .setEmission(new Color(GRAY))
+                       .setMaterial(new Material()
+                               .setKr(0.5).setKs(0.3).setKd(0.7))
+               ,
+               new Polygon(
+                       // Represents the ceiling of the room
+                       new Point(-60.0, 60.0, 200.0),
+                       new Point(60.0, 60.0, 200.0),
+                       new Point(60.0, 90.0, -200.0),
+                       new Point(-60.0, 90.0, -200.0)
+               )
+                       .setEmission(new Color(GRAY))
+                       .setMaterial(new Material()
+                               .setKr(0.5).setKs(0.3).setKd(0.7))
+               ,
+               new Polygon(
+                       // Represents the wall on the positive Z-axis side of the room
+                       new Point(-60.0, -20.0, -200.0),
+                       new Point(60.0, -20.0, -200.0),
+                       new Point(60.0, 90.0, -200.0),
+                       new Point(-60.0, 90.0, -200.0)
+               )
+                       .setEmission(new Color(BLACK))
+                       .setMaterial(new Material()
+                               .setKr(0.5).setKs(0.3).setKd(0.7)),
 
-              new Polygon(
-                      // Represents the wall on the positive y-axis side of the room
+               new Polygon(
+                       // Represents the wall on the positive y-axis side of the room
 
-                      new Point(-60.0, -50.0, 200.0),
-                      new Point(-60.0, -20.0, -200.0),
-                      new Point(-60.0, 90.0, -200.0),
-                      new Point(-60.0, 60.0, 200.0)
-              )
-                      .setEmission(new Color(GRAY))
-                      .setMaterial(new Material()
-                              .setKs(0.3).setKd(0.7)),
+                       new Point(-60.0, -50.0, 200.0),
+                       new Point(-60.0, -20.0, -200.0),
+                       new Point(-60.0, 90.0, -200.0),
+                       new Point(-60.0, 60.0, 200.0)
+               )
+                       .setEmission(new Color(GRAY))
+                       .setMaterial(new Material()
+                               .setKs(0.3).setKd(0.7)),
 
-              new Polygon(
-                      // Represents the wall on the negative Y-axis side of the room
-                      new Point(60.0, -50.0, 200.0),
-                      new Point(60.0, -20.0, -200.0),
-                      new Point(60.0, 90.0, -200.0),
-                      new Point(60.0, 60.0, 200.0)
-              )
-                      .setEmission(new Color(GRAY))
-                      .setMaterial(new Material()
-                              .setKs(0.3).setKd(0.7))
+               new Polygon(
+                       // Represents the wall on the negative Y-axis side of the room
+                       new Point(60.0, -50.0, 200.0),
+                       new Point(60.0, -20.0, -200.0),
+                       new Point(60.0, 90.0, -200.0),
+                       new Point(60.0, 60.0, 200.0)
+               )
+                       .setEmission(new Color(GRAY))
+                       .setMaterial(new Material()
+                               .setKs(0.3).setKd(0.7))
 
-              ,
-              new Sphere( new Point(0,0,-70),20d)
-                      .setEmission(new Color(30,40,100))
-                      .setMaterial(
-                              new Material()
-                                      .setKd(0.4)
-                                      .setKs(0.3)
-                                      .setShininess(100)
-                                      .setKt(0.3).setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX))
-              ,
-              new Sphere(
-                      new Point(12, 4, -60), 10d)
-                      .setEmission(new Color(RED))
-                      .setMaterial(new Material().setKd(0.7).setKs(0.3).setKr(0.5).setShininess(100).setKt(0.3))
-              ,
-              new Polygon(
-               new Point(-10.0, -70.0, 200.0),
-               new Point(40.0, -70.0, 200.0),
-               new Point(40.0, 0.0, 200.0),
-               new Point(-10.0, 0.0, 200.0))
-               .setEmission(new Color(0,25,0))
-                      .setEmission(new Color(5,20,5))
-                      .setMaterial(
-                              new Material()
-                                      .setKd(0.4)
-                                      .setKs(0.2)
-                                      .setShininess(20)
-                                      .setKt(0.9).setBlurAngle(6).setNumBlur(100)
-                                      )
+               ,
+               new Sphere(new Point(0, 0, -70), 20d)
+                       .setEmission(new Color(30, 40, 100))
+                       .setMaterial(
+                               new Material()
+                                       .setKd(0.4)
+                                       .setKs(0.3)
+                                       .setShininess(100)
+                                       .setKt(0.3).setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX))
+               ,
+               new Sphere(
+                       new Point(12, 4, -60), 10d)
+                       .setEmission(new Color(RED))
+                       .setMaterial(new Material().setKd(0.7).setKs(0.3).setKr(0.5).setShininess(100).setKt(0.3))
+               ,
+               new Polygon(
+                       new Point(-10.0, -70.0, 200.0),
+                       new Point(40.0, -70.0, 200.0),
+                       new Point(40.0, 0.0, 200.0),
+                       new Point(-10.0, 0.0, 200.0))
+                       .setEmission(new Color(0, 25, 0))
+                       .setEmission(new Color(5, 20, 5))
+                       .setMaterial(
+                               new Material()
+                                       .setKd(0.4)
+                                       .setKs(0.2)
+                                       .setShininess(20)
+                                       .setKt(0.9).setBlurAngle(6).setNumBlur(100)
+                       )
 
-      );
+       );
 
 
-      scene = new Scene.SceneBuilder("Test scene snell")
-              .setGeometries(geometries)
-              .setLights(
-                      new SpotLight(
-                              new Color(255,255,255),
-                              new Point(0,60,-100),
-                              new Vector(0,-1,0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
-                      ,
-                      new SpotLight(
-                              new Color(255,255,255),
-                              new Point(20,60,100),
-                              new Vector(0,-1,0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
-              )
-              .build();
+       scene = new Scene.SceneBuilder("Test scene snell")
+               .setGeometries(geometries)
+               .setLights(
+                       new SpotLight(
+                               new Color(255, 255, 255),
+                               new Point(0, 60, -100),
+                               new Vector(0, -1, 0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
+                       ,
+                       new SpotLight(
+                               new Color(255, 255, 255),
+                               new Point(20, 60, 100),
+                               new Vector(0, -1, 0)).setNarrowBeam(40).setKl(0.0004).setKq(0.0000006)
+               )
+               .build();
 
-      ImageWriter imageWriter = new ImageWriter("roomUp", 600, 600);
-      camera.setImageWriter(imageWriter)
-              .setRayTracer(new RayTracerBasic(scene))
-              .renderImage()
-              .writeToImage();
+       for (int i = 0; i < 100; i++) {
+           camera = camera.moveCameraOnSphere(1000, i*0.5, 0);
+           ImageWriter imageWriter = new ImageWriter("roomUp"+i, 600, 600);
+           camera.setImageWriter(imageWriter)
+                   .setRayTracer(new RayTracerBasic(scene))
+                   .renderImage()
+                   .writeToImage();
+       }
    }
 }

@@ -79,7 +79,7 @@ public class RenderTests {
                 .setVPDistance(100) //
                 .setVPSize(500, 500) //
                 .setImageWriter(new ImageWriter("color render test", 1000, 1000))
-                .setRayTracer(new RayTracerBasic(scene));
+                .setRayTracer(new RayTracerBasic(scene)).setRayNum(200);
 
         camera.renderImage();
         camera.printGrid(100, new Color(WHITE));

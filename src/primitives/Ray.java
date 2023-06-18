@@ -1,7 +1,10 @@
 package primitives;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
+
 import geometries.Intersectable.GeoPoint;
 
 /**
@@ -100,6 +103,42 @@ public class Ray {
     public Point findClosestPoint(List<Point> points) {
         return points == null || points.isEmpty() ? null
                 : findClosestGeoPoint(points.stream().map(p -> new GeoPoint(null, p)).toList()).point;
+    }
+
+    /**
+     * Generates a beam of rays with a spread angle around the given ray's direction.
+     *
+     * @param spreadAngle The spread angle of the beam.
+     * @param numRays The number of rays in the beam.
+     * @return A list of rays representing the beam.
+     */
+    public List<Ray> Beam(double spreadAngle, int numRays) {
+        List<Ray> rays = new LinkedList<>();
+        Random random = new Random();
+
+        // Calculate the endpoint of the given ray
+        Point p = this.getP0().add(this.getDir());
+
+        // Calculate two perpendicular vectors to the ray's direction vector
+        Vector v = this.getDir().perpendicular();
+        Vector u = v.crossProduct(this.getDir());
+
+        for (int i = 0; i < numRays; i++) {
+            // Generate a random displacement within the spread angle range
+            double displacementV = random.nextDouble(-spreadAngle, spreadAngle);
+            double displacementU = random.nextDouble(-spreadAngle, spreadAngle);
+
+            // Calculate the displaced point on the plane perpendicular to the ray direction
+            Vector displacement = v.scale(displacementV).add(u.scale(displacementU));
+            Point displacedPoint = p.add(displacement);
+
+            // Calculate the direction from the original point to the displaced point
+            Vector vr = displacedPoint.subtract(this.getP0());
+
+            // Create a new ray using the original point and the displaced direction
+            rays.add(new Ray(this.getP0(), vr));
+        }
+        return rays;
     }
 
 }

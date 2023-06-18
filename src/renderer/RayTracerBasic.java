@@ -152,23 +152,25 @@ public class RayTracerBasic extends RayTracerBase {
             // Get the light direction at the geometric point
             List<Vector> listL = lightSource.getL(gp.point, scene.getSoftShade());
 
-            for (Vector l: listL){
+            if(listL != null) {
+                for (Vector l : listL) {
 
-                // Calculate the dot product of the normal and the light direction
-                double nl = alignZero(n.dotProduct(l));
+                    // Calculate the dot product of the normal and the light direction
+                    double nl = alignZero(n.dotProduct(l));
 
-                // If the signs of nl and nv are the same, calculate the diffuse and specular effects
-                if (nl * nv > 0) { // sign(nl) == sing(nv)
-                    Double3 ktr = transparency(gp, lightSource, l).reduce(scene.getSoftShade());
-                    if (ktr.product(k).greaterThan(MIN_CALC_COLOR_K)){
-                        // Get the intensity of the light source at the geometric point
-                        Color iL = lightSource.getIntensity(gp.point).scale(ktr);
+                    // If the signs of nl and nv are the same, calculate the diffuse and specular effects
+                    if (nl * nv > 0) { // sign(nl) == sing(nv)
+                        Double3 ktr = transparency(gp, lightSource, l).reduce(scene.getSoftShade());
+                        if (ktr.product(k).greaterThan(MIN_CALC_COLOR_K)) {
+                            // Get the intensity of the light source at the geometric point
+                            Color iL = lightSource.getIntensity(gp.point).scale(ktr);
 
-                        // Add the diffuse and specular components to the color
-                        color = color.add(
-                                iL.scale(calcDiffusive(material, nl)),
-                                iL.scale(calcSpecular(material, n, l, nl, v))
-                        );
+                            // Add the diffuse and specular components to the color
+                            color = color.add(
+                                    iL.scale(calcDiffusive(material, nl)),
+                                    iL.scale(calcSpecular(material, n, l, nl, v))
+                            );
+                        }
                     }
                 }
             }
@@ -176,43 +178,6 @@ public class RayTracerBasic extends RayTracerBase {
         return color;
     }
 
-
-    /**
-     * Generates a beam of rays with a spread angle around the given ray's direction.
-     *
-     * @param ray The central ray around which the beam is generated.
-     * @param spreadAngle The spread angle of the beam.
-     * @param numRays The number of rays in the beam.
-     * @return A list of rays representing the beam.
-     */
-    private List<Ray> Beam(Ray ray, double spreadAngle, int numRays) {
-        List<Ray> rays = new LinkedList<>();
-        Random random = new Random();
-
-        // Calculate the endpoint of the given ray
-        Point p = ray.getP0().add(ray.getDir());
-
-        // Calculate two perpendicular vectors to the ray's direction vector
-        Vector v = ray.getDir().perpendicular();
-        Vector u = v.crossProduct(ray.getDir());
-
-        for (int i = 0; i < numRays; i++) {
-            // Generate a random displacement within the spread angle range
-            double displacementV = random.nextDouble(-spreadAngle, spreadAngle);
-            double displacementU = random.nextDouble(-spreadAngle, spreadAngle);
-
-            // Calculate the displaced point on the plane perpendicular to the ray direction
-            Vector displacement = v.scale(displacementV).add(u.scale(displacementU));
-            Point displacedPoint = p.add(displacement);
-
-            // Calculate the direction from the original point to the displaced point
-            Vector vr = displacedPoint.subtract(ray.getP0());
-
-            // Create a new ray using the original point and the displaced direction
-            rays.add(new Ray(ray.getP0(), vr));
-        }
-        return rays;
-    }
 
 
     /**
@@ -240,8 +205,6 @@ public class RayTracerBasic extends RayTracerBase {
             // Construct the refracted ray based on the intersection point and incoming ray.
             Ray refractedRay = constructRefractedRay(gp, inRay);
 
-
-
             // Find the closest intersection point for the refracted ray.
             GeoPoint refractedPoint = findClosestIntersection(refractedRay);
 
@@ -249,7 +212,7 @@ public class RayTracerBasic extends RayTracerBase {
             if (refractedPoint != null) {
                 if (mat.blurAngle > 0) {
                     // Generate a beam of rays with spread angle
-                    List<Ray> rays = Beam(refractedRay, mat.blurAngle, mat.numBlur);
+                    List<Ray> rays = refractedRay.Beam(mat.blurAngle, mat.numBlur);
 
                     // Calculate color contribution from each ray in the beam
                     for (Ray ray : rays) {
@@ -299,7 +262,7 @@ public class RayTracerBasic extends RayTracerBase {
                 // Check if the material has a non-zero gloss angle
                 if (mat.glossAngle > 0) {
                     // Generate a beam of rays with spread angle
-                    List<Ray> rays = Beam(reflectedRay, mat.glossAngle, mat.numGloss);
+                    List<Ray> rays = reflectedRay.Beam(mat.glossAngle, mat.numGloss);
 
                     // Calculate color contribution from each ray in the beam
                     for (Ray ray : rays) {
