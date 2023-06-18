@@ -1,3 +1,7 @@
+
+https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/c7964ea9-e958-41f2-bc06-3235a26fa101
+
+https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/5d672687-4951-44b9-8dc3-7be2231d4763
 # Mini Project in Introduction to Software Engineering
 
 ![Project Photo](images/diamond.png)
@@ -189,7 +193,12 @@ Description: Briefly describe the scene and any notable features or effects.
 
 
 ## Rendered videos
-https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/4079ecf4-3312-401b-af32-1f01dfa3db3c  
+ 
+
+https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/d7d5592e-4d2c-40de-bf10-1042cb4c79b6
+
+
+
 Description: Briefly describe the scene and any notable features or effects.
 
 ## Conclusion
