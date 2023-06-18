@@ -189,7 +189,11 @@ Description: Briefly describe the scene and any notable features or effects.
 
 
 ## Rendered videos
-https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/6a737bf1-ed9e-4301-a30d-379ade9e5096
+
+### Spinning balls in space
+https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/4079ecf4-3312-401b-af32-1f01dfa3db3c  
+Description: Briefly describe the scene and any notable features or effects.
+
 ## Conclusion
 
 The mini-project focused on developing a renderer implementation using Java and IntelliJ. Throughout the project, we achieved several key milestones and successfully met our objectives. Here is a summary of the main achievements:
