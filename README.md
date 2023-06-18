@@ -190,10 +190,7 @@ Description: Briefly describe the scene and any notable features or effects.
 
 ## Rendered videos
 
-<video width="640" height="480" controls>
-  <source src="images/spinning balls.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Rendered Video](images/spinning balls.mp4)
 
 ## Conclusion
 
