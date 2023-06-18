@@ -198,6 +198,10 @@ https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/d7d5592e-4d2c-40d
 
 Description: Briefly describe the scene and any notable features or effects.
 
+
+https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/5de9c7ba-69fa-4e9c-8947-81fc406e905e
+
+
 ## Conclusion
 
 The mini-project focused on developing a renderer implementation using Java and IntelliJ. Throughout the project, we achieved several key milestones and successfully met our objectives. Here is a summary of the main achievements:
