@@ -188,6 +188,13 @@ Description: Briefly describe the scene and any notable features or effects.
 Description: Briefly describe the scene and any notable features or effects.
 
 
+## Rendered videos
+
+<video width="640" height="480" controls>
+  <source src="images/spinning%20balls.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
 ## Conclusion
 
 The mini-project focused on developing a renderer implementation using Java and IntelliJ. Throughout the project, we achieved several key milestones and successfully met our objectives. Here is a summary of the main achievements:
