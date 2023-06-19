@@ -51,7 +51,7 @@ public class DirectionalLight extends Light implements LightSource {
 
     @Override
     public List<Vector> getL(Point p, int numOfgetL) {
-        return null;
+        return List.of( direction.normalize());
     }
 
 

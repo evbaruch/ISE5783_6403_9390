@@ -533,4 +533,122 @@ public class mainModel2 {
                     .writeToImage();
         }
     }
+
+    @Test
+    void stl(){
+        Material material = new Material()
+                .setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX)
+                .setShininess(60)
+                .setKd(0.5)//diffuse
+                .setKs(0.5)//specular
+                .setKt(0)//transmission
+                .setKr(0);//reflection
+
+        Color color = new Color(100, 100, 200);
+
+        Geometries geometries = new Geometries(
+                new Triangle(
+                        new Point(0.0, 0.0, 0.0),
+                        new Point(0.0, -10.0, 0.0),
+                        new Point(0.0, 0.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.0, 0.0, 10.0),
+                        new Point(0.0, -10.0, 0.0),
+                        new Point(0.0, -10.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.0, 0.0, 0.0),
+                        new Point(0.0, 0.0, 0.0),
+                        new Point(10.0, 0.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.0, 0.0, 10.0),
+                        new Point(0.0, 0.0, 0.0),
+                        new Point(0.0, 0.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.0, -10.0, 0.0),
+                        new Point(10.0, 0.0, 0.0),
+                        new Point(10.0, -10.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.0, -10.0, 10.0),
+                        new Point(10.0, 0.0, 0.0),
+                        new Point(10.0, 0.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.0, -10.0, 0.0),
+                        new Point(10.0, -10.0, 0.0),
+                        new Point(0.0, -10.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.0, -10.0, 10.0),
+                        new Point(10.0, -10.0, 0.0),
+                        new Point(10.0, -10.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.0, -10.0, 10.0),
+                        new Point(10.0, -10.0, 10.0),
+                        new Point(0.0, 0.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(0.0, 0.0, 10.0),
+                        new Point(10.0, -10.0, 10.0),
+                        new Point(10.0, 0.0, 10.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.0, -10.0, 0.0),
+                        new Point(0.0, -10.0, 0.0),
+                        new Point(10.0, 0.0, 0.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material),
+                new Triangle(
+                        new Point(10.0, 0.0, 0.0),
+                        new Point(0.0, -10.0, 0.0),
+                        new Point(0.0, 0.0, 0.0)
+                )
+                        .setEmission(color)
+                        .setMaterial(material)
+        );
+
+        Camera camera = new Camera(new Point(5, 100, 20), new Vector(0, -1, 0), new Vector(0, 0, 1))
+                .setVPSize(150, 150).setVPDistance(500).setRayNum(100).tiltCamera(6).adjustHorizontalRotation(0);
+
+        Scene scene = new Scene.SceneBuilder("Test scene")
+                .setGeometries(geometries)
+                .setAmbientLight(new AmbientLight(new Color(10, 10, 10), 0.1))
+                .setLights(
+                        new DirectionalLight(
+                                new Color(200,100,100),
+                                new Vector(0-1,-1,-1)
+                        ))
+                .build();
+
+        camera.setImageWriter(new ImageWriter("stl", 500, 500))
+                .setRayTracer(new RayTracerBasic(scene))
+                .renderImage()
+                .writeToImage();
+    }
 }

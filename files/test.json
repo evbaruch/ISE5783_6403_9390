@@ -1,9 +1,0 @@
-{
-  "scene": {
-    "background": "0 0 0",
-    "ambientLight": {
-      "intensity": "38 38 38"
-    },
-    "geometries": {}
-  }
-}

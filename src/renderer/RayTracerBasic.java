@@ -31,7 +31,7 @@ public class RayTracerBasic extends RayTracerBase {
 
     private static final Double3 INITIAL_K = Double3.ONE;
 
-    private  static final boolean SNELL = true;
+    private  static final boolean SNELL = false;
 
     /**
      Constructs a new instance of the RayTracerBasic class with the specified scene.

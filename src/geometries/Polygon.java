@@ -125,4 +125,7 @@ public class Polygon extends Geometry {
       return List.of(new GeoPoint(this,intersectionPoint.point)) ;
    }
 
+   public List<Point> getVertices() {
+      return vertices;
+   }
 }
