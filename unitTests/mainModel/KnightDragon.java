@@ -60,7 +60,7 @@ public class KnightDragon {
                 .setKd(0.4)//diffuse
                 .setKs(0.6)//specular
                 .setKt(0)//transmission
-                .setKr(0.2);//reflection
+                .setKr(0.3);//reflection
         Color KnightColor = new Color(60, 50, 100);
 
         Material cloudMaterial = new Material()
