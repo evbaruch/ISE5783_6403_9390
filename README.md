@@ -514,7 +514,7 @@ Include any supplementary materials, such as code snippets, screenshots, diagram
 
 ### Project Team
 - Evyatar Baruch  [LinkedIn](https://www.linkedin.com/in/evyatar-baruch-0947a3244) | [Student GitHub](https://github.com/evbaruch) - [Private GitHub](https://github.com/aviaMader)
-- Yehuda Pailent  [LinkedIn](linkedin.com/in/yehuda-pilant-1292a3263/) | [GitHub](https://github.com/yehudaJCT)
+- Yehuda Pailent  [LinkedIn](https://www.linkedin.com/in/yehuda-pilant-1292a3263) | [GitHub](https://github.com/yehudaJCT)
 
 ### Mentor/Lecturer
 - Eliezer Gensburger  [LinkedIn](https://www.linkedin.com/in/גנסבורגר-אליעזר-56b14411/) | [GitHub](https://github.com/eliezergensburger)
