@@ -148,8 +148,8 @@ public class improvementsTest {
                                 .setKq(0.0000006))
                 .build();
 
-        for (int i = 0; i < 720; i++) {
-            camera = camera.moveCameraOnSphere(1000,new Point(0,0,0) , 0.5*i,0);
+        for (int i = 0; i < 1020; i++) {
+            camera = camera.moveCameraOnSphereSimply(1000,new Point(0,0,0) , 0.5,0.5);
         camera.setImageWriter(new ImageWriter("rand" +i, 500, 500))
                 .setRayTracer(new RayTracerBasic(scene))
                 .renderImage()

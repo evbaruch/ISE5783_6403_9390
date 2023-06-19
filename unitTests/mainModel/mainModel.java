@@ -25,8 +25,8 @@ public class mainModel {
 
     @Test
     public void room(){
-        Camera camera = new Camera(new Point(20, 20, 700), new Vector(0, 0, -1), new Vector(0, 1, 0))
-                .setVPSize(200, 200).setVPDistance(1000).tiltCamera(-2).adjustHorizontalRotation(-2);
+        Camera camera = new Camera(new Point(40, 40, 700), new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setVPSize(200, 200).setVPDistance(1000).tiltCamera(4).adjustHorizontalRotation(-4).setSuperSampling(true).setRayNum(100);
 
         Material material = new Material()
                 .setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX)
@@ -259,7 +259,7 @@ public class mainModel {
                 new Point(30.0, -30.0, 50.0),
                 new Point(30.0, -30.0, -50.0),
                 new Point(-30.0, -30.0, -50.0)
-                ).setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.4))
+                ).setMaterial(new Material().setKs(0.3).setKd(0.7).setKr(0.4).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
 
                 .setEmission(new Color(139, 69, 19))
                 .setMaterial(new Material()
@@ -272,7 +272,7 @@ public class mainModel {
                         new Point(30.0, -32.0, 50.0),
                         new Point(30.0, -32.0, -50.0),
                         new Point(-30.0, -32.0, -50.0)
-                ).setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.4))
+                ).setMaterial(new Material().setKs(0.3).setKd(0.7).setKr(0.4).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
 
                         .setEmission(new Color(139, 69, 19).add(new Color(WHITE).reduce(4)))
                         .setMaterial(new Material()
@@ -285,7 +285,7 @@ public class mainModel {
                         new Point(30.0, -30.0, 50.0),
                         new Point(30.0, -32.0, 50.0),
                         new Point(-30.0, -32.0, 50.0)
-                ).setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.4))
+                ).setMaterial(new Material().setKs(0.3).setKd(0.7).setKr(0.4).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
 
                         .setEmission(new Color(139, 69, 19).add(new Color(WHITE).reduce(4)))
                         .setMaterial(new Material()
@@ -298,7 +298,7 @@ public class mainModel {
                         new Point(30.0, -30.0, -50.0),
                         new Point(30.0, -32.0, -50.0),
                         new Point(-30.0, -32.0, -50.0)
-                ).setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.4))
+                ).setMaterial(new Material().setKs(0.3).setKd(0.7).setKr(0.4).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
 
                         .setEmission(new Color(139, 69, 19).add(new Color(WHITE).reduce(4)))
                         .setMaterial(new Material()
@@ -311,7 +311,7 @@ public class mainModel {
                         new Point(-30.0, -30.0, 50.0),
                         new Point(-30.0, -30.0, -50.0),
                         new Point(-30.0, -32.0, -50.0)
-                ).setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.4))
+                ).setMaterial(new Material().setKs(0.3).setKd(0.7).setKr(0.4).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
 
                         .setEmission(new Color(139, 69, 19).add(new Color(WHITE).reduce(4)))
                         .setMaterial(new Material()
@@ -324,7 +324,7 @@ public class mainModel {
                         new Point(30.0, -30.0, 50.0),
                         new Point(30.0, -30.0, -50.0),
                         new Point(30.0, -32.0, -50.0)
-                ).setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.4))
+                ).setMaterial(new Material().setKs(0.3).setKd(0.7).setKr(0.4).setRefractiveIndex(Material.GLASS_REFRACTIVE_INDEX))
 
                         .setEmission(new Color(139, 69, 19).add(new Color(WHITE).reduce(4)))
                         .setMaterial(new Material()

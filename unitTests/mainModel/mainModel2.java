@@ -524,8 +524,13 @@ public class mainModel2 {
                         ))
                 .build();
 
-        for (int i = 0; i < 720; i++) {
-            camera = camera.moveCameraOnSphere(100, new Point(0, 0, 0), 0.5*i, 0);
+        camera.setImageWriter(new ImageWriter("diamond", 500, 500))
+                .setRayTracer(new RayTracerBasic(scene))
+                .renderImage()
+                .writeToImage();
+
+        for (int i = 0; i < 1020; i++) {
+            camera = camera.moveCameraOnSphereSimply(100, new Point(0, 0, 0), 0.5, 0);
 
             camera.setImageWriter(new ImageWriter("diamond"+i, 500, 500))
                     .setRayTracer(new RayTracerBasic(scene))
