@@ -13,7 +13,7 @@
 8. [Testing and Quality Assurance](#testing-and-quality-assurance)  
 9. [Performance acceleration](#performance-acceleration)
 10. [Rendered Images](#rendered-images)
-11. [Rendered videos](#rendered videos)
+11. [Rendered videos](#rendered-videos)
 12. [Conclusion](#conclusion)
 13. [References](#references)
 14. [Appendices](#appendices)
