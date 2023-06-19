@@ -144,7 +144,99 @@ Overall, our deployment strategy focused on leveraging Java and IntelliJ as the 
 To enhance the performance and visual quality of our renderer, we implemented several techniques and optimizations. These improvements aim to reduce rendering artifacts, increase realism, and optimize the rendering process. Here are some of the techniques we incorporated into our project:
 
 ### Antialiasing
-Antialiasing is a technique used to smooth out jagged edges and reduce aliasing artifacts in rendered images. By applying antialiasing algorithms, such as supersampling or post-processing filters, we were able to achieve smoother and more visually pleasing results.
+
+Antialiasing is a technique used to smooth out jagged edges and reduce aliasing artifacts in rendered images, resulting in smoother and more visually appealing results. In our rendering process, we implemented antialiasing techniques directly within the camera class to achieve these improvements.
+
+To enhance the visual quality of our rendered images, we focused on improving ray precision. By increasing the number of rays cast for each pixel, we obtained more accurate and detailed information about the scene. This approach allowed us to capture finer details and resulted in smoother edges with reduced aliasing. By casting multiple rays per pixel and considering their intersections with the scene, we achieved more precise rendering, minimizing jagged edges and aliasing artifacts.
+
+In the code snippet provided, we can see the implementation of the antialiasing technique. If the number of rays per pixel (`rayNum`) is greater than 1, we construct a list of rays for the current pixel using the `constructRays` function. Each ray is generated with a slight random offset within the pixel, ensuring better coverage and reducing aliasing effects. The rays are then cast, and the resulting colors are averaged and written to the image using the `castRays` function.
+
+On the other hand, if the number of rays per pixel is 1, we construct a single ray for the pixel using the `constructRay` function. This ray is then cast, and the resulting color is written to the image using the `castRay` function.
+
+By incorporating antialiasing techniques directly within the camera class and adjusting the number of rays per pixel, we were able to reduce jagged edges and aliasing artifacts, resulting in smoother and more visually pleasing images. Our approach ensures that our rendered images meet the desired standards of realism and aesthetic appeal, providing a superior visual experience for our users.  
+
+```java 
+ Pixel.initialize(ny,nx,1);
+            IntStream.range(0,ny).parallel().forEach(i -> {
+                IntStream.range(0,nx).parallel().forEach(j -> {
+                // Check if multiple rays per pixel are used
+                    if (this.rayNum > 1) {
+                        if(!this.superSampling) {
+                            // Construct a list of rays for the current pixel
+                            List<Ray> rays = constructRays(nx, ny, i, j);
+
+                            // Cast the rays and write the resulting color to the image
+                            imageWriter.writePixel(i, j, castRays(rays));
+                        }
+                        else {
+                            ColorRay colorRay = constructAdaptiveSuperSampling(nx, ny, i, j);
+                            imageWriter.writePixel(i, j, colorRay.getColor());
+                        }
+
+                    }
+                    else {
+                        // Construct a single ray for the current pixel
+                        Ray ray = constructRay(nx, ny, i, j);
+                        // Cast the ray and write the resulting color to the image
+                        imageWriter.writePixel(i, j, castRay(ray));
+                    }
+
+/**
+ * Constructs a list of rays for a given pixel position.
+ *
+ * @param nX The number of pixels in the X direction.
+ * @param nY The number of pixels in the Y direction.
+ * @param j  The column index of the pixel.
+ * @param i  The row index of the pixel.
+ * @return A list of rays for the given pixel position.
+ */
+public List<Ray> constructRays(int nX, int nY, int j, int i ) {
+
+        //Image center
+        Point Pc = location.add(Vto.scale(distance));
+
+        //Calculate the size of each pixel
+        double Rx = width / nX;
+        double Ry = height / nY;
+
+        //Calculation of displacement according to i j
+        double Xj = (j - (double) (nX - 1) / 2) * Rx;
+        double Yi = -(i - (double) (nY - 1) / 2) * Ry;
+
+        //Calculating the pixels function according to i j and gives a point
+        Point Pij = Pc;
+        if (alignZero(Xj) != 0) {
+        Pij = Pij.add(Vright.scale(Xj));
+        }
+        if (alignZero(Yi) != 0) {
+        Pij = Pij.add(Vup.scale(Yi));
+        }
+
+
+
+        // Create a list to store the rays
+        List<Ray> listRay = new LinkedList<>();
+        Random random = new Random();
+
+        // Generate rays with random offsets within the pixel
+        for (int k = 0;k < this.rayNum; k++){
+        Point p;
+
+        // Calculate the random position within the pixel
+        p = Pij.add(Vright.scale(random.nextDouble(-Rx /2, Rx /2)));
+        p = p.add(Vup.scale(random.nextDouble(-Ry /2, Ry /2)));
+
+        //Calculation of the vector from the point to the screen according to i j with the addition of randomization
+        Vector Vij =  p.subtract(location);
+
+        // Create a ray from the location to the point
+        Ray ray = new Ray(location, Vij);
+        listRay.add(ray);
+        }
+
+        return listRay;
+        }
+ ```
 
 ### Soft Shadows
 To add realism to our rendered scenes, we implemented soft shadows. Soft shadows simulate the effect of light being partially blocked by objects, resulting in softer and more natural-looking shadows. This technique involves casting multiple shadow rays from different positions within the light source, creating smoother shadow transitions.
@@ -161,9 +253,179 @@ To simulate the optical effect of depth of field, we implemented a technique tha
 ### Multi-threading
 To improve the overall rendering performance, we leveraged multi-threading. By distributing the rendering workload across multiple threads, we were able to take advantage of modern multi-core processors and speed up the rendering process. Multi-threading allows for parallel execution of rendering tasks, reducing the overall rendering time.
 
-### Adaptive Supersampling
-Adaptive supersampling is a technique that dynamically adjusts the level of sampling based on the complexity and detail of the scene. By allocating more samples to regions with high-frequency details and fewer samples to smoother regions, we achieved a balance between visual quality and performance. This technique helps to reduce unnecessary oversampling in less detailed areas, optimizing the rendering process.
+### Antialiasing and Adaptive Supersampling
 
+Antialiasing is a technique used to smooth out jagged edges and reduce aliasing artifacts in rendered images, resulting in smoother and more visually appealing results. In our rendering process, we implemented antialiasing techniques directly within the camera class to achieve these improvements.
+
+To further enhance the visual quality, we also incorporated adaptive supersampling, a technique that dynamically adjusts the level of sampling based on the complexity and detail of the scene. This approach helps to allocate more samples to regions with high-frequency details and fewer samples to smoother regions, optimizing the rendering process.
+
+Here's the code snippet that demonstrates the implementation of adaptive supersampling within the camera class:
+
+```java  
+//from main pixel render function
+Pixel.initialize(ny,nx,1);
+        IntStream.range(0,ny).parallel().forEach(i -> {
+        IntStream.range(0,nx).parallel().forEach(j -> {
+        // Check if multiple rays per pixel are used
+        if (this.rayNum > 1) {
+        if(!this.superSampling) {
+        // Construct a list of rays for the current pixel
+        List<Ray> rays = constructRays(nx, ny, i, j);
+
+        // Cast the rays and write the resulting color to the image
+        imageWriter.writePixel(i, j, castRays(rays));
+        }
+        else {
+        ColorRay colorRay = constructAdaptiveSuperSampling(nx, ny, i, j);
+        imageWriter.writePixel(i, j, colorRay.getColor());
+        }
+
+        }
+        else {
+        // Construct a single ray for the current pixel
+        Ray ray = constructRay(nx, ny, i, j);
+        // Cast the ray and write the resulting color to the image
+        imageWriter.writePixel(i, j, castRay(ray));
+        }
+        });
+        });
+
+
+/**
+ * Constructs the adaptive supersampling for a specific pixel.
+ *
+ * @param nX the number of pixels in the X-axis
+ * @param nY the number of pixels in the Y-axis
+ * @param j the column index of the pixel
+ * @param i the row index of the pixel
+ * @return the ColorRay representing the computed color of the pixel
+ */
+public ColorRay constructAdaptiveSuperSampling(int nX, int nY, int j, int i) {
+        //Calculate the size of each pixel
+        double Rx = width / nX;
+        double Ry = height / nY;
+
+        Point mid = middlePoint(nX, nY,j,i,Rx,Ry);
+        return AdaptiveSuperSampling(mid,Rx,Ry,this.rayNum);
+        }
+
+
+/**
+ * Performs adaptive supersampling to compute the color of a pixel.
+ *
+ * @param rayIntersect the point of intersection between the ray and the scene
+ * @param Rx the pixel width
+ * @param Ry the pixel height
+ * @param rayNum the number of rays to cast for supersampling
+ * @return the ColorRay representing the computed color of the pixel
+ */
+public ColorRay AdaptiveSuperSampling(Point rayIntersect, double Rx, double Ry ,int rayNum) {
+
+        // Cast rays for the four corners of the pixel
+        ColorRay topLeft = castRay(Rx, Ry, -1, -1 ,rayIntersect);
+        ColorRay topRight = castRay( Rx, Ry, 1, -1,rayIntersect);
+        ColorRay bottomLeft = castRay( Rx, Ry, -1, 1,rayIntersect);
+        ColorRay bottomRight = castRay(Rx, Ry, 1, 1,rayIntersect);
+
+        // Check if all four colors are similar or the rayNum has reached the limit
+        if ((topLeft.getColor().equals(topRight.getColor())
+        && topLeft.getColor().equals(bottomLeft.getColor())
+        && topLeft.getColor().equals(bottomRight.getColor()))
+        || rayNum <=0 ) {
+
+        // Return the colorRay if all four colors are similar or rayNum limit reached
+        return topLeft;
+        } else {
+        // Recursively divide the pixel and perform adaptive supersampling
+        double newRx = Rx / 2;
+        double newRy = Ry / 2;
+
+        // Compute the four subpixel points within the pixel
+        Point A = rayIntersect
+        .add(this.Vup.scale((Ry/2)*-1)
+        .add(this.Vright.scale((Rx/2)*-1)));
+
+        Point B = rayIntersect
+        .add(this.Vup.scale((Ry/2)*1)
+        .add(this.Vright.scale((Rx/2)*-1)));
+
+        Point C = rayIntersect
+        .add(this.Vup.scale((Ry/2)*-1)
+        .add(this.Vright.scale((Rx/2)*1)));
+
+        Point D = rayIntersect
+        .add(this.Vup.scale((Ry/2)*1)
+        .add(this.Vright.scale((Rx/2)*1)));
+
+        // Recursively compute the color of the subpixels
+        ColorRay topLeftSubpixel = AdaptiveSuperSampling(A, newRx, newRy, rayNum / 4);
+        ColorRay topRightSubpixel = AdaptiveSuperSampling(B, newRx, newRy, rayNum / 4);
+        ColorRay bottomLeftSubpixel = AdaptiveSuperSampling(C, newRx, newRy, rayNum / 4);
+        ColorRay bottomRightSubpixel = AdaptiveSuperSampling(C, newRx, newRy, rayNum / 4);
+
+        // Compute the average color of the subpixels
+        Color averageColor = topLeftSubpixel.getColor()
+        .add(topRightSubpixel.getColor())
+        .add(bottomLeftSubpixel.getColor())
+        .add(bottomRightSubpixel.getColor())
+        .reduce(4);
+
+        // Return the ColorRay representing the average color
+        return new ColorRay(new Ray(location, rayIntersect.subtract(location)), averageColor);
+        }
+        }
+
+/**
+ * Constructs the adaptive supersampling for a specific pixel.
+ *
+ * @param nX the number of pixels in the X-axis
+ * @param nY the number of pixels in the Y-axis
+ * @param j the column index of the pixel
+ * @param i the row index of the pixel
+ * @return the ColorRay representing the computed color of the pixel
+ */
+public ColorRay constructAdaptiveSuperSampling(int nX, int nY, int j, int i) {
+    // Calculate the size of each pixel
+    double Rx = width / nX;
+    double Ry = height / nY;
+
+    Point mid = middlePoint(nX, nY, j, i, Rx, Ry);
+    return AdaptiveSuperSampling(mid, Rx, Ry, this.rayNum);
+}
+
+/**
+ * Calculates the middle point of a pixel in the image plane.
+ *
+ * @param nX the number of pixels in the X-axis
+ * @param nY the number of pixels in the Y-axis
+ * @param j the column index of the pixel
+ * @param i the row index of the pixel
+ * @param Rx the pixel width
+ * @param Ry the pixel height
+ * @return the middle point of the pixel
+ */
+public Point middlePoint(int nX, int nY, int j, int i,double Rx,double Ry){
+
+        //Image center
+        Point Pc = location.add(Vto.scale(distance));
+
+        //Calculation of displacement according to i j
+        double Xj = (j - (double)(nX - 1)/2)*Rx;
+        double Yi = -(i - (double)(nY - 1)/2)*Ry;
+
+        //Calculating the pixels function according to i j and gives a point
+        Point Pij = Pc;
+        if (alignZero(Xj) != 0){
+        Pij = Pij.add(Vright.scale(Xj));
+        }
+        if (alignZero(Yi) != 0){
+        Pij = Pij.add(Vup.scale(Yi));
+        }
+        return Pij;
+        }
+```
+
+By incorporating antialiasing techniques directly within the camera class and utilizing adaptive supersampling, we were able to reduce jagged edges, aliasing artifacts, and oversampling in less detailed areas. This resulted in smoother and more visually pleasing images, while also optimizing the rendering process. Our approach ensures that our rendered images meet the desired standards of realism and aesthetic appeal, providing a superior visual experience for our users.
 By incorporating these performance acceleration techniques into our renderer, we were able to achieve higher visual quality, reduce artifacts, and optimize the rendering process. These optimizations contribute to a more immersive and efficient rendering experience, enabling our renderer to handle complex scenes and deliver visually stunning results.
 
 ## Rendered Images
@@ -172,12 +434,10 @@ In this section, we present a collection of rendered images generated by our ren
 
 ### Basic first photo
 ![basic rendered](images/base%20render%20test.png)  
-Description: Briefly describe the scene and any notable features or effects.
-
+Description: The scene is a basic rendering test with two colors. It includes a sphere and three triangles. The background color is green, and there is ambient light with a pink color. The camera is positioned at the origin and facing downwards. The rendered image includes a grid overlay in yellow color.
 ### Sphere with multiple lights
 ![sphere multi light](images/sphere%20multi%20light.png)  
-Description: Briefly describe the scene and any notable features or effects.
-
+Description: The scene consists of a sphere and multiple light sources: a spotlight, a point light, and a directional light. The spotlight has a narrow beam and attenuation coefficients. The point light has attenuation coefficients. The directional light provides illumination from a specific direction. The resulting image showcases the interplay between the sphere and the different light sources.
 ### Diamond
 ![diamond](images/diamond.png)  
 78 geometries 
@@ -257,5 +517,5 @@ Include any supplementary materials, such as code snippets, screenshots, diagram
 - Yehuda Pailent  [LinkedIn](https://www.linkedin.com/) | [GitHub](https://github.com/yehuda-p)
 
 ### Mentor/Lecturer
-- Aliezer Ginzburg  [LinkedIn](https://www.linkedin.com/) | [GitHub](https://github.com/yehuda-p)
+- Eliezer Gensburger  [LinkedIn](https://www.linkedin.com/in/גנסבורגר-אליעזר-56b14411/) | [GitHub](https://github.com/eliezergensburger)
 

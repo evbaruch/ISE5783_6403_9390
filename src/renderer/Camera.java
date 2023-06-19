@@ -1,15 +1,15 @@
 package renderer;
 
-import geometries.Geometries;
-import geometries.Geometry;
-import geometries.Sphere;
 import primitives.*;
+
+import javax.print.CancelablePrintJob;
 import java.util.stream.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Random;
 
+import static java.lang.System.out;
 import static primitives.Util.*;
 
 public class Camera {
@@ -19,8 +19,12 @@ public class Camera {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
     private  int rayNum = 1;
+    private  boolean superSampling = false;
 
-
+    public Camera setSuperSampling(boolean superSampling) {
+        this.superSampling = superSampling;
+        return this;
+    }
 
     /**
 
@@ -392,8 +396,9 @@ public class Camera {
             IntStream.range(0,ny).parallel().forEach(i -> {
                 IntStream.range(0,nx).parallel().forEach(j -> {
                 // Check if multiple rays per pixel are used
+                    //out.println("i - " + i + ", j - " + j );
                     if (this.rayNum > 1) {
-                        if(1==2) {
+                        if(!this.superSampling) {
                             // Construct a list of rays for the current pixel
                             List<Ray> rays = constructRays(nx, ny, i, j);
 
@@ -564,12 +569,8 @@ public class Camera {
      * @param num The amount to move the camera up or down.
      * @return A new camera object with the updated position and orientation.
      */
-    public Camera upDown(double num){
-        location = location.add(this.Vup.scale(num));
-
-        // Create a new camera object with the updated position and orientation
-        return new Camera(location, this.Vto, this.Vup)
-                .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
+    public Point upDown(double num){
+        return location.add(this.Vup.scale(num));
     }
 
     /**
@@ -578,12 +579,8 @@ public class Camera {
      * @param num The amount to move the camera in or out.
      * @return A new camera object with the updated position and orientation.
      */
-    public Camera inOut(double num){
-        location = location.add(this.Vto.scale(num));
-
-        // Create a new camera object with the updated position and orientation
-        return new Camera(location, this.Vto, this.Vup)
-                .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
+    public Point inOut(double num){
+        return location.add(this.Vto.scale(num));
     }
 
     /**
@@ -592,12 +589,8 @@ public class Camera {
      * @param num The amount to move the camera right or left.
      * @return A new camera object with the updated position and orientation.
      */
-    public Camera rightLeft(double num){
-        location = location.add(this.Vright.scale(num));
-
-        // Create a new camera object with the updated position and orientation
-        return new Camera(location, this.Vto, this.Vup)
-                .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
+    public Point rightLeft(double num){
+        return location.add(this.Vright.scale(num));
     }
 
     /**
@@ -627,6 +620,34 @@ public class Camera {
     }
 
 
+    public Camera moveCameraOnSphereSimply(double radius , Point axis, double alpha , double beta) {
+        //alpha
+        double height = Math.sin(Math.toRadians(alpha))*radius;
+        double length = -Math.sin(Math.toRadians(180-alpha-90))*radius + radius;
+
+        location = inOut(length);
+        location = upDown(height);
+
+        // Calculate the new direction vector from the axis to the point on the sphere
+        Vto = axis.subtract(location).normalize();
+        Vup = this.Vright.crossProduct(this.Vto).normalize();
+
+        //beta
+        height = Math.sin(Math.toRadians(beta))*radius;
+        length = -Math.sin(Math.toRadians(180-beta-90))*radius + radius;
+
+        location = inOut(length);
+        location = rightLeft(height);
+
+        // Calculate the new direction vector from the axis to the point on the sphere
+        Vto = axis.subtract(location).normalize();
+        Vright = this.Vup.crossProduct(this.Vto).normalize();
+
+        // Create a new camera object with the updated position and orientation
+        return new Camera(location,this.Vto,this.Vup)
+                .setVPSize(width, this.height).setVPDistance(distance).setRayNum(this.rayNum);
+    }
 
 
- }
+
+}

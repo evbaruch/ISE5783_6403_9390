@@ -49,6 +49,7 @@ public class Vector extends Point {
     public Vector(double x,double y,double z) {
         super(x,y,z);
 
+
         if (super.equals(new Vector(Double3.ZERO))) {
             throw new IllegalArgumentException("ERROR: vector cannot be zero");
         }
