@@ -517,5 +517,5 @@ Include any supplementary materials, such as code snippets, screenshots, diagram
 - Yehuda Pailent  [LinkedIn](https://www.linkedin.com/) | [GitHub](https://github.com/yehuda-p)
 
 ### Mentor/Lecturer
-- Eliezer Gensburger  [LinkedIn](https://www.linkedin.com/eliezergensburger) | [GitHub](https://github.com/yehuda-p)
+- Eliezer Gensburger  [LinkedIn])(https://www.linkedin.com/in/גנסבורגר-אליעזר-56b14411/) | [GitHub](https://github.com/yehuda-p)
 
