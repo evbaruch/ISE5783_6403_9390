@@ -585,7 +585,7 @@ public class Camera {
     }
 
     /**
-     * Moves the camera right or left by the specified amount.
+     * Moves the camera right or left by the specified amount..
      *
      * @param num The amount to move the camera right or left.
      * @return A new camera object with the updated position and orientation.
