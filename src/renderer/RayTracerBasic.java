@@ -49,11 +49,11 @@ public class RayTracerBasic extends RayTracerBase {
      */
     @Override
     public Color traceRay(Ray ray) {
-        GeoPoint closestPoint = this.findClosestIntersection(ray);
+        GeoPoint closestPoint = this.findClosestIntersection(ray);//Needs improvement!!!!!!!!!!!!
         if(closestPoint == null){
             return this.scene.getBackground();
         }
-        return calcColor(closestPoint,ray);
+        return calcColor(closestPoint,ray);//Needs improvement!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
 
@@ -68,6 +68,7 @@ public class RayTracerBasic extends RayTracerBase {
         // using the findGeoIntersections method of the Geometries class.
         // The method returns a list of GeoPoint objects representing the intersections.
         List<GeoPoint> intersections = this.scene.getGeometries().findGeoIntersections(ray);
+        //return this.scene.getGeometries().findClosesGeoIntersections(ray);
 
         // Find the closest intersection point using the findClosestGeoPoint method of the Ray class.
         // The method takes a list of GeoPoint objects and returns the closest one.
@@ -105,7 +106,7 @@ public class RayTracerBasic extends RayTracerBase {
         // Calculate the color at the intersection point, taking into account local effects.
         // The calcLocalEffects method takes the intersection point, ray, and coefficient k as parameters.
         // It returns the color calculated based on the local effects.
-        Color color = calcLocalEffects(gp, ray, k);
+        Color color = calcLocalEffects(gp, ray, k);//Needs improvement!!!!!!!!!!!!!!!
 
         // Check the current calculation level.
         if (level == 1) {
@@ -160,7 +161,7 @@ public class RayTracerBasic extends RayTracerBase {
 
                     // If the signs of nl and nv are the same, calculate the diffuse and specular effects
                     if (nl * nv > 0) { // sign(nl) == sing(nv)
-                        Double3 ktr = transparency(gp, lightSource, l).reduce(scene.getSoftShade());
+                        Double3 ktr = transparency(gp, lightSource, l).reduce(scene.getSoftShade());//Needs improvement!!!!!!!!!!!!!!!!!
                         if (ktr.product(k).greaterThan(MIN_CALC_COLOR_K)) {
                             // Get the intensity of the light source at the geometric point
                             Color iL = lightSource.getIntensity(gp.point).scale(ktr);
@@ -401,7 +402,7 @@ public class RayTracerBasic extends RayTracerBase {
         // will be built from the new point  a ray
         Ray lightRay = new Ray(point, lightDirection);
         //We will find the entire score up to the light source
-        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay, light.getDistance(gp.point));
+        List<GeoPoint> intersections = scene.getGeometries().findGeoIntersections(lightRay, light.getDistance(gp.point));//Needs improvement!!!!!!!!!!!!!!
 
         //We will only return false here if there is a point on the path that is not transparent at all
         if (intersections == null){
@@ -431,33 +432,42 @@ public class RayTracerBasic extends RayTracerBase {
     }
 
     /**
-     * Calculates the specular reflection contribution for a given material and lighting conditions.
+     * Calculates the specular reflection for a given material and lighting conditions.
      *
-     * @param material The material of the object.
-     * @param n        The normal vector at the intersection point.
-     * @param l        The direction vector from the point to the light source.
-     * @param nl       The dot product between the normal vector and the direction vector to the light source.
-     * @param v        The direction vector from the point to the viewer.
-     * @return The specular reflection contribution as a Double3 color value.
+     * @param material  The material properties of the object.
+     * @param n         The surface normal vector.
+     * @param l         The direction of the incident light vector.
+     * @param nl        The dot product of the surface normal and the incident light vector.
+     * @param v         The direction of the viewer vector.
+     * @return          The specular reflection color as a Double3 vector.
      */
     private Double3 calcSpecular(Material material, Vector n, Vector l, double nl, Vector v) {
-        Double3 ks = material.Ks;
-        int shininess = material.nShininess;
+        // Extract material properties
+        Double3 ks = material.Ks;       // Specular reflection coefficient
+        int shininess = material.nShininess; // Shininess exponent
 
+        // Calculate reflected vector
         Vector r = l.subtract(n.scale(2 * nl)).normalize();
+
+        // Calculate dot product of viewer vector and reflected vector
         double vr = v.scale(-1).dotProduct(r);
         vr = (vr > 0) ? vr : 0; // Ensure vr is non-negative
 
+        // No specular reflection if vr is less than or equal to zero
+        if (vr <= 0) {
+            return new Double3(0);
+        }
 
-        if (vr <= 0) return new Double3(0); // No specular reflection in this case
-
+        // Calculate specular reflection intensity using the Phong model
         double result = 1.0;
         for (int i = 0; i < shininess; i++) {
             result *= vr;
         }
 
+        // Scale the specular reflection color by the specular reflection coefficient
         return ks.scale(result);
     }
+
 
 
     /**

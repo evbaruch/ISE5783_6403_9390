@@ -14,31 +14,6 @@ public class Vector extends Point {
 
     }
 
-    public Vector rotate(Vector axis, double angle) {
-        // Normalize the axis vector.
-        Vector normalizedAxis = axis.normalize();
-
-        // Calculate the sine and cosine of the rotation angle.
-        double cosAngle = Math.cos(angle);
-        double sinAngle = Math.sin(angle);
-
-        // Calculate the cross product between the axis vector and the current vector.
-        Vector crossProduct = normalizedAxis.crossProduct(this);
-
-        // Calculate the scaled cross product vector.
-        Vector scaledCrossProduct = crossProduct.scale(sinAngle);
-
-        // Calculate the dot product between the axis vector and the current vector.
-        double dotProduct = normalizedAxis.dotProduct(this);
-
-        // Calculate the scaled axis vector.
-        Vector scaledAxis = normalizedAxis.scale(dotProduct * (1 - cosAngle));
-
-        // Calculate the rotated vector by adding the scaled cross product and scaled axis vectors.
-        Vector rotatedVector = scaledCrossProduct.add(scaledAxis);
-
-        return rotatedVector;
-    }
 
     /**
      * Constructs a new vector with the given x, y, and z coordinates.

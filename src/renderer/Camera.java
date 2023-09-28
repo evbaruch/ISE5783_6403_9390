@@ -392,6 +392,7 @@ public class Camera {
                 throw new IllegalArgumentException("Invalid image dimensions");
             }
 
+            Camera c = this;
             Pixel.initialize(ny,nx,1);
             IntStream.range(0,ny).parallel().forEach(i -> {
                 IntStream.range(0,nx).parallel().forEach(j -> {

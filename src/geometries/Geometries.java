@@ -24,7 +24,8 @@ public class Geometries extends Intersectable {
         Collections.addAll(this.intersectables, geometries);
     }
 
-    @Override
+
+    @Override//Immediate improvement is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
 
         List<GeoPoint> result = null;
@@ -35,6 +36,23 @@ public class Geometries extends Intersectable {
                     result = new LinkedList<>();
                 }
                 result.addAll(shapePoints);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param ray
+     * @return
+     */
+    @Override
+    protected GeoPoint findClosesGeoIntersectionsHelper(Ray ray) {
+        GeoPoint result = null;
+
+        for (Intersectable shape : intersectables) {
+            result = shape.findClosesGeoIntersectionsHelper(ray);
+            if (result != null) {
+                return result;
             }
         }
         return result;

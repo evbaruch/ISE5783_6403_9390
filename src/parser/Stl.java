@@ -1,5 +1,6 @@
 package parser;
 
+import geometries.GMesh;
 import geometries.Geometries;
 import geometries.Triangle;
 import primitives.Color;
@@ -35,6 +36,16 @@ public class Stl {
         System.out.print("convertSTLToTriangles\n");
         Geometries geometries = triangleToGeometries(triangles, material, color);
         System.out.print("triangleToGeometries\n");
+        return geometries;
+    }
+
+    public static Geometries ConvertStlToGeometrysB(String path, Material material, Color color){
+        List<Triangle> triangles =  convertSTLToTriangles(path);
+        System.out.print("convertSTLToTriangles\n");
+        Mesh mesh = Mesh.trianglesToMesh(triangles);
+        System.out.print("trianglesToMesh\n");
+        GMesh gMesh = new GMesh(mesh);
+        Geometries geometries = new Geometries(gMesh.setMaterial(material).setEmission(color));
         return geometries;
     }
     public static String ConvertStlToGeometrysFile(String path, int numOfTriangles, Material material, Color color)

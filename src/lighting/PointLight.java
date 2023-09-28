@@ -171,15 +171,26 @@ public class PointLight extends Light implements LightSource{
         return this;
     }
 
-
+    /**
+     * Sets the radius of the PointLight.
+     *
+     * @param r The radius of the PointLight.
+     * @return The updated PointLight object.
+     */
     public PointLight setRadius(double r) {
-        this.radius = r;//
+        this.radius = r;
         return this;
     }
 
+    /**
+     * Retrieves the radius of the PointLight.
+     *
+     * @return The radius of the PointLight.
+     */
     public double getRadius() {
         return this.radius;
     }
+
 
     /**
      * Calculates the distance between this point and the specified point.

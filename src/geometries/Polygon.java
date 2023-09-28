@@ -125,6 +125,15 @@ public class Polygon extends Geometry {
       return List.of(new GeoPoint(this,intersectionPoint.point)) ;
    }
 
+   /**
+    * @param ray
+    * @return
+    */
+   @Override
+   protected GeoPoint findClosesGeoIntersectionsHelper(Ray ray) {
+      return null;
+   }
+
    public List<Point> getVertices() {
       return vertices;
    }

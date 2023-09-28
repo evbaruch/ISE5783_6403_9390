@@ -95,10 +95,10 @@ public class KnightDragon {
                 .setKr(0);//reflection
         Color sunColor = new Color(1000, 150, 150);
 
-        Geometries KnightGeometries = Stl.ConvertStlToGeometrys("files/StlFiles/knight.stl",KnightMaterial,KnightColor);
-        Geometries cloudGeometries = Stl.ConvertStlToGeometrys("files/StlFiles/cloud.stl",cloudMaterial,cloudColor);
-        Geometries dragonGeometries = Stl.ConvertStlToGeometrys("files/StlFiles/dragon.stl",dragonMaterial,dragonColor);
-        Geometries grounGeometries = Stl.ConvertStlToGeometrys("files/StlFiles/ground.stl",groundMaterial,groundColor);
+        Geometries KnightGeometries = Stl.ConvertStlToGeometrysB("files/StlFiles/knight.stl",KnightMaterial,KnightColor);
+        Geometries cloudGeometries = Stl.ConvertStlToGeometrysB("files/StlFiles/cloud.stl",cloudMaterial,cloudColor);
+        Geometries dragonGeometries = Stl.ConvertStlToGeometrysB("files/StlFiles/dragon.stl",dragonMaterial,dragonColor);
+        Geometries grounGeometries = Stl.ConvertStlToGeometrysB("files/StlFiles/ground.stl",groundMaterial,groundColor);
         Geometries sunGeometries = new Geometries(new Sphere(new Point(-25,350,180), 15).setMaterial(sunMaterial).setEmission(sunColor));
 
 
@@ -106,37 +106,36 @@ public class KnightDragon {
 
 
         Camera camera = new Camera(new Point(150, -200, 70), new Vector(-15, 22, 0), new Vector(0, 0, 1))
-                .setVPSize(150, 150).setVPDistance(200).setRayNum(100);
+                .setVPSize(150, 150).setVPDistance(200);
 
         Scene scene = new Scene.SceneBuilder("Test scene")
                 .setGeometries(geometries)
-                .setBackground(new Color(150, 100, 200))
-                .setSoftShade(30)
+                .setBackground(new Color(150, 100, 300))
                 .setLights(
                         new PointLight(
                                 new Color(100,0,0),
                                 new Point(0,15,70)
-                        ).setRadius(10),
+                        ),
                         new PointLight(
                                 new Color(100,100,100),
                                 new Point(20,-110,85)
-                        ).setRadius(10),
+                        ),
                         new PointLight(
                                 new Color(1000,800,800),
                                 new Point(-25,350,200)
-                        ).setRadius(10),
+                        ),
                         new SpotLight(
                                 new Color(0,0,100),
                                 new Point(0,-40,100),
                                 new Vector(0,-1,-4)
-                        ).setRadius(10),
+                        ),
                         new DirectionalLight(
                                 new Color(80,50,70),
                                 new Vector(25,-350,-180)
                         ))
                 .build();
 
-        camera.setImageWriter(new ImageWriter("KnightDragon", 500, 500))
+        camera.setImageWriter(new ImageWriter("KnightDragon3", 500, 500))
                 .setRayTracer(new RayTracerBasic(scene))
                 .renderImage()
                 .writeToImage();

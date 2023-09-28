@@ -46,9 +46,17 @@ public abstract class Intersectable {
    //protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
 
 
+   //Improvement is needed for him and everyone who inherits from him
+   // | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+   // V V V V V V V V V V V V V V V V V V V V V V V V V V V V V V
    public final List<GeoPoint> findGeoIntersections(Ray ray) {
       return findGeoIntersections(ray, Double.POSITIVE_INFINITY);
    }
+
+   public final GeoPoint findClosesGeoIntersections(Ray ray) {
+      return findClosesGeoIntersectionsHelper(ray);
+   }
+
 
    public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
       return findGeoIntersectionsHelper(ray, maxDistance);
@@ -57,4 +65,8 @@ public abstract class Intersectable {
    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
 
 
+   protected abstract GeoPoint findClosesGeoIntersectionsHelper(Ray ray);
+
+   // A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A
+   // | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 }

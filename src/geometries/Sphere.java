@@ -85,4 +85,13 @@ public class Sphere extends RadialGeometry {
 
         return result;
     }
+
+    /**
+     * @param ray
+     * @return
+     */
+    @Override
+    protected GeoPoint findClosesGeoIntersectionsHelper(Ray ray) {
+        return null;
+    }
 }
