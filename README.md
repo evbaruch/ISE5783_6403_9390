@@ -1,6 +1,6 @@
 # Mini Project in Introduction to Software Engineering
 
-![Project Photo](images/diamond.png)
+![Project Photo](images/KnightDragon.png)
 
 ## Table of Contents
 1. [Executive Summary](#executive-summary)
@@ -445,21 +445,31 @@ Description: Briefly describe the scene and any notable features or effects.
 
 
 ### Rendered Image 4
-![Rendered Image 4](path/to/image4.jpg)
+![Rendered Image 4](![heart](https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/50648e8d-e70f-4dfc-85c8-21fa937f3674)
+)
 Description: Briefly describe the scene and any notable features or effects.
+![improvementsRefractionShadow](https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/2b7ce0b7-a907-4026-af21-667e58181165)
 
 
 ## Rendered videos
  
 
-https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/d7d5592e-4d2c-40de-bf10-1042cb4c79b6
+
+
+https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/8c1616ca-0e03-46eb-b502-4971deae30a8
+
+
 
 
 
 Description: Briefly describe the scene and any notable features or effects.
 
 
-https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/5de9c7ba-69fa-4e9c-8947-81fc406e905e
+
+
+https://github.com/evbaruch/ISE5783_6403_9390/assets/116492422/f64b19d8-e856-4ea9-b5a5-1654b062ea35
+
+
 
 
 ## Conclusion
