@@ -649,6 +649,47 @@ public class Camera {
                 .setVPSize(width, this.height).setVPDistance(distance).setRayNum(this.rayNum);
     }
 
+    public Point getLocation() {
+        return location;
+    }
 
+    public Point getDirection() {
+        return Vto;
+    }
 
+    public Point getRight() {
+        return Vright;
+    }
+
+    public Object getImageWriter() {
+        return imageWriter;
+    }
+
+    public int getImageWriterNx() {
+        return imageWriter.getNx();
+    }
+
+    public int getImageWriterNy() {
+        return imageWriter.getNy();
+    }
+
+    public int getnumOfRays() {
+        return rayNum;
+    }
+
+    public boolean isSuperSampling() {
+        return superSampling;
+    }
+
+    public double getUpX() {
+        return Vup.getX();
+    }
+
+    public double getUpY() {
+        return Vup.getY();
+    }
+
+    public double getUpZ() {
+        return Vup.getZ();
+    }
 }

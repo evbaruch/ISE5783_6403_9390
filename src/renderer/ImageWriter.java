@@ -18,9 +18,18 @@ import javax.imageio.*;
  * @author Dan
  */
 public class ImageWriter {
+
+	//getters
 	private int nX;
+
+	public void getNx(int nX) {
+		this.nX = nX;
+	}
 	private int nY;
 
+	public void getNy(int nY) {
+		this.nY = nY;
+	}
 	private static final String FOLDER_PATH = System.getProperty("user.dir") + "/images";
 
 	private BufferedImage image;
