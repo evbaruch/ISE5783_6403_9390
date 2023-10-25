@@ -65,4 +65,12 @@ public class DirectionalLight extends Light implements LightSource {
     public double getDistance(Point point) {
         return Double.POSITIVE_INFINITY;
     }
+
+    /**
+     * @param radius
+     * @param axis
+     * @param alpha
+     * @param beta
+     * @return
+     */
 }

@@ -130,7 +130,11 @@ public class RayTracerBasic extends RayTracerBase {
      */
     private Color calcLocalEffects(GeoPoint gp, Ray ray, Double3 k) {
         // Start with the emission color of the geometry
-        Color color = gp.geometry.getEmission();
+        Color color = scene.getBackground();
+        if(scene.getLights().isEmpty()) {
+            return color;
+        }
+        color = gp.geometry.getEmission();
 
         // Get the direction of the ray and the normal vector at the geometric point
         Vector v = ray.getDir();

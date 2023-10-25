@@ -21,6 +21,10 @@ public class Sphere extends RadialGeometry {
         return v.normalize();
     }
 
+    public void setCenter(Point newCenter) {
+        this.center = newCenter;
+    }
+
     /**
      * Helper method to find the geometric intersections between a ray and the sphere.
      *

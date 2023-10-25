@@ -137,23 +137,104 @@ public class improvementsTest {
                         .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(30))
         );
 
+        PointLight pointLight = new PointLight(
+                new Color(655, 655, 655),
+                new Point(0, 0, 1000), new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setKl(0.0005)
+                .setKq(0.0005);
+
        Scene scene = new Scene.SceneBuilder("Test scene")
                 .setGeometries(gGeometries)
                 .setLights(
-                        new SpotLight(
-                                new Color(1000, 600, 0),
-                                new Point(-100, -100, 500),
-                                new Vector(-1, -1, -2))
-                                .setKl(0.0004)
-                                .setKq(0.0000006))
+                        pointLight)
                 .build();
 
-        for (int i = 0; i < 1020; i++) {
+        for (int i = 0; i < 10; i++) {
             camera = camera.moveCameraOnSphereSimply(1000,new Point(0,0,0) , 0.5,0.5);
+            pointLight = pointLight.moveLight(1000,new Point(0,0,0) , 0.5,0.5);
         camera.setImageWriter(new ImageWriter("rand" +i, 500, 500))
                 .setRayTracer(new RayTracerBasic(scene))
                 .renderImage()
                 .writeToImage();
+        }
+    }
+
+    @Test
+    public void SphereLightMoving() {
+            Camera camera = new Camera(new Point(0, 0, 30.01), new Vector(1, 0, 0), new Vector(0, 0, 1))
+                .setVPSize(150, 150).setVPDistance(1000).setRayNum(100).setSuperSampling(true);
+
+            PointLight pointLight = new PointLight(
+                new Color(655, 655, 655),
+                new Point(30, 0, 50),new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setKl(0.0005)
+                .setKq(0.0005)
+                .setRadius(0.7d);
+
+        Geometry lightBulb =  new Sphere(
+                pointLight.getPosition(), 0.7d)
+                .setEmission(new Color(white))
+                .setMaterial(
+                        new Material()
+                                .setKd(0.4)
+                                .setKs(0.3)
+                                .setShininess(100)
+                                .setKt(0.9).setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX));
+        Geometries gGeometries = new Geometries(
+                new Sphere(
+                        new Point(0, 0, 0),
+                        30d)
+                        .setEmission(new Color(BLUE))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(30)
+                        )
+                ,
+                
+               lightBulb
+        );
+
+
+
+        Scene scene = new Scene.SceneBuilder("Test scene")
+                .setGeometries(gGeometries)
+                .setLights(
+                        pointLight)
+                .build();
+
+        for (int i = 0; i < 1020; i++) {
+
+            camera.setImageWriter(new ImageWriter("SLM" +i, 500, 500))
+                    .setRayTracer(new RayTracerBasic(scene))
+                    .renderImage()
+                    .writeToImage();
+
+
+
+            pointLight =  pointLight.moveLight(130,new Point(0,0,0), 0, 0.05);
+            lightBulb = new Sphere(
+                    pointLight.getPosition(), 0.7d)
+                    .setEmission(new Color(white))
+                    .setMaterial(
+                            new Material()
+                                    .setKd(0.4)
+                                    .setKs(0.3)
+                                    .setShininess(100)
+                                    .setKt(0.9).setRefractiveIndex(Material.DIAMOND_REFRACTIVE_INDEX));
+            gGeometries = new Geometries(
+                    new Sphere(
+                            new Point(0, 0, 0),
+                            30d)
+                            .setEmission(new Color(BLUE))
+                            .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(30)
+                            )
+                    ,
+                    lightBulb
+            );
+            scene = new Scene.SceneBuilder("Test scene")
+                    .setGeometries(gGeometries)
+                    .setLights(
+                            pointLight)
+                    .build();
+
         }
     }
 }

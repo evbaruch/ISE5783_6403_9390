@@ -1,11 +1,12 @@
 package lighting;
 
+import movement.Moveable;
 import primitives.Color;
 
 /**
  * The abstract base class for different types of lights in a lighting system.
  */
-abstract class Light {
+abstract class Light extends Moveable {
     private Color intensity;
 
     /**

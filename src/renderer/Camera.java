@@ -1,8 +1,10 @@
 package renderer;
 
+import movement.Moveable;
 import primitives.*;
 
 import javax.print.CancelablePrintJob;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,9 +14,9 @@ import java.util.Random;
 import static java.lang.System.out;
 import static primitives.Util.*;
 
-public class Camera {
-    private Point location;
-    private Vector Vto, Vup, Vright;
+public class Camera extends Moveable {
+    //private Point location;
+    //private Vector Vto, Vup, Vright;
     private double width, height, distance;
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
@@ -264,7 +266,7 @@ public class Camera {
 
         // Generate rays with random offsets within the pixel
         for (int k = 0;k < this.rayNum; k++){
-            Point p;
+            Point p ;
 
             // Calculate the random position within the pixel
             p = Pij.add(Vright.scale(random.nextDouble(-Rx /2, Rx /2)));
@@ -392,7 +394,10 @@ public class Camera {
                 throw new IllegalArgumentException("Invalid image dimensions");
             }
 
-            Camera c = this;
+            Pixel.initialize(ny, nx, 1);
+            AtomicInteger completedCount = new AtomicInteger(0);
+            int totalPixels = ny * nx;
+
             Pixel.initialize(ny,nx,1);
             IntStream.range(0,ny).parallel().forEach(i -> {
                 IntStream.range(0,nx).parallel().forEach(j -> {
@@ -418,6 +423,10 @@ public class Camera {
                         // Cast the ray and write the resulting color to the image
                         imageWriter.writePixel(i, j, castRay(ray));
                     }
+                    // Update progress
+                    int completedPixels = completedCount.incrementAndGet();
+                    double progress = (double) completedPixels / totalPixels * 100;
+                    System.out.println("\rProgress: " + String.format("%.2f", progress) + "%");
                 });
             });
 
@@ -564,35 +573,35 @@ public class Camera {
         return this;
     }
 
-    /**
-     * Moves the camera up or down by the specified amount.
-     *
-     * @param num The amount to move the camera up or down.
-     * @return A new camera object with the updated position and orientation.
-     */
-    public Point upDown(double num){
-        return location.add(this.Vup.scale(num));
-    }
-
-    /**
-     * Moves the camera in or out by the specified amount.
-     *
-     * @param num The amount to move the camera in or out.
-     * @return A new camera object with the updated position and orientation.
-     */
-    public Point inOut(double num){
-        return location.add(this.Vto.scale(num));
-    }
-
-    /**
-     * Moves the camera right or left by the specified amount..
-     *
-     * @param num The amount to move the camera right or left.
-     * @return A new camera object with the updated position and orientation.
-     */
-    public Point rightLeft(double num){
-        return location.add(this.Vright.scale(num));
-    }
+//    /**
+//     * Moves the camera up or down by the specified amount.
+//     *
+//     * @param num The amount to move the camera up or down.
+//     * @return A new camera object with the updated position and orientation.
+//     */
+//    public Point upDown(double num){
+//        return location.add(this.Vup.scale(num));
+//    }
+//
+//    /**
+//     * Moves the camera in or out by the specified amount.
+//     *
+//     * @param num The amount to move the camera in or out.
+//     * @return A new camera object with the updated position and orientation.
+//     */
+//    public Point inOut(double num){
+//        return location.add(this.Vto.scale(num));
+//    }
+//
+//    /**
+//     * Moves the camera right or left by the specified amount.
+//     *
+//     * @param num The amount to move the camera right or left.
+//     * @return A new camera object with the updated position and orientation.
+//     */
+//    public Point rightLeft(double num){
+//        return location.add(this.Vright.scale(num));
+//    }
 
     /**
      * Moves the camera on a sphere around a specified axis.
@@ -620,29 +629,8 @@ public class Camera {
                 .setVPSize(width, height).setVPDistance(distance).setRayNum(this.rayNum);
     }
 
-
     public Camera moveCameraOnSphereSimply(double radius , Point axis, double alpha , double beta) {
-        //alpha
-        double height = Math.sin(Math.toRadians(alpha))*radius;
-        double length = -Math.sin(Math.toRadians(180-alpha-90))*radius + radius;
-
-        location = inOut(length);
-        location = upDown(height);
-
-        // Calculate the new direction vector from the axis to the point on the sphere
-        Vto = axis.subtract(location).normalize();
-        Vup = this.Vright.crossProduct(this.Vto).normalize();
-
-        //beta
-        height = Math.sin(Math.toRadians(beta))*radius;
-        length = -Math.sin(Math.toRadians(180-beta-90))*radius + radius;
-
-        location = inOut(length);
-        location = rightLeft(height);
-
-        // Calculate the new direction vector from the axis to the point on the sphere
-        Vto = axis.subtract(location).normalize();
-        Vright = this.Vup.crossProduct(this.Vto).normalize();
+        this.move(radius ,axis,alpha , beta);
 
         // Create a new camera object with the updated position and orientation
         return new Camera(location,this.Vto,this.Vup)

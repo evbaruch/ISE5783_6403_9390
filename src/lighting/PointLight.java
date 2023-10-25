@@ -1,9 +1,11 @@
 package lighting;
 
+import movement.Moveable;
 import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
+import renderer.Camera;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,11 +19,16 @@ import static primitives.Util.alignZero;
  */
 public class PointLight extends Light implements LightSource{
 
-    private Point position;
+//    private Vector Vto;
+//    private Vector Vright;
+//    private Vector Vup;
+//    private Point location;
 
+    public Point getPosition() {
+        return location;
+    }
 
-
-    /**
+/**
 
      The constant coefficient (Kc) determines the attenuation of light intensity
      with respect to distance. It represents the constant term in the attenuation
@@ -57,11 +64,26 @@ public class PointLight extends Light implements LightSource{
      */
     public PointLight(Color intensity, Point position) {
         super(intensity);
-        this.position = position;
+        this.location = position;
         this.Kc = Kc;
         this.Kl = Kl;
         this.Kq = Kq;
     }
+    public PointLight(Color intensity, Point position,Vector vto, Vector vup) {
+        super(intensity);
+        if (alignZero(vto.dotProduct(vup)) != 0) {
+            throw new IllegalArgumentException("vto and vup must be perpendicular to each other");
+        }
+        this.Vto = vto.normalize();
+        this.Vup = vup.normalize();
+        this.Vright = this.Vto.crossProduct(this.Vup).normalize();
+        this.location = position;
+        this.Kc = Kc;
+        this.Kl = Kl;
+        this.Kq = Kq;
+    }
+
+
 
     /**
      *
@@ -70,8 +92,8 @@ public class PointLight extends Light implements LightSource{
      */
     @Override
     public Color getIntensity(Point p) {
-        Vector lightDirection = position.subtract(p).normalize(); // Calculate the direction from the point to the light source
-        double distance = position.distance(p); // Calculate the distance between the point and the light source
+        Vector lightDirection = location.subtract(p).normalize(); // Calculate the direction from the point to the light source
+        double distance = location.distance(p); // Calculate the distance between the point and the light source
 
         // Calculate the attenuation factor
         double attenuation = 1 / (Kc + Kl * distance + Kq * distance * distance);
@@ -91,7 +113,7 @@ public class PointLight extends Light implements LightSource{
      */
     @Override
     public Vector getL(Point p) {
-        return p.subtract(position).normalize(); // Calculate the direction vector from the point to the light source
+        return p.subtract(location).normalize(); // Calculate the direction vector from the point to the light source
     }
 
 
@@ -112,7 +134,7 @@ public class PointLight extends Light implements LightSource{
         if (numOfgetL <= 1 && alignZero(this.radius) == 0) {
             // If only one vector is requested and the sphere has no radius,
             // add a normalized vector pointing from the reference point to the sphere's position.
-            listVector.add(p.subtract(position).normalize());
+            listVector.add(p.subtract(location).normalize());
         } else {
             Random random = new Random();
 
@@ -129,7 +151,7 @@ public class PointLight extends Light implements LightSource{
                 Point pointOnBall = p.add(v);
 
                 // Add a normalized vector pointing from the reference point to the calculated point on the sphere.
-                listVector.add(pointOnBall.subtract(position).normalize());
+                listVector.add(pointOnBall.subtract(location).normalize());
             }
         }
 
@@ -200,6 +222,24 @@ public class PointLight extends Light implements LightSource{
      */
     @Override
     public double getDistance(Point point) {
-        return point.distance(position);
+        return point.distance(location);
     }
+
+
+    /**
+     * Moves the light source in the given radius and angle like in camera class
+     * @param radius
+     * @param alpha
+     * @param beta
+     * @return
+     */
+    public PointLight moveLight(double radius , Point axis, double alpha , double beta){
+
+        this.move(radius ,axis,alpha , beta);
+
+        // Create a new PointLight object with the updated position and orientation
+        return new PointLight(this.getIntensity(),this.location,this.Vto,this.Vup)
+                .setKq(this.Kq).setKl(this.Kl).setKc(this.Kc).setRadius(this.radius);
+    }
+
 }
